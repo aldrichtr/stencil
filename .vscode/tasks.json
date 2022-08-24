@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build using sampler",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.ps1 -Task build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+        {
+            "label": "Build the module",
+            "type": "shell",
+            "command": "Invoke-Build Build"
+        },
+        {
+            "label": "Run the unit tests",
+            "type":"shell",
+            "command": "Invoke-Build UnitTest",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Clean generated files",
+            "type": "shell",
+            "command":"Invoke-Build Clean"
+        }
+  ],
+  "inputs": [
+    {
+      "id": "TestTag",
+      "description": "Pester test tags to include",
+      "type": "promptString"
+    },
+    {
+      "id": "InvokeBuildTask",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "${workspaceFolder}/getTasks.cmd",
+        "cwd": "${workspaceFolder}",
+        "fieldSeparator": "|",
+        "description": "Select the build task to run"
+      }
+    }
+  ]
+}
