@@ -1,5 +1,4 @@
 
-
 Describe 'Private function Register-StencilOperation' {
     BeforeAll {
         # convenience function to reset the registry
@@ -16,6 +15,11 @@ Describe 'Private function Register-StencilOperation' {
             $command | Should -Not -BeNullOrEmpty
         }
 
+        It "Should pass PSScriptAnalyzer Rule '<_.RuleName>'" -Tag @('analyzer') -ForEach @(Get-ScriptAnalyzerRule) {
+            $result = Invoke-ScriptAnalyzer -ScriptDefinition $command.Definition -IncludeRule $_.RuleName
+            $result | Should -BeNullOrEmpty -Because (
+                ".`n$($PSStyle.Foreground.BrightWhite){0} on line {1} {2}`n`n.$($PSStyle.Reset)" -f $result.Severity, $result.Line, $result.Message )
+        }
         Context 'The parameters are set correctly' -ForEach @(
             @{
                 Name      = 'Name'
@@ -85,7 +89,7 @@ Describe 'Private function Register-StencilOperation' {
     Context 'When a scriptblock operation is registered' {
         BeforeAll {
             $count_before = (Get-StencilOperationRegistry).Keys.Count
-            Register-StencilOperation -Name 'invoke' -ScriptBlock {Write-Host 'Hello world'} -Description 'say hello'
+            Register-StencilOperation -Name 'invoke' -Scriptblock { Write-Host 'Hello world' } -Description 'say hello'
         }
         It 'Should increment the number of operations registered by 1' {
             (Get-StencilOperationRegistry).Keys.Count | Should -Be ($count_before + 1)
