@@ -18,28 +18,28 @@ function Register-StencilOperation {
     param(
         # Name of the Operation for use in stencils
         [Parameter(
-            Position = 1,
+            Position = 0,
             Mandatory
         )]
         [string]$Name,
 
         # The Command that the operation calls
         [Parameter(
-            Position = 2,
+            Position = 1,
             ParameterSetName = 'Command'
         )]
         [string]$Command,
 
         # The scriptblock the operation calls
         [Parameter(
-            Position = 2,
+            Position = 1,
             ParameterSetName = 'ScriptBlock'
         )]
         [scriptblock]$ScriptBlock,
 
         # An optional description
         [Parameter(
-            Position = 3
+            Position = 2
         )]
         [string]$Description,
 
@@ -56,23 +56,26 @@ function Register-StencilOperation {
     )
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
-        $registry = Get-StencilOperationRegistry
+        $registry = Get-StencilOperationRegistry # Creates the registry if it does not exist
     }
     process {
-        if ((-not($registry.ContainsKey($Name))) -or $Force) {
+        Write-Debug "  Test that the name '$Name' is not already registered (or -Force)"
+        if ((-not($Name | Test-StencilOperation)) -or $Force) {
             Write-Verbose "Registering the operation '$Name'"
             if ($PSBoundParameters.ContainsKey('Command')) {
                 Write-Debug "  operation is a wrapper for '$Command'.  Generating scriptblock"
                 $cmd = "param(`$params) $Command @params"
                 $ScriptBlock = [scriptblock]::create($cmd)
             } else {
-                Write-Debug "  operation is a scriptblock"
+                Write-Debug '  operation is a scriptblock'
             }
-            $registry[$Name] = @{
-                Command     =  $ScriptBlock
+            $script:StencilOperationRegistry[$Name] = @{
+                Command     = $ScriptBlock
                 Description = $Description ?? ''
             }
         } else {
+            Write-Debug "  Test failed.  $((Get-StencilOperationRegistry | Select-Object -ExpandProperty 'name') -join ',') is in the registry"
+            Write-Debug $Error[0].ErrorDetails
             $options = @{
                 Message           = "Could not register '$Name'"
                 Category          = 'ResourceExists'
@@ -83,7 +86,7 @@ function Register-StencilOperation {
     }
     end {
         if ($Passthru) {
-            $registry[$Name]
+            $script:StencilOperationRegistry[$Name]
         }
         Write-Debug "-- End $($MyInvocation.MyCommand.Name)"
     }

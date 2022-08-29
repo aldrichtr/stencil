@@ -7,7 +7,7 @@ function Get-StencilOperationRegistry {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
     }
     process {
-        if (-not($script:StencilOperationRegistry)) {
+        if ($null -eq $script:StencilOperationRegistry) {
             Write-Debug "  script registry not set.  Adding module variable StencilOperationRegistry"
             $script:StencilOperationRegistry = @{}
         }
