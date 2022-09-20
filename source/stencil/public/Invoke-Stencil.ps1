@@ -55,11 +55,24 @@ function Invoke-Stencil {
             }
         }
 
-        Write-Debug "  Looking for stencils in $Path"
+        Write-Verbose "  Looking for stencils in $Path"
         $script:Jobs = Get-Stencil -Path $Path
-        Write-Debug "  Loaded $($script:Jobs.Count) jobs"
+        Write-Verbose "  Loaded $($script:Jobs.Count) jobs"
 
-        $script:Jobs | Where-Object {$Name -contains $_.Id} | Invoke-StencilJob
+
+        $jobs_to_process = $script:Jobs | Where-Object {$Name -contains $_.Id}
+        if ($jobs_to_process.count -gt 0) {
+            Write-Verbose "  Processing $($jobs_to_process.Count) jobs"
+            try {
+                $jobs_to_process | Invoke-StencilJob
+            }
+            catch {
+                $PSCmdlet.ThrowTerminatingError($_)
+            }
+
+        } else {
+            Write-Information "No jobs were found to process."
+        }
     }
     end {
         Write-Debug "-- End $($MyInvocation.MyCommand.Name)"
