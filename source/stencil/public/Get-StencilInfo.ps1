@@ -31,7 +31,9 @@ function Get-StencilInfo {
             }
             foreach ($key in $stencil.jobs.Keys) {
                 if ($job_names -notcontains $key) {
-                    $job_names += $key # not present, add it to the list
+                    #! not present, add it to the list
+                    $job_names += $key
+
                     $job = $stencil.jobs[$key]
                     $job['PSTypeName'] = 'Stencil.JobInfo'
                     $job['id'] = $key
@@ -39,7 +41,14 @@ function Get-StencilInfo {
                     $job['Path'] = (Get-Item $p).FullName
                     $job['CurrentDir'] = '' # place holder, set at runtime
                     $job['Version'] = $stencil.Version ?? ''
+
+                    if ($job.Keys -notcontains 'env') {
+                        # ensure there is an 'env' table to write to
+                        $job.env = @{}
+                    }
+
                     [PSCustomObject]$job | Write-Output
+
                 } else {
                     Write-Warning "Attempt to redefine '$key' in '$p', Skipping"
                 }

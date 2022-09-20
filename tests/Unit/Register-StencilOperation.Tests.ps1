@@ -63,22 +63,21 @@ Describe 'Private function Register-StencilOperation' {
                     Name          = 'copy'
                     Command       = 'Copy-Item'
                     Description   = 'Copy Path to Destination'
-                    ErrorAction   = 'SilentlyContinue'
-                    ErrorVariable = 'errors'
-
+                    ErrorAction   = 'Stop'
                 }
-                Register-StencilOperation @options
-            }
-            It 'Should generate an error' {
-                $errors.Count | Should -Be 1
+                try {
+                    Register-StencilOperation @options
+                } catch {
+                    $RegisterError = $_
+                }
             }
 
             It "Should be a 'ResourceExists' error" {
-                $errors[0].CategoryInfo.Category | Should -Be ResourceExists
+                $RegisterError.CategoryInfo.Category | Should -Be ResourceExists
             }
 
-            It 'Should state that the command couldnt be registered' {
-                $errors[0].Exception.Message | Should -Be (
+            It 'Should state that the command could not be registered' {
+                $RegisterError.Exception.Message | Should -Be (
                     "Could not register '$($options.Name)'"
                 )
             }
@@ -89,7 +88,9 @@ Describe 'Private function Register-StencilOperation' {
     Context 'When a scriptblock operation is registered' {
         BeforeAll {
             $count_before = (Get-StencilOperationRegistry).Keys.Count
-            Register-StencilOperation -Name 'invoke' -Scriptblock { Write-Host 'Hello world' } -Description 'say hello'
+            Register-StencilOperation -Name 'invoke' -Scriptblock {
+                Write-Information 'Hello world'
+            } -Description 'say hello'
         }
         It 'Should increment the number of operations registered by 1' {
             (Get-StencilOperationRegistry).Keys.Count | Should -Be ($count_before + 1)

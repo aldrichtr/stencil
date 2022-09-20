@@ -74,8 +74,6 @@ function Register-StencilOperation {
                 Description = $Description ?? ''
             }
         } else {
-            Write-Debug "  Test failed.  $((Get-StencilOperationRegistry | Select-Object -ExpandProperty 'name') -join ',') is in the registry"
-            Write-Debug $Error[0].ErrorDetails
             $options = @{
                 Message           = "Could not register '$Name'"
                 Category          = 'ResourceExists'

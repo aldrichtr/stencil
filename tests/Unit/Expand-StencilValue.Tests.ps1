@@ -37,7 +37,8 @@ Describe 'Private function Expand-StencilValue' {
         @{
             StencilText = '${env.Greeting} ${env.Subject}'
             Expected = 'Hello World'
-            Data = @{
+            Data = [PSCustomObject]@{
+                PSTypeName = 'Stencil.JobInfo'
                 env = @{
                     Greeting = 'Hello'
                     Subject  = 'World'
@@ -47,7 +48,8 @@ Describe 'Private function Expand-StencilValue' {
         @{
             StencilText = '${env.Greeting} ${not.present} ${env.Subject}'
             Expected    = 'Hello ${not.present} World'
-            Data        = @{
+            Data        = [PSCustomObject]@{
+                PSTypeName = 'Stencil.JobInfo'
                 env = @{
                     Greeting = 'Hello'
                     Subject  = 'World'

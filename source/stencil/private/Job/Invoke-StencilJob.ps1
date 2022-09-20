@@ -27,11 +27,13 @@ function Invoke-StencilJob {
     }
     process {
         Write-Debug "  Invoking job $($Job.Id)"
+        if (-not($Job.psobject.properties.Name -contains 'env')) {
+            $Job | Add-Member -NotePropertyName env -NotePropertyValue @{}
+        }
         <#------------------------------------------------------------------
           1.  Set up the environment
         ------------------------------------------------------------------#>
         $Job.CurrentDir = (Get-Location).Path
-        $step_count = 0
         foreach ($step in $Job.steps) {
             Write-Debug "`n$('-' * 80)`n-- STEP #$step_count`n$('-' * 80)"
             <# the way the parser creates the step is like this:
@@ -47,41 +49,52 @@ function Invoke-StencilJob {
             }
             #>
             $cmd = $step.Keys[0]
-            $options = $step[$cmd]
+            $options = @{}
 
+            $config = $step[$cmd]
 
             Write-Debug "  Step #$step_count is '$cmd'"
             Write-Debug '  The environment is: '
             Write-Debug "    - SourceDir => $($Job.SourceDir)"
             Write-Debug "    - CurrentDir => $($Job.CurrentDir)"
             foreach ($key in $Job.env.Keys) {
-                '    - {0} => {1}' -f $key , $Job.env[$key] | Write-Debug
+                '    - env.{0} => {1}' -f $key , $Job.env[$key] | Write-Debug
             }
 
             Write-Debug '  The configuration options are:'
-            foreach ($key in $options.Keys) {
-                '    - {0} => {1}' -f $key , $options[$key] | Write-Debug
+            foreach ($key in $config.Keys) {
+                '    - {0} => {1}' -f $key , $config.$key | Write-Debug
 
             }
 
             Write-Debug '  Expanding tokens in configuration options:'
-            foreach ($key in $options.Keys) {
-                if ($options[$key] -is [string] ) {
-                    $options[$key] = ($options[$key] | Expand-StencilValue -Data $Job)
+            foreach ($key in $config.Keys) {
+                Write-Debug "   - Processing $key"
+                if ($config.$key -is [string] ) {
+                    Write-Debug "   - Before transformation: $($config.$key)"
+                    $options[$key] = ($config.$key | Expand-StencilValue -Data $Job)
                     Write-Debug "   - transformed $key => $($options[$key])"
+                } else {
+                    $options[$key] = $config.$key
                 }
             }
 
             $context_arguments = $options
+#            $context_variables.Add((Get-Variable Job))
+
 
             if ($cmd | Test-StencilOperation) {
                 Write-Debug "  Operation '$cmd' is registered.  Running"
-                [scriptblock]$sb = ($cmd | Get-StencilOperationCommand)
-                $sb.InvokeWithContext(
-                    $context_functions,
-                    $context_variables,
-                    $context_arguments
-                )
+                try {
+                    [scriptblock]$sb = ($cmd | Get-StencilOperationCommand)
+                    $sb.InvokeWithContext(
+                        $context_functions,
+                        $context_variables,
+                        $context_arguments
+                    )
+                } catch {
+                    $PSCmdlet.ThrowTerminatingError($_)
+                }
             } elseif ($cmd | Test-StencilJob) {
                 Write-Debug "  Job '$cmd' is registered.  Running"
                 $script:Jobs[$cmd] | Invoke-StencilJob
