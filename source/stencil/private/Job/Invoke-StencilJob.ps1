@@ -70,6 +70,7 @@ function Invoke-StencilJob {
             Write-Debug '  Expanding tokens in configuration options:'
             foreach ($key in $config.Keys) {
                 Write-Debug "   - Processing $key"
+                Write-Debug "     - $key is a $($config.$key.GetType())"
                 if ($config.$key -is [string] ) {
                     Write-Debug "   - Before transformation: $($config.$key)"
                     $options[$key] = ($config.$key | Expand-StencilValue -Data $Job)
@@ -97,7 +98,7 @@ function Invoke-StencilJob {
                 }
             } elseif ($cmd | Test-StencilJob) {
                 Write-Debug "  Job '$cmd' is registered.  Running"
-                $script:Jobs[$cmd] | Invoke-StencilJob
+                $cmd | Get-StencilJob | Invoke-StencilJob
             } else {
                 Write-Verbose "  '$cmd' is not recognized as an operation or job.  Skipping"
             }
