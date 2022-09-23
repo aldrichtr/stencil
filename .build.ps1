@@ -1,95 +1,179 @@
+#Requires -modules 'InvokeBuild'
+
 param(
-    [Parameter()]
-    [string]$ProjectName = (property ProjectName 'stencil')
+    # Workflow configuration file
+    [Parameter(
+    )]
+    [string]$Workflows = (
+        property Workflows "$BuildRoot\.build\workflow.ps1"
+    )
 )
 
-# synopsis: set up the environment for building the project
-task Configure {
-    Invoke-PSDepend -Tags @('dev')
-}
+process {
+    if (Test-Path $Workflows) {
+        # $workflow = Get-Content $Workflows | ConvertFrom-Yaml
 
-# synopsis: create a temporary repository named after the Module
-task Register {
-    $repo_path = Join-Path $BuildRoot "out\$ProjectName"
-    if (-not(Test-Path $repo_path)) { mkdir $repo_path -Force | Out-Null }
-    $local_repo = @{
-        Name         = $ProjectName
-        Location     = $repo_path
-        Trusted      = $true
-        ProviderName = 'PowerShellGet'
-    }
-    Write-Build DarkBlue ("  Registering PackageSource {0} at {1}" -f $local_repo.Name, $local_repo.Location)
-    Register-PackageSource @local_repo | Out-Null
-}
-
-# synopsis: unregister the temporary repo
-task Unregister {
-    Write-Build DarkBlue "  Unregistering PackageSource $ProjectName"
-    if ((Get-PackageSource | Select-Object -ExpandProperty Name) -contains $ProjectName) {
-        Unregister-PackageSource -Name $ProjectName
-    } else {
-        Write-Build DarkRed "  $ProjectName not found in PackageSources"
+        # foreach ($job in $workflow.Keys) {
+        #     $step = $workflow[$job]
+        #     task $job $step
+        # }
+        . $Workflows
     }
 }
 
-# synopsis: a nuget package from the files in Staging.
-task Package Register, {
-    if ((Get-PackageSource | Select-Object -ExpandProperty Name) -contains $ProjectName) {
-        $staging_dir = Join-Path $BuildRoot "stage\$ProjectName"
-        Write-Build DarkBlue "  Publishing $ProjectName to $staging_dir"
-        Publish-Module -Path $staging_dir -Repository $ProjectName
-    }
-}, Unregister
-#endregion Local Repository
-
-#region Uninstall
-
-# synopsis: remove the module from memory and delete from disk
-task Uninstall {
-    if (-not($null -eq (Get-Module $ProjectName))) {
-        Write-Build DarkBlue "  Removing $ProjectName module"
-        Remove-Module -Name $ProjectName -Force
-        Uninstall-Module -Name $ProjectName -Force
-    }
-}
-#endregion Uninstall
-
-# synopsis: Remove files from selected directories
-task Clean Uninstall, {
-    $options = @(
-        @{
-            Path = "$BuildRoot\out\*"
-            Exclude = 'modules'
+begin {
+    function writeHeader([string]$Message, [string]$Description) {
+        $WIDTH = 80
+        $m_spaces = $WIDTH - ($Message.Length + 3 <#startmark+1space#> + 2<#endmark#>)
+        if ($Description.Length -gt ($WIDTH - 5)) {
+            $Description = $Description.Substring(0, ($WIDTH - 6))
         }
-        @{
-            Path = "$BuildRoot\stage\*"
-        }
+        $d_spaces = $WIDTH - ($Description.Length + 3 <#startmark+1space#> + 2<#endmark#>)
+        Write-Host -ForegroundColor Cyan -Object ('-' * $WIDTH)
+        Write-Host -ForegroundColor Cyan -Object "-- $Message$(' ' * $m_spaces)--"
+        Write-Host -ForegroundColor Cyan -Object "-- $Description$(' ' * $d_spaces)--"
+        Write-Host -ForegroundColor Cyan -Object ('-' * $WIDTH)
+    }
+
+    function writeFooter([string]$Message) {
+        $WIDTH = 80
+        $m_dashes = $WIDTH - ($Message.Length + 3 <#startmark+1space#> + 1 <#trailspace#>)
+        Write-Host -ForegroundColor Cyan -Object ("-- $Message $('-' * $m_dashes)")
+    }
+
+    $BuildScripts = [System.Collections.ArrayList]@()
+
+    writeHeader 'Phase 0: Load build scripts'
+
+    ## do our best to find a bootstrap script
+    ## by convention it should be:
+    ## - ./.build.config.ps1
+    ## - ./.build/config/.build.ps1
+    $default_bootstrap = @(
+            (Join-Path $BuildRoot '.build/config/.build.ps1')
+    (Join-Path $BuildRoot '.build.config.ps1')
     )
-    $options | ForEach-Object {
-        Write-Build DarkBlue "  Removing $($_.Path)"
-        Get-ChildItem @_ | Remove-item -Recurse -Force
+
+    <#------------------------------------------------------------------
+      1.  Bootstrap our main config
+    ------------------------------------------------------------------#>
+    if ($null -eq $BeforeBuildScript) {
+        foreach ($def in $default_bootstrap) {
+            if (Test-Path $def) {
+                $BeforeBuildScript = (property BeforeBuildScript $def)
+            }
+        }
+
     }
+
+    if ($null -eq $BeforeBuildScript) {
+        ## Probably means the .build.ps1 script was copied here but not it's supporting files....
+        Write-Warning 'No bootstrap build script found'
+    } else {
+        Write-Host "  Bootstrap Build script : [$(Resolve-Path $BeforeBuildScript -Relative)]" -ForegroundColor DarkGray
+        . $BeforeBuildScript
+    }
+
+    <#------------------------------------------------------------------
+      2.  Check for additional config scripts
+    ------------------------------------------------------------------#>
+    if ($null -eq $BuildConfig) {
+        if (Test-Path (Join-Path $BuildRoot '.build\config')) {
+            $BuildConfig = (property BuildConfig (Join-Path $BuildRoot '.build\config'))
+        }
+    }
+    if (Test-Path $BuildConfig) {
+        Write-Host '  Loading properties (Config) scripts' -ForegroundColor DarkGray
+        $BuildScripts += (Get-ChildItem "$BuildConfig\*.ps1" -Exclude '.*.ps1')
+    }
+
+
+    <#------------------------------------------------------------------
+    3.  Check for additional function and task definitions
+    ------------------------------------------------------------------#>
+    if ($null -eq $BuildTasks) {
+        if (Test-Path (Join-Path $BuildRoot '.build\tasks')) {
+            $BuildTasks = (property BuildTasks (Join-Path $BuildRoot '.\.build\tasks'))
+        }
+    }
+    if (Test-Path $BuildTasks) {
+        # load task function definitions before task implementation scripts
+        Write-Host '  Loading function definitions (task) scripts' -ForegroundColor DarkGray
+        $BuildScripts += (Get-ChildItem "$BuildTasks\*.tasks.ps1" -Exclude '.*.tasks.ps1')
+        Write-Host '  Loading task definitions (build) scripts' -ForegroundColor DarkGray
+        $BuildScripts += (Get-ChildItem "$BuildTasks\*.build.ps1" -Exclude '.*.build.ps1')
+    }
+
+    foreach ($script in $BuildScripts) {
+        if (Test-Path $script) {
+            . $script.FullName
+        }
+    }
+
+    writeFooter 'End Phase 0'
+    <#------------------------------------------------------------------
+      4.  Main Invoke-Build Script
+    ------------------------------------------------------------------#>
+    Enter-Build {
+        $script:hlevel = -1
+        $script:leader = '| '
+        Write-Build Gray ('=' * 80)
+        Write-Build Gray "# `u{E7A2} PowerShell BuildTools "
+        Write-Build DarkGray "# BuildTools project running in '$BuildRoot'"
+        if ($Header -notlike 'minimal') {
+            Write-Host ('-' * 80) -ForegroundColor '#1d2951'
+            Write-Build White 'Project directories:'
+            foreach ($key in $Project.Path.Keys) {
+                $projPath = $Project.Path[$key]
+                if (Test-Path $projPath) {
+                    Write-Build Gray (
+                        ' - {0,-16} {1}' -f $key,
+                        ((Get-Item $projPath) |
+                            Resolve-Path -Relative -ErrorAction SilentlyContinue)
+                    )
+                } else {
+                    Write-Build DarkGray (' - {0,-16} {1}' -f $key, "(missing) $projPath" )
+                }
+            }
+        }
+        Write-Build Gray ('=' * 80)
+    }
+
 }
 
-# synopsis: Build the module (psm1), manifest and any supporting files
-task Stage {
-    $options = @{
-        SourcePath = "$BuildRoot\source\stencil\stencil.psd1"
-        VersionedOutputDirectory = $true
-        OutputDirectory = '..\..\stage'
+
+
+end {
+    Set-BuildHeader {
+        param($Path)
+        writeHeader "Begin Task: $($Task.Name.ToUpper() -replace '_', ' ')" (Get-BuildSynopsis $Task)
+        # Write-Build White ('{0}+- [{1}] {2}' -f ($leader * $hlevel), $Task.Name, $synopsis)
+        # Write-Build DarkYellow "$($Task.InvocationInfo.ScriptName):$($Task.InvocationInfo.ScriptLineNumber)"
     }
 
-    Write-Build DarkBlue "  Staging the module to $(Join-Path $options.SourcePath $options.OutputDirectory)"
-    Build-Module @options
-}
+    Enter-BuildTask {
+        $script:hlevel++
+        #    Write-Build DarkYellow "Entering Task ^$hlevel"
+    }
 
-# synopsis: Run the Pester tests in the Unit directory
-task UnitTest {
-    import-module "$BuildRoot\source\stencil\stencil.psm1" -Force
-    Write-Build DarkBlue "  Running Pester tests in $BuildRoot\tests\Unit"
-    $conf = New-PesterConfiguration
-    $conf.Run.Path = "$BuildRoot\tests\Unit"
-    $conf.Filter.ExcludeTag = @('analyzer')
-    $conf.Output.Verbosity = 'Detailed'
-    Invoke-Pester -Configuration $conf
+    Enter-BuildJob {
+        $script:hlevel++
+        #    Write-Build DarkYellow "Entering Job ^$hlevel"
+    }
+    Exit-BuildJob {
+        $script:hlevel--
+        #    Write-Build DarkYellow "Exiting Job ^$hlevel"
+    }
+    Exit-BuildTask {
+        $script:hlevel--
+        #    Write-Build DarkYellow "Exiting Task ^$hlevel"
+
+    }
+
+    Set-BuildFooter {
+        param($Path)
+        writeFooter "End Task: $($Task.Name.ToUpper() -replace '_', ' ')"
+    }
+    Exit-Build { }
+
 }

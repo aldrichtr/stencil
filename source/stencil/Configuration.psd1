@@ -1,6 +1,6 @@
 @{
     Registry = @{
-        Path = "$PSScriptRoot\..\operations"
+        Path = "$PSScriptRoot\operations"
         Filter = "*.operation.ps1"
     }
     Default = @{
