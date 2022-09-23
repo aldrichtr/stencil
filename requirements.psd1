@@ -10,7 +10,7 @@
 
     #region BuildSystem
     InvokeBuild = @{
-        Version = 'latest'
+        Version = '5.9.11'
         Tags    = 'dev', 'ci'
     }
 
