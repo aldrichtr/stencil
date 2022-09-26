@@ -70,18 +70,24 @@ function Invoke-StencilJob {
             Write-Debug '  Expanding tokens in configuration options:'
             foreach ($key in $config.Keys) {
                 Write-Debug "   - Processing $key"
-                Write-Debug "     - $key is a $($config.$key.GetType())"
-                if ($config.$key -is [string] ) {
-                    Write-Debug "   - Before transformation: $($config.$key)"
-                    $options[$key] = ($config.$key | Expand-StencilValue -Data $Job)
-                    Write-Debug "   - transformed $key => $($options[$key])"
+                if ($null -eq $config.$key) {
+                    Write-Debug "  $key was null"
+                    $options[$key] = ''
                 } else {
-                    $options[$key] = $config.$key
+                    Write-Debug "     - $key is a $($config.$key.GetType())"
+                    if ($config.$key -is [string] ) {
+                        Write-Debug "   - Before transformation: $($config.$key)"
+                        $options[$key] = ($config.$key | Expand-StencilValue -Data $Job)
+                        Write-Debug "   - transformed $key => $($options[$key])"
+                    } else {
+                        Write-Debug " $($config.$key) is not a string"
+                        $options[$key] = $config.$key ?? ''
+                    }
                 }
             }
 
             $context_arguments = $options
-#            $context_variables.Add((Get-Variable Job))
+            #            $context_variables.Add((Get-Variable Job))
 
 
             if ($cmd | Test-StencilOperation) {
