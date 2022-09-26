@@ -37,7 +37,9 @@ task Build {},
 
 #synopsis: Install the modules
 task Install {},
-    install_modules_currentuser
+    register_local_repo,
+    install_modules_currentuser,
+    unregister_local_repo
 
 #synopsis: Create an official release of the modules
 task Release {},
