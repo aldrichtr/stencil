@@ -1,15 +1,21 @@
+$source_directories = @(
+    'enum',
+    'classes',
+    'private',
+    'public'
+)
+
 $import_options = @{
     Path        = $PSScriptRoot
-    Filter      = "*.ps1"
+    Filter      = '*.ps1'
     Recurse     = $true
     ErrorAction = 'Stop'
 }
 
 
 if (Test-Path "$PSScriptRoot\LoadOrder.txt") {
-    Write-Host "Using custom load order"
+    Write-Host 'Using custom load order'
     $custom = Get-Content "$PSScriptRoot\LoadOrder.txt"
-
     Get-ChildItem @import_options -Recurse | ForEach-Object {
         $rel = $_.FullName -replace [regex]::Escape("$PSScriptRoot\") , ''
         if ($rel -notin $custom) {
@@ -43,11 +49,14 @@ if (Test-Path "$PSScriptRoot\LoadOrder.txt") {
     }
 } else {
     try {
-        Get-ChildItem @import_options | ForEach-Object {
-            $currentFile = $_.FullName
-            . $currentFile
-        }
+        foreach ($dir in $source_directories) {
+            $import_options.Path = (Join-Path $PSScriptRoot $dir)
 
+            Get-ChildItem @import_options | ForEach-Object {
+                $currentFile = $_.FullName
+                . $currentFile
+            }
+        }
     } catch {
         throw "An error occured during the dot-sourcing of module .ps1 file '$currentFile':`n$_"
     }
