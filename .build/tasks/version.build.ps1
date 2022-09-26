@@ -38,3 +38,29 @@ task update_readme_version {
     (Get-Content $readme) -replace '^Version: .*', "Version: $current_version" |
         Set-Content -Path $readme -Encoding UTF8NoBOM
 }
+
+task bump_version {
+    Write-Build DarkBlue "Ensuring we are on the main branch"
+    Set-GitHead main
+    $gv = gitversion | ConvertFrom-Json
+    foreach ($key in $Modules.Keys) {
+        if ($Modules[$key].Root) {
+            $root = $Modules[$key]
+        }
+    }
+    assert ($null -ne $root) "Could not find the root module"
+    Write-Build DarkBlue "Bump version to $($gv.FullSemVer) in $($root.SourceManifest)"
+    Update-Metadata -Path $root.SourceManifest -Value $gv.FullSemVer
+
+    assert ((Test-ModuleManifest $root.SourceManifest).Version -eq $gv.FullSemVer) "Module version not updated"
+
+    Write-Build DarkBlue "Adding new version"
+    Add-GitItem $root.SourceManifest
+    Save-GitCommit -Message "build: bump version to $($gv.FullSemVer)"
+
+    Write-Build DarkBlue "Tagging our new version"
+    New-GitTag -Name "v$($gv.FullSemVer)"
+
+    Write-Build DarkBlue "Pushing changes to $(Get-GitBranch -Current | Select-Object -ExpandProperty RemoteName)"
+    Get-GitBranch -Current | Send-GitBranch
+}
