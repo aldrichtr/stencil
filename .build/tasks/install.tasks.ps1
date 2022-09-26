@@ -10,22 +10,29 @@ function Add-InstallModuleTask {
         [Parameter(
             Position = 1
         )]
-        [string]$Target = 'CurrentUser'
+        [string]$Scope = 'CurrentUser'
     )
 
-    task $Name -Data $PSBoundParameters -Source $MyInvocation {
+    task $Name -Source $MyInvocation -Data:@{ Scope = $Scope }{
+        if ([string]::IsNullorEmpty($Data)) {
+            $Data = @{
+                Scope = 'CurrentUser'
+            }
+        }
+
         if ((Get-PackageSource | Select-Object -ExpandProperty Name) -contains $Project.Name) {
             Get-PackageSource -Name $Project.Name | Find-Package | ForEach-Object {
-                switch ($Data.Target) {
+                $package = $_
+                switch ($Data.Scope) {
                     'CurrentUser' {
-                        $_ | Install-Package -Scope CurrentUser
+                        $package | Install-Package -Scope CurrentUser
                     }
                     'AllUsers' {
-                        $_ | Install-Package -Scope AllUsers
+                        $package | Install-Package -Scope AllUsers
                     }
                     Default {
-                        if (Test-Path $Target) {
-                            $_ | Save-Package -Path $Target
+                        if (Test-Path $Scope) {
+                            $package | Save-Package -Path $Scope
                         }
                     }
                 }
