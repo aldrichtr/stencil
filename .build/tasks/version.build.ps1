@@ -39,6 +39,7 @@ task update_readme_version {
         Set-Content -Path $readme -Encoding UTF8NoBOM
 }
 
+#synopsis: Increment the version using gitversion
 task bump_version {
     Write-Build DarkBlue "Ensuring we are on the main branch"
     Set-GitHead main
