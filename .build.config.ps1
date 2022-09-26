@@ -119,6 +119,6 @@ foreach ($key in $Modules.Keys) {
     $Modules[$key].SourceManifest  = (Join-Path -Path $Modules[$key].Source -ChildPath "$key.psd1")
     $Modules[$key].SourceModule    = (Join-Path -Path $Modules[$key].Source -ChildPath "$key.psm1")
     $Modules[$key].Staging         = (Join-Path -Path $Project.Path.Staging -ChildPath $key)
-    $Modules[$key].StagingManifest = (Join-Path -Path $Modules[$key].Staging -ChildPath "$key.psm1")
+    $Modules[$key].StagingManifest = (Join-Path -Path $Modules[$key].Staging -ChildPath "$key.psd1")
     $Modules[$key].StagingModule   = (Join-Path -Path $Modules[$key].Staging -ChildPath "$key.psm1")
 }
