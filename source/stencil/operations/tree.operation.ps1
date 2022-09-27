@@ -5,12 +5,15 @@ Register-StencilOperation 'tree' {
             [string]$root,
             [object]$tree
         )
-        foreach ($sub in $tree.Keys) {
-            Write-Debug "       Creating directory '$sub' in '$root'"
-            New-Item -Path $root -ItemType Directory -Name $sub
+        foreach ($key in $tree.Keys) {
+            Write-Debug "       Creating directory '$key' in '$root'"
+            New-Item -Path $root -ItemType Directory -Name $key
+            $sub = $tree[$key]
             if ($sub.Keys.Count -gt 0) {
-                Write-Debug "       '$sub' has $($sub.keys.count) child directories"
-                createTree (Join-Path $root $sub), $tree.$sub
+                Write-Debug "       '$key' has $($sub.Keys.Count) child directories"
+                createTree -root (Join-Path $root $key) -tree $sub
+            } else {
+                Write-Debug "       '$key' does not contain any child directories"
             }
         }
     }

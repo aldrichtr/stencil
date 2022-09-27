@@ -64,7 +64,6 @@ function Invoke-StencilJob {
             Write-Debug '  The configuration options are:'
             foreach ($key in $config.Keys) {
                 '    - {0} => {1}' -f $key , $config.$key | Write-Debug
-
             }
 
             Write-Debug '  Expanding tokens in configuration options:'
@@ -80,15 +79,18 @@ function Invoke-StencilJob {
                         $options[$key] = ($config.$key | Expand-StencilValue -Data $Job)
                         Write-Debug "   - transformed $key => $($options[$key])"
                     } else {
-                        Write-Debug " $($config.$key) is not a string"
-                        $options[$key] = $config.$key ?? ''
+                        Write-Debug " $($config.$key) is not a string.  Adding to options"
+                        $options[$key] = $config.$key
                     }
                 }
             }
 
-            $context_arguments = $options
-            #            $context_variables.Add((Get-Variable Job))
+            Write-Debug '  The final configuration options are:'
+            foreach ($key in $options.Keys) {
+                '    - {0} => {1}' -f $key , $options.$key | Write-Debug
+            }
 
+            $context_arguments = $options
 
             if ($cmd | Test-StencilOperation) {
                 Write-Debug "  Operation '$cmd' is registered.  Running"
