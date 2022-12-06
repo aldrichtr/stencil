@@ -83,7 +83,7 @@ function Expand-StencilValue {
                                     Write-Debug "   Setting current descent to $($descend[$part])"
                                     $descend = $descend[$part]
                                 } else {
-                                    Write-Warning "Key '$part' not found"
+                                    Write-Verbose "Warning: Key '$part' not found"
                                     $key_not_found = $true
                                     break key
                                 }
@@ -94,7 +94,7 @@ function Expand-StencilValue {
                                     $descend = $descend | Select-Object -ExpandProperty $part
                                     Write-Debug "     Setting current descent to $($descend.GetType()) $descend"
                                 } else {
-                                    Write-Warning "Key '$part' not found"
+                                    Write-Verbose "Warning: Key '$part' not found"
                                     $key_not_found = $true
                                     break key
                                 }
