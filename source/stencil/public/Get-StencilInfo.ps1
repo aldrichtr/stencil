@@ -35,6 +35,10 @@ function Get-StencilInfo {
                     $job_names += $key
 
                     $job = $stencil.jobs[$key]
+
+                    if ([string]::IsNullorEmpty($job['scope'])) {
+                        $job['scope'] = [JobScope]::global
+                    }
                     $job['PSTypeName'] = 'Stencil.JobInfo'
                     $job['id'] = $key
                     $job['SourceDir'] = (Get-Item $p).Directory.FullName

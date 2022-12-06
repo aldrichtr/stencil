@@ -16,7 +16,12 @@ function Get-Stencil {
             ValueFromPipelineByPropertyName
         )]
         [Alias('PSPath')]
-        [string[]]$Path
+        [string[]]$Path,
+
+        # Show all stencils, including shared and private
+        [Parameter(
+        )]
+        [switch]$All
     )
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
@@ -28,7 +33,12 @@ function Get-Stencil {
         }
         foreach ($p in $Path) {
             Get-ChildItem $p -Recurse -Filter $config.Default.StencilFile | ForEach-Object {
-                Get-StencilInfo $_ | Write-Output
+                foreach ($stencil in (Get-StencilInfo $_)) {
+                    Write-Debug "  Stencil $($stencil.name) has scope $($stencil.scope)"
+                    if (($stencil.scope -eq [JobScope]::global) -or $All) {
+                        $stencil | Write-Output
+                    }
+                }
             }
         }
     }
