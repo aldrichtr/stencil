@@ -56,7 +56,10 @@ function Register-StencilOperation {
     )
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
-        $registry = Get-StencilOperationRegistry # Creates the registry if it does not exist
+        Get-StencilOperationRegistry | Out-Null # Creates the registry if it does not exist
+        if (-not(Test-StencilOperationRegistry)) {
+            throw "There was an error getting the Stencil Operations"
+        }
     }
     process {
         Write-Debug "  Test that the name '$Name' is not already registered (or -Force)"
