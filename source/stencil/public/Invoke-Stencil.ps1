@@ -1,24 +1,39 @@
 
 function Invoke-Stencil {
-    [CmdletBinding()]
+    [CmdletBinding(
+        DefaultParameterSetName = 'Default'
+    )]
     param(
+        # An alternate path to the root of the stencil folders
+        [Parameter(
+            ParameterSetName = 'Default',
+            Position = 0
+        )]
+        [string]$Path,
+
         # One or more jobs to invoke
         [Parameter(
+            ParameterSetName = 'Default',
             ValueFromPipeline,
             ValueFromPipelineByPropertyName
         )]
-        [string[]]$Name,
+        [string[]]$Id,
 
-        # An alternate path to the root of the stencil folders
+        # Write the current configuration to the console
         [Parameter(
+            ParameterSetName = 'Config'
         )]
-        [string]$Path
+        [switch]$ShowConfig
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
 
         Write-Debug '  loading configuration'
         $config = Import-Configuration
+        if ($ShowConfig) {
+            $config | Write-Output
+            break
+        }
         $reg_options = $config.Registry
 
         <#------------------------------------------------------------------
@@ -33,8 +48,12 @@ function Invoke-Stencil {
             . $_.FullName
         }
 
-        $script:Context = @{}
-        $script:Jobs = @{}
+        <#------------------------------------------------------------------
+          Set up the context tables
+        ------------------------------------------------------------------#>
+        $script:Defaults = @{}
+        $script:State    = @{}
+        $script:Jobs     = @{}
     }
     process {
         <#------------------------------------------------------------------
@@ -42,6 +61,7 @@ function Invoke-Stencil {
 
           a. The path(s) given as a parameter
           b. The $StencilPath variable
+              TODO: This should be an environment variable
           c. The default location ($config.Default.Directory)
           d. The current directory
         ------------------------------------------------------------------#>
@@ -60,18 +80,17 @@ function Invoke-Stencil {
         Write-Verbose "  Loaded $($script:Jobs.Count) jobs"
 
 
-        $jobs_to_process = $script:Jobs | Where-Object {$Name -contains $_.Id}
+        $jobs_to_process = $script:Jobs | Where-Object -Property id -Like $Id
         if ($jobs_to_process.count -gt 0) {
             Write-Verbose "  Processing $($jobs_to_process.Count) jobs"
             try {
                 $jobs_to_process | Invoke-StencilJob
-            }
-            catch {
+            } catch {
                 $PSCmdlet.ThrowTerminatingError($_)
             }
 
         } else {
-            Write-Information "No jobs were found to process."
+            Write-Information 'No jobs were found to process.'
         }
     }
     end {
