@@ -7,6 +7,7 @@ function Get-StencilInfo {
         `Get-StencilInfo` is used to parse the stencil manifest and return an object representing each job defined
         in the file.
     #>
+    [OutputType('Stencil.JobInfo')]
     [CmdletBinding()]
     param(
         # The path to the stencil file to load
@@ -20,19 +21,19 @@ function Get-StencilInfo {
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
         $config = Import-Configuration
-        $parser_options = $config.Parser
-        $job_names = @() # collect the names so we can "guarentee uniqueness"
+        $parserOptions = $config.Parser
+        $jobNames = @() # collect the names so we can "guarentee uniqueness"
     }
     process {
         foreach ($p in $Path) {
-            $stencil = Get-Content $p | ConvertFrom-Yaml @parser_options
+            $stencil = Get-Content $p | ConvertFrom-Yaml @parserOptions
             if ($stencil.jobs -isnot [hashtable]) {
                 throw "in '$p' jobs table is not in the correct format"
             }
             foreach ($key in $stencil.jobs.Keys) {
-                if ($job_names -notcontains $key) {
+                if ($jobNames -notcontains $key) {
                     #! not present, add it to the list
-                    $job_names += $key
+                    $jobNames += $key
 
                     $job = $stencil.jobs[$key]
 
@@ -44,14 +45,14 @@ function Get-StencilInfo {
                     $job['SourceDir'] = (Get-Item $p).Directory.FullName
                     $job['Path'] = (Get-Item $p).FullName
                     $job['CurrentDir'] = '' # place holder, set at runtime
-                    $job['Version'] = $stencil.Version ?? ''
+                    $job['Version'] = [semver]($stencil.Version) ?? ''
 
                     if ($job.Keys -notcontains 'env') {
                         # ensure there is an 'env' table to write to
                         $job.env = @{}
                     }
-
-                    [PSCustomObject]$job | Write-Output
+                    $jobObject = [PSCustomObject]$job
+                    $jobObject | Write-Output
 
                 } else {
                     Write-Warning "Attempt to redefine '$key' in '$p', Skipping"
