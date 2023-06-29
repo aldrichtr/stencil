@@ -4,7 +4,13 @@ this should output the start marker <%%
 
 this should output the end marker %%>
 
-<%= $Greeting %> World!
+
+
+<% block friendly greeting %>
+
+This should say 'Hello World!' : <%= $Greeting %> World!
+
+<% end %>
 
 Hope you <%= (echo "all") %> have a nice day
 

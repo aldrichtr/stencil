@@ -1,15 +1,21 @@
 @{
     Registry = @{
-        Path = "$PSScriptRoot\operations"
-        Filter = "*.operation.ps1"
+        Path   = "$PSScriptRoot\operations"
+        Filter = '*.operation.ps1'
     }
-    Default = @{
+    Default  = @{
         StencilFile = 'stencil.yml'
         Directory   = '~/.stencil'
     }
-    Parser = @{
-        Ordered = $false
+    Parser   = @{
+        Ordered          = $false
         UseMergingParser = $true
-        AllDocuments = $true
+        AllDocuments     = $true
+    }
+
+    Template = @{
+        TagStyle = @{
+            default = @( '<%', '%>')
+        }
     }
 }
