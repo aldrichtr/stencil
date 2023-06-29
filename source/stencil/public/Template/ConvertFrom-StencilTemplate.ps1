@@ -8,8 +8,10 @@ function ConvertFrom-StencilTemplate {
     param(
         # The template text to execute
         [Parameter(
-
+            Mandatory,
+            ValueFromPipeline
         )]
+        [AllowEmptyString()]
         [string[]]$Template,
 
         # The data to supply to the template
@@ -22,7 +24,7 @@ function ConvertFrom-StencilTemplate {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
         $position = 0
         # $pattern = [regex]('(?sm)(?<lit><%%|%%>)|<%(?<instruction>={1,2}|-|#)?(?<code>.*?)(?<tailch>[-=])?(?<!%)%>(?<rspace>[ \t]*\r?\n)?')
-        $pattern = [regex]( -join (
+        $templatePattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
                 '(?<lit><%%|%%>)', # double '%' is used to "escape" template markers '<%%' => '<%' in output
                 '|',
@@ -32,10 +34,22 @@ function ConvertFrom-StencilTemplate {
                 '(?<!%)%>', # "zero-width lookbehind '(?<!' for a '%' ')'" and match an end marker '%>'
                 '(?<rspace>[ \t]*\r?\n)?')  # match the different types of whitespace at the end
         )
+        $collect = @()
+        $output = [System.Text.StringBuilder]::new()
     }
     process {
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        $allMatches = $pattern.Matches( $Template )
+        $collect += $Template
+    }
+    end {
+        if ([string]::IsNullorEmpty($collect)) {
+            Write-Verbose "No content was given"
+            return
+        } else {
+            $templateContent = ($collect -join [System.Environment]::NewLine)
+        }
+
+        Write-Debug "Content is '$templateContent'"
+        $allMatches = $templatePattern.Matches( $templateContent )
         if ($allMatches.Count -gt 0) {
             Write-Debug " Found $($allMatches.Count) matches"
             $count = 0
@@ -43,8 +57,10 @@ function ConvertFrom-StencilTemplate {
             <#
              "import" the data into the current session
             #>
-            $Data.GetEnumerator() | ForEach-Object {
-                New-Variable -Name $_.Key -Value $_.Value
+            if (-not ([string]::IsNullorEmpty($Data))) {
+                $Data.GetEnumerator() | ForEach-Object {
+                    New-Variable -Name $_.Key -Value $_.Value
+                }
             }
 
             foreach ($patternMatch in $allMatches) {
@@ -53,7 +69,9 @@ function ConvertFrom-StencilTemplate {
 
                 # content is the text in the Template that is between the last match and this one
                 $contentLength = $patternMatch.Index - $position
-                $content = $Template.Substring($position, $contentLength)
+                $content = $templateContent.Substring($position, $contentLength)
+
+                $null = $output.Append( $content )
 
                 #! move position to the point after the match for the next match
                 $position = $patternMatch.Index + $patternMatch.Length
@@ -63,14 +81,14 @@ function ConvertFrom-StencilTemplate {
                 if ($literal.Success) {
                     Write-Debug "found escape marker"
                     if ($contentLength -ne 0) {
-                        $content
+                        $null = $output.Append($content)
                     }
                     switch ($literal.Value) {
                         '<%%' {
-                            '<%'
+                            $null = $output.Append( '<%' )
                         }
                         '%%>' {
-                            '%>'
+                            $null = $output.Append( '%>' )
                         }
                     }
                 } else {
@@ -80,17 +98,19 @@ function ConvertFrom-StencilTemplate {
                     $rspace = $patternMatch.Groups['rspace'].Value
 
                     if (($instruction -ne '-') -and ($contentLength -ne 0)) {
-                        Write-Debug "start marker did not have a '-' and content length is not 0"
-                        $content
+                        $null = $output.Append($content)
                     }
 
                     Write-Debug " Instruction is '$instruction'"
                     switch ($instruction) {
                         '=' {
+                            <#
+                            The EXPAND directive executes the code and outputs the result
+                            #>
                             Write-Debug " EXPAND"
-                            $expandedString = $PSCmdlet.InvokeCommand.ExpandString( $code.Trim() )
                             if (-not ([string]::IsNullorEmpty($expandedString))) {
-                                $expandedString | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                                $result =  $code.Trim() | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                                $null = $output.Append($result)
                             }
                         }
                         '+' {
@@ -104,23 +124,26 @@ function ConvertFrom-StencilTemplate {
                                 if (Test-Path $possiblePath) {
                                     $fileContent = Get-Content $possiblePath
                                     if ($null -ne $fileContent) {
-                                        $fileContent
+                                        $null = $output.Append( $fileContent)
                                     }
                                 }
                             }
                         }
                         '-' {
                             Write-Debug " TRIM_START"
-                            $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
+                            $trimmed = $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
+                            $null = $output.Append($trimmed)
                             Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
-                            $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $null = $output.Append($result)
                         }
                         '' {
                             <#
-                             CODEBLOCK: Block is executed but no value is inserted into the output
+                            CODEBLOCK: Block is executed but no value is inserted into the output
                             #>
                             Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
-                            $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $null = $output.Append($result)
                         }
                         '#' {
                             Write-Debug " COMMENT"
@@ -139,9 +162,7 @@ function ConvertFrom-StencilTemplate {
 
                         then output the rspace vaue
                         #>
-                        Write-Debug "instruction is '$instruction' and tail is '$tail'. Output rspace '$rspace'"
-                    } else {
-                        Write-Debug "output code end ';'"
+                        $null = $output.Append($rspace)
                     }
                 }
             }
@@ -149,16 +170,15 @@ function ConvertFrom-StencilTemplate {
 
         if ($position -eq 0) {
             Write-Debug "No matches found. Output the template"
-             $Template
+             $null = $output.Append($templateContent)
         } elseif ($position -lt $Template.Length) {
             Write-Debug "No more matches, but still text in the template"
-             "$($Template.Substring($position, $Template.Length - $position))"
+             $remainingContent = $templateContent.Substring($position, $templateContent.Length - $position)
+             $null = $output.Append($remainingContent)
         }
 
+        $output.ToString()
 
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-    }
-    end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }
