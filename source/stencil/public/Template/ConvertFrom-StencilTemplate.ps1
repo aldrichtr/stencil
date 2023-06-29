@@ -21,26 +21,23 @@ function ConvertFrom-StencilTemplate {
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
         $position = 0
-        # $pattern = [regex]('(?sm)(?<lit><%%|%%>)|<%(?<ind>={1,2}|-|#)?(?<code>.*?)(?<tailch>[-=])?(?<!%)%>(?<rspace>[ \t]*\r?\n)?')
+        # $pattern = [regex]('(?sm)(?<lit><%%|%%>)|<%(?<instruction>={1,2}|-|#)?(?<code>.*?)(?<tailch>[-=])?(?<!%)%>(?<rspace>[ \t]*\r?\n)?')
         $pattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
                 '(?<lit><%%|%%>)', # double '%' is used to "escape" template markers '<%%' => '<%' in output
                 '|',
-                '<%(?<ind>={1,2}|-|#)?', # start markers might have additional instructions '=', '-', or '#'
+                '<%(?<instr>={1,2}|-|\+|#)?', # start markers might have additional instructions: currently ('=', '-', '+' or '#')
                 '(?<code>.*?)', # the "code" inside the markers
                 '(?<tailch>[-=])?', # end markers might have additional instructions '-', '='
                 '(?<!%)%>', # "zero-width lookbehind '(?<!' for a '%' ')'" and match an end marker '%>'
                 '(?<rspace>[ \t]*\r?\n)?')  # match the different types of whitespace at the end
         )
-        $psGray = $PSStyle.Foreground.BrightBlack
-        $psBlue = $PSStyle.Foreground.Blue
-        $psReset = $PSStyle.Reset
     }
     process {
         Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
         $allMatches = $pattern.Matches( $Template )
         if ($allMatches.Count -gt 0) {
-            Write-Output "$psGray Found $($allMatches.Count) matches$psReset"
+            Write-Debug " Found $($allMatches.Count) matches"
             $count = 0
 
             <#
@@ -52,8 +49,8 @@ function ConvertFrom-StencilTemplate {
 
             foreach ($patternMatch in $allMatches) {
                 $count++
-                "$psGray $('-' * 20)`nThis is match $count`n$($foreach.Current.Value)`n$('-' * 20)$psReset"
-                # value holds the match
+                Write-Debug " $('-' * 20)`nThis is match $count`n$($foreach.Current.Value)`n$('-' * 20)"
+
                 # content is the text in the Template that is between the last match and this one
                 $contentLength = $patternMatch.Index - $position
                 $content = $Template.Substring($position, $contentLength)
@@ -64,90 +61,98 @@ function ConvertFrom-StencilTemplate {
                 $literal = $patternMatch.Groups['lit']
 
                 if ($literal.Success) {
+                    Write-Debug "found escape marker"
                     if ($contentLength -ne 0) {
-                        "Adding $content to Output"
+                        $content
                     }
                     switch ($literal.Value) {
                         '<%%' {
-                            "Adding '<%' to Output"
+                            '<%'
                         }
                         '%%>' {
-                            "Adding '%>' to Output"
+                            '%>'
                         }
                     }
                 } else {
-                    $ind = $patternMatch.Groups['ind'].Value
+                    $instruction = $patternMatch.Groups['instr'].Value
                     $code = $patternMatch.Groups['code'].Value
                     $tail = $patternMatch.Groups['tailch'].Value
                     $rspace = $patternMatch.Groups['rspace'].Value
 
-                    if (($ind -ne '-') -and ($contentLength -ne 0)) {
-                        "$psGray start marker did not have a '-' and content length is not 0$psReset"
-                        "$psBlue Output content '$content'$psReset"
-                    } else {
-                        "$psGray start marker has a '-' and content length is 0$psReset"
-                        "$psBlue Output code end ';'$psReset"
+                    if (($instruction -ne '-') -and ($contentLength -ne 0)) {
+                        Write-Debug "start marker did not have a '-' and content length is not 0"
+                        $content
                     }
-                    switch ($ind) {
+
+                    Write-Debug " Instruction is '$instruction'"
+                    switch ($instruction) {
                         '=' {
-                            "$psGray start marker has a '='$psReset`n$psBlue Execute code {$($code.Trim())}$psReset"
-
-                            try {
-                                $sb = [scriptblock]::Create($code.Trim() )
-                                $output = $sb.Invoke()
-                            } catch {
-                                $message = ( -join (
-                                        'There was an error in the template at character ',
-                                        $position,
-                                        "`n",
-                                        $foreach.Current.Value,
-                                        "`n",
-                                    ('~' * $foreach.Current.Value.Length),
-                                        "`n",
-                                        $_.ToString() -replace 'Exception calling "Invoke" with "0" argument\(s\):', ''
-
-                                    ))
-                                Write-Error $message -Category $_.CategoryInfo.Category
-                                return
+                            Write-Debug " EXPAND"
+                            $expandedString = $PSCmdlet.InvokeCommand.ExpandString( $code.Trim() )
+                            if (-not ([string]::IsNullorEmpty($expandedString))) {
+                                $expandedString | Invoke-StencilCodeBlock $foreach.Current.Value $position
                             }
-                            "$psBlue '$output'$psReturn"
+                        }
+                        '+' {
+                            Write-Debug " INCLUDE"
+                            $possibleFileName = $code.Trim()
+                            #TODO: Pass in a starting directory for the template includes
+                            #TODO: Expand the string first so the user can do $HOME\my-header.pst1
+                            $possiblePath = (Join-Path (Get-Location) $possibleFileName)
+
+                            if ($null -ne $possiblePath) {
+                                if (Test-Path $possiblePath) {
+                                    $fileContent = Get-Content $possiblePath
+                                    if ($null -ne $fileContent) {
+                                        $fileContent
+                                    }
+                                }
+                            }
                         }
                         '-' {
-                            "$psGray start marker has a '-'$psReset`n$psBlue Output content after removing blank space '$($content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1')'$psReset"
-
-                            "$psBlue Execute code {$($code.Trim())}$psReset"
+                            Write-Debug " TRIM_START"
+                            $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
+                            Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
+                            $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
                         }
                         '' {
-                            "$psGray start marker has no additional marks$psReset`n$psBlue Execute code {$($code.Trim())}$psReset"
+                            <#
+                             CODEBLOCK: Block is executed but no value is inserted into the output
+                            #>
+                            Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
+                            $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
                         }
                         '#' {
-                            "$psGray start marker has a '#' it's a comment$psReset"
+                            Write-Debug " COMMENT"
                         }
                     }
 
-                    if (($ind -ne '%') -and (($tail -ne '-') -or ($rspace -match '^[^\r\n]'))) {
+                    if (($instruction -ne '%') -and
+                        (($tail -ne '-') -or ($rspace -match '^[^\r\n]'))) {
                         <#
-                        $ind is the char added to the start marker if any
+                        $instruction is the char added to the start marker if any
                         $tail is the char added to the end marker if any
 
-                        if the $ind isn't a percent (not sure how it could be based on the regex...)
+                        if the $instruction isn't a percent (not sure how it could be based on the regex...)
                         and
                         $tail is not a '-' or the end of the match starts with something other \r or \n
 
                         then output the rspace vaue
                         #>
-                        "ind is '$ind' and tail is '$tail'. Output rspace '$rspace'"
+                        Write-Debug "instruction is '$instruction' and tail is '$tail'. Output rspace '$rspace'"
                     } else {
-                        "output code end ';'"
+                        Write-Debug "output code end ';'"
                     }
                 }
             }
         }
 
         if ($position -eq 0) {
-            "No matches found. Output the template $Template"
+            Write-Debug "No matches found. Output the template"
+             $Template
         } elseif ($position -lt $Template.Length) {
-            "No more matches, but still text in the template $($Template.Substring($position, $Template.Length - $position))"
+            Write-Debug "No more matches, but still text in the template"
+             "$($Template.Substring($position, $Template.Length - $position))"
         }
 
 
