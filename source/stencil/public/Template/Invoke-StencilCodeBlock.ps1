@@ -21,16 +21,16 @@ function Invoke-StencilCodeBlock {
             Mandatory,
             Position = 1,
             ValueFromPipeline
-            )]
-            [int]$Position,
+        )]
+        [int]$Position,
 
-            # The original template string
-            [Parameter(
-                Mandatory,
-                Position = 0,
-                ValueFromPipelineByPropertyName
-            )]
-            [string]$Directive
+        # The original template string
+        [Parameter(
+            Mandatory,
+            Position = 0,
+            ValueFromPipelineByPropertyName
+        )]
+        [string]$Directive
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
@@ -39,6 +39,7 @@ function Invoke-StencilCodeBlock {
         Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
 
         try {
+            Write-Debug "The code block is '$CodeBlock' at position $Position and the Directive is '$Directive'"
             $sb = [scriptblock]::Create($CodeBlock.Trim() )
             $output = $sb.Invoke()
         } catch {

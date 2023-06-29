@@ -1,6 +1,7 @@
 A test template
 
 this should output the start marker <%%
+
 this should output the end marker %%>
 
 <%= $Greeting %> World!
