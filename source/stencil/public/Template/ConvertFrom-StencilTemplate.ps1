@@ -22,7 +22,7 @@ function ConvertFrom-StencilTemplate {
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        $position = 0
+        $startPosition = 0
         # $pattern = [regex]('(?sm)(?<lit><%%|%%>)|<%(?<instruction>={1,2}|-|#)?(?<code>.*?)(?<tailch>[-=])?(?<!%)%>(?<rspace>[ \t]*\r?\n)?')
         $templatePattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
@@ -68,17 +68,31 @@ function ConvertFrom-StencilTemplate {
                 Write-Debug " $('-' * 20)`nThis is match $count`n$($foreach.Current.Value)`n$('-' * 20)"
 
                 # content is the text in the Template that is between the last match and this one
-                $contentLength = $patternMatch.Index - $position
-                $content = $templateContent.Substring($position, $contentLength)
+                $contentLength = $patternMatch.Index - $startPosition
+                $content = $templateContent.Substring($startPosition, $contentLength)
 
-                $null = $output.Append( $content )
-
-                #! move position to the point after the match for the next match
-                $position = $patternMatch.Index + $patternMatch.Length
+                #! move startPosition to the point after the match for the next match
+                $startPosition = $patternMatch.Index + $patternMatch.Length
                 #! if the user wanted to escape the markers, lit would be matched
                 $literal = $patternMatch.Groups['lit']
 
                 if ($literal.Success) {
+                    <# BUG: This outputs the content twice
+
+                    Template:
+                    this should output the start marker <%%
+
+                    this should output the end marker %%>
+
+                    Output:
+                    his should output the start marker A test template
+
+                    this should output the start marker <%
+
+                    this should output the end marker
+
+                    this should output the end marker %>
+                    #>
                     Write-Debug "found escape marker"
                     if ($contentLength -ne 0) {
                         $null = $output.Append($content)
@@ -96,10 +110,12 @@ function ConvertFrom-StencilTemplate {
                     $code = $patternMatch.Groups['code'].Value
                     $tail = $patternMatch.Groups['tailch'].Value
                     $rspace = $patternMatch.Groups['rspace'].Value
+                    $code | ConvertFrom-TemplateString
 
                     if (($instruction -ne '-') -and ($contentLength -ne 0)) {
                         $null = $output.Append($content)
                     }
+
 
                     Write-Debug " Instruction is '$instruction'"
                     switch ($instruction) {
@@ -109,7 +125,8 @@ function ConvertFrom-StencilTemplate {
                             #>
                             Write-Debug " EXPAND"
                             if (-not ([string]::IsNullorEmpty($expandedString))) {
-                                $result =  $code.Trim() | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                                $code | ConvertFrom-TemplateString
+                                $result =  $code.Trim() | Invoke-StencilCodeBlock $foreach.Current.Value $startPosition
                                 $null = $output.Append($result)
                             }
                         }
@@ -134,7 +151,7 @@ function ConvertFrom-StencilTemplate {
                             $trimmed = $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
                             $null = $output.Append($trimmed)
                             Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
-                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $startPosition
                             $null = $output.Append($result)
                         }
                         '' {
@@ -142,7 +159,7 @@ function ConvertFrom-StencilTemplate {
                             CODEBLOCK: Block is executed but no value is inserted into the output
                             #>
                             Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
-                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $position
+                            $result = $code | Invoke-StencilCodeBlock $foreach.Current.Value $startPosition
                             $null = $output.Append($result)
                         }
                         '#' {
@@ -168,12 +185,12 @@ function ConvertFrom-StencilTemplate {
             }
         }
 
-        if ($position -eq 0) {
+        if ($startPosition -eq 0) {
             Write-Debug "No matches found. Output the template"
              $null = $output.Append($templateContent)
-        } elseif ($position -lt $Template.Length) {
+        } elseif ($startPosition -lt $Template.Length) {
             Write-Debug "No more matches, but still text in the template"
-             $remainingContent = $templateContent.Substring($position, $templateContent.Length - $position)
+             $remainingContent = $templateContent.Substring($startPosition, $templateContent.Length - $startPosition)
              $null = $output.Append($remainingContent)
         }
 
