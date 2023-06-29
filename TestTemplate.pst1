@@ -1,6 +1,7 @@
 A test template
 
-these should be <%% escaped %%>
+this should output the start marker <%%
+this should output the end marker %%>
 
 <%= $Greeting %> World!
 
