@@ -1,0 +1,13 @@
+A test template
+
+these should be <%% escaped %%>
+
+<%= $Greeting %> World!
+
+Hope you <%= (echo "all") %> have a nice day
+
+<% foreach ($item in $items) {
+    Write-Output $item
+} %>
+
+<%+ 'section-footer.pst1' %>
