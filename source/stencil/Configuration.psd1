@@ -14,8 +14,10 @@
     }
 
     Template = @{
-        TagStyle = @{
-            default = @( '<%', '%>')
+        TagStyle = 'default'
+
+        TagStyleMap = @{
+            default = @('<%', '%>', '%')
         }
     }
 }

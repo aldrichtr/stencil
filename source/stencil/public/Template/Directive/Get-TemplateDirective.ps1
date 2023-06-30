@@ -19,9 +19,9 @@ function Get-TemplateDirective {
         #>
 
         @{
-            include = 'Invoke-IncludeTemplate'
-            insert  = 'Invoke-InsertTemplate'
-            process = 'Invoke-ProcessTemplate'
+            include = 'New-IncludeTemplate'
+            insert  = 'New-InsertTemplate'
+            process = 'New-ProcessTemplate'
             block   = 'New-TemplateBlock'
         }
 
