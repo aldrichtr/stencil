@@ -1,30 +1,24 @@
 
-function Get-TemplateDirective {
+function New-BlockDirective {
     <#
     .SYNOPSIS
-        Return a list of directives registered with the template engine
+        Create a template block directive
     #>
-    [OutputType([hashtable])]
     [CmdletBinding()]
     param(
+        # The content of the block from the template
+        [Parameter(
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName
+        )]
+        [string]$Content
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
         Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        <#
-        For now, this is a static list
-        #TODO: Register Template directive functions using plugins
-        #>
-
-        @{
-            include = 'New-IncludeDirective'
-            insert  = 'New-InsertDirective'
-            process = 'New-ProcessDirective'
-            block   = 'New-BlockDirective'
-        }
-
+        Write-Debug "Block content received:`n$Content`n"
         Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {

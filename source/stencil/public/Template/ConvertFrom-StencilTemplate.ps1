@@ -17,7 +17,13 @@ function ConvertFrom-StencilTemplate {
         # The data to supply to the template
         [Parameter(
         )]
-        [hashtable]$Data
+        [hashtable]$Data,
+
+        # Return just the AST
+        [Parameter(
+            DontShow
+        )]
+        [switch]$AstOnly
 
     )
     begin {
@@ -42,8 +48,11 @@ function ConvertFrom-StencilTemplate {
         }
         $syntaxTree = Convert-StringToTemplateTree -Template $templateContent -Data:$Data
 
-#        $syntaxTree | Select-Object Name, Type, Start, Length, RemoveLeading, RemoveTrailing, Content, Data | ConvertTo-Json
-        Convert-TreeToTemplateInfo -Tree $syntaxTree
+        if ($AstOnly.IsPresent) {
+            $syntaxTree | Select-Object Name, Type, Start, Length, RemoveLeading, RemoveTrailing, Content, Data
+        } else {
+            Convert-TreeToTemplateInfo -Tree $syntaxTree
+        }
 
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }

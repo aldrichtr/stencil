@@ -21,7 +21,8 @@ function Convert-TreeToTemplateInfo {
             BLOCK
         }
         $state = [ElementState]::NONE
-        $sb = [System.Text.StringBuilder]::new()
+        $scriptBody = [System.Text.StringBuilder]::new()
+        $blockContent = [System.Text.StringBuilder]::new()
     }
     process {
         Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
@@ -30,27 +31,56 @@ function Convert-TreeToTemplateInfo {
             switch ($element.Type) {
                 'content' {
                     if ($state -ne [ElementState]::BLOCK) {
-                        $directive = "Write-Output @`"`n$($element.Content)`n`"@"
+                        $directive = ( @(
+                                '@"',
+                                $element.Content,
+                                '"@',
+                                [System.Environment]::NewLine
+                            ) -join [System.Environment]::NewLine
+                        )
                         continue
+                    } else {
+                        $blockContent.Append($element.Content)
                     }
                 }
                 'code' {
-                    $directive = $element | ConvertTo-TemplateDirective
+                    $firstWord = ($element.Content.Trim() -split ' ')[0]
+                    switch ( $firstWord ) {
+                        'block' {
+                            $blockContent.AppendLine($element.Content)
+                            $state = [ElementState]::BLOCK
+                            continue
+                        }
+                        'end' {
+                            if ($state -eq [ElementState]::BLOCK) {
+                                $blockContent.AppendLine($element.Content)
+                                $directive = $blockContent.ToString() | New-BlockDirective
+                                $state = [ElementState]::NONE
+                                continue
+                            }
+                        }
+                        default {
+                            $directive = $element | ConvertTo-TemplateDirective
+                            continue
+                        }
+                    }
                     continue
+
                 }
                 'include' {
                     $directive = $element | New-IncludeDirective
                     continue
                 }
             }
-            $null = $sb.Append($directive)
+            $null = $scriptBody.Append($directive)
         }
 
 
         Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {
-        $compiledTemplate = [scriptblock]::Create($sb.ToString())
+        Write-Debug "Creating ScriptBlock from $($scriptBody.ToString())"
+        $compiledTemplate = [scriptblock]::Create($scriptBody.ToString())
 
         $compiledTemplate | Write-Output
 

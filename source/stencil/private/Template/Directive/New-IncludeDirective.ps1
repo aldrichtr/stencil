@@ -23,58 +23,25 @@ function New-IncludeDirective {
     }
     process {
         Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        if ($PSCmdlet.ShouldProcess("Directive", "Create Include Directive")) {
-            $splitOptions = [StringSplitOptions]::RemoveEmptyEntries + [StringSplitOptions]::TrimEntries
-            $parts = [ArrayList]::new($Content.Split(' ', $splitOptions))
-            #TODO: Extracting the parameters needs to be pulled up into it's own function
-            # I could do something like send the content to `Format-ContentParameters` and then
-            # return a hash with a 'Parameters' key and a 'Content' key which would be the remaining
-            $parameters = @{}
-            $toBeRemoved = @()
+        if ($PSCmdlet.ShouldProcess('Directive', 'Create Include Directive')) {
+            $result = $Content | Convert-DirectiveParameter
 
-            foreach ($part in $parts) {
-                if ($part.StartsWith('-')) {
-                    Write-Debug "$part is a parameter"
-                    $partIndex = $parts.IndexOf($part)
-                    $nextIndex = $partIndex + 1
-                    $nextValue = $parts[$nextIndex]
-
-                    $parameterName = $part.Remove(0,1)
-                    if ($nextIndex -le $parts.Count) {
-                        # The next item in the list is not another parameter
-                        if ($nextValue.StartsWith('-')) {
-                            $parameters.Add($parameterName, $true)
-                        } else {
-                            $parameters.Add($parameterName, $nextValue)
-                            $toBeRemoved += $nextValue
-                        }
-                    } else {
-                        $parameters.Add($parameterName, $true)
-                    }
-                    $toBeRemoved += $part
-                }
+            if ($null -ne $result.Parameters) {
+                Write-Debug "Received $($result.Parameters.Count)"
             }
+            $remainingContent = $result.Content
 
-            foreach ($word in $toBeRemoved) { $null = $parts.Remove($word) }
-            Write-Debug "Parameters are : $($parameters | ConvertTo-Json)"
-            if ($parts[0] -like 'include') {
-                Write-Debug "We did receive a $($parts[0]) directive"
-                $null = $parts.RemoveAt(0)
-                Write-Debug "Removed.  The next part is $($parts[0])"
-            } else {
-                Write-Debug "Must have been using the '+' key"
-                Write-Debug "The next part is $($parts[0])"
-            }
-
+            $parts = $remainingContent -split ' '
             <#
              At this point, we should have removed any parameters, and the directive name
-             if any where present.  We should only have a path to work with now
+             if any were present.  We should only have a path to work with now
             #>
             if ($parts.Count -gt 1) {
-                Write-Debug "There is still data here :"
+                Write-Debug 'There is still data here :'
                 throw "Extra data in Include directive $($parts -join ', '))"
             } else {
                 $possiblePath = $PSCmdlet.InvokeCommand.ExpandString($parts[0])
+                $possiblePath = $possiblePath -replace '"', '' -replace "'", ''
                 Write-Debug "$($parts[0]) is the last item.  Checking for file $possiblePath"
                 #TODO: Need to be able to pass in the starting path ?
                 if (Test-Path $possiblePath) {
@@ -87,7 +54,13 @@ function New-IncludeDirective {
                 }
 
                 Write-Verbose "Loading included file $path"
-                $directive = "Write-Output @`"`n$(Get-Content $path)`n`"@"
+                $directive = ( @(
+                        '@"',
+                        (Get-Content $path),
+                        '"@',
+                        [System.Environment]::NewLine
+                    ) -join [System.Environment]::NewLine
+                )
             }
 
         }
