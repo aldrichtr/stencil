@@ -39,11 +39,13 @@ function Convert-StringToTemplateTree {
         }
         $lStartTag = "$startTag$escapeChar"
         $lEndTag = "$escapeChar$endTag"
+        #TODO: I think that if I remove the "escape" from the regex, I can add the matched content to the previous
+        # That way, it will just be one solid block of content, not three
         $templatePattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
                 "(?<lit>$lStartTag|$lEndTag)", # double '%' is used to "escape" template markers '<%%' => '<%' in output
                 '|',
-                "$startTag(?<instr>={1,2}|-|\+|#)?", # start markers might have additional instructions: currently ('=', '-', '+' or '#')
+                "$startTag(?<instr>\S)?", # start markers might have additional instructions
                 '(?<code>.*?)', # the "code" inside the markers
                 '(?<tailch>[-=])?', # end markers might have additional instructions '-', '='
                 "(?<!$escapeChar)$endTag", # "zero-width lookbehind '(?<!' for a '%' ')'" and match an end marker '%>'
@@ -54,7 +56,6 @@ function Convert-StringToTemplateTree {
         $contentStart = $contentLength = $directiveStart = $directiveLength = 0
     }
     process {
-
         Write-Debug '- Looking for template tokens in content'
         $allMatches = $templatePattern.Matches( $Template )
         if ($allMatches.Count -gt 0) {
@@ -106,7 +107,9 @@ function Convert-StringToTemplateTree {
 
                 #! if the user wanted to escape the markers, lit would be matched
                 $literal = $patternMatch.Groups['lit']
+
                 if ($literal.Success) {
+                    Write-Verbose "Found literal marker in region starting at $($patternMatch.Index)"
                     switch ($literal.Value) {
                         $lStartTag {
                             Write-Debug "- Found escaped start marker $lStartTag"
@@ -124,6 +127,7 @@ function Convert-StringToTemplateTree {
 
                     $options.Length = $contentLength
 
+                    Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
                     $null = $templateTree.Add( ($content | New-TemplateElement @options) )
                 } else {
                     $instruction = $patternMatch.Groups['instr'].Value
@@ -138,33 +142,23 @@ function Convert-StringToTemplateTree {
                     $code | ConvertFrom-TemplateString
                     #>
 
-
                     if (($instruction -ne '-') -and ($contentLength -ne 0)) {
                         $options.Type = 'content'
+                        Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
                         $null = $templateTree.Add( ($content | New-TemplateElement @options) )
 
                     }
 
-                    if (($instruction -ne '%') -and
-                        (($tail -ne '-') -or ($rspace -match '^[^\r\n]'))) {
-                        <#
-                        $instruction is the char added to the start marker if any
-                        $tail is the char added to the end marker if any
-
-                        if the $instruction isn't a percent (not sure how it could be based on the regex...)
-                        and
-                        $tail is not a '-' or the end of the match starts with something other \r or \n
-
-                        then output the rspace value
-                        #>
-                        $options.RemoveTrailingLineEnding = $false
-                    } else {
+                    if ($tail -eq '-') {
+                        Write-Verbose "This directive has RemoveTrailingLineEnding set"
                         $options.RemoveTrailingLineEnding = $true
+                    } else {
+                        $options.RemoveTrailingLineEnding = $false
+                    }
+                    if (-not ([string]::IsNullorEmpty($instruction))) {
+                        Write-Verbose "This directive has the $instruction instruction"
                     }
 
-
-
-                    Write-Debug " Instruction is '$instruction'"
                     switch ($instruction) {
                         '=' {
                             <#
@@ -189,8 +183,10 @@ function Convert-StringToTemplateTree {
                             continue
                         }
                         '-' {
+
                             Write-Debug ' TRIM_START'
-                            # $trimmed = $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
+                            Write-Verbose "Setting RemoveLeadingWhiteSpace on Content"
+                            #$content = $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
                             $options.Type = 'content'
                             $options.Start = $contentStart
                             $options.Length = $contentLength
@@ -219,6 +215,8 @@ function Convert-StringToTemplateTree {
                             Write-Debug ' COMMENT'
                         }
                     }
+
+
                 }
                 # advance the content "pointer" to the end of the directive
                 $contentStart = $directiveStart + $directiveLength

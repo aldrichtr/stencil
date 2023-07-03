@@ -53,11 +53,9 @@ function New-TemplateElement {
         [hashtable]$Data
     )
     begin {
-        Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+        Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)"
     }
     process {
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-
         if ($PSCmdlet.ShouldProcess($Name, 'Create new Stitch.TemplateElement')) {
             $element = @{
                 PSTypeName     = 'Stencil.TemplateElement'
@@ -73,9 +71,8 @@ function New-TemplateElement {
             }
         }
         [PSCustomObject]$element | Write-Output
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {
-        Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+        Write-Debug "-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }
