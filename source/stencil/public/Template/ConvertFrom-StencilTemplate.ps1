@@ -1,3 +1,4 @@
+
 function ConvertFrom-StencilTemplate {
     <#
     .SYNOPSIS
