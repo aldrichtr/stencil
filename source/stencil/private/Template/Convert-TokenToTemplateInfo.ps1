@@ -1,11 +1,13 @@
-function Convert-TreeToTemplateInfo {
+
+function Convert-TokenToTemplateInfo {
     <#
     .SYNOPSIS
         Convert a list of TemplateElements to a scriptblock
     #>
+    [Alias('Parse-Template')]
     [CmdletBinding()]
     param(
-        # The "AST" of Elements from the template
+        # The list of tokens
         [Parameter(
             Mandatory,
             ValueFromPipeline

@@ -54,13 +54,25 @@ function New-TemplateElement {
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)"
+        $Options = @{
+            Option = 'Constant'
+            Name = 'DEFAULT_TYPE'
+            Value = 'Text'
+            Description = "The default TemplateElement Type"
+        }
+
+        New-Variable @Options
     }
     process {
+
         if ($PSCmdlet.ShouldProcess($Name, 'Create new Stitch.TemplateElement')) {
-            $element = @{
-                PSTypeName     = 'Stencil.TemplateElement'
+            $textInfo = (Get-Culture).TextInfo
+            $typeName = $textInfo.ToTitleCase($Type)
+
+            [PSCustomObject]@{
+                PSTypeName     = "Stencil.TemplateElement.$typeName"
                 #! Default type is Content
-                Type           = $Type ?? 'content'
+                Type           = $Type ?? $DEFAULT_TYPE
                 Name           = $Name ?? ''
                 Content        = $Content ?? ''
                 Data           = $Data ?? @{}
@@ -69,8 +81,8 @@ function New-TemplateElement {
                 RemoveLeading  = $RemoveLeadingWhitespace ? $true : $false
                 RemoveTrailing = $RemoveTrailingLineEnding ? $true : $false
             }
+            | Write-Output
         }
-        [PSCustomObject]$element | Write-Output
     }
     end {
         Write-Debug "-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

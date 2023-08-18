@@ -1,8 +1,10 @@
-function Convert-StringToTemplateTree {
+
+function Convert-StringToToken {
     <#
     .SYNOPSIS
-        Convert a String into an "Abstract Syntax Tree"-like structure
+        Convert a String into a list of Tokens
     #>
+    [Alias('Tokenize-Template')]
     [CmdletBinding()]
     param(
         # The template text to execute
@@ -52,8 +54,9 @@ function Convert-StringToTemplateTree {
                 '(?<rspace>[ \t]*\r?\n)?')    # match the different types of whitespace at the end
         )
         Write-Debug "template pattern is $templatePattern"
-        $templateTree = [System.Collections.Generic.List[Object]]::new()
+        $tokens = [System.Collections.Generic.LinkedList[Object]]::new()
         $contentStart = $contentLength = $directiveStart = $directiveLength = 0
+
     }
     process {
         Write-Debug '- Looking for template tokens in content'
@@ -78,7 +81,7 @@ function Convert-StringToTemplateTree {
 
             # TODO: I'm not sure I need to send the length of the content if I'm also sending the content
             $options = @{
-                Type                     = 'content'
+                Type                     = 'Text'
                 Start                    = $contentStart
                 Length                   = $contentLength
                 RemoveLeadingWhitespace  = $false
@@ -128,7 +131,7 @@ function Convert-StringToTemplateTree {
                     $options.Length = $contentLength
 
                     Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
-                    $null = $templateTree.Add( ($content | New-TemplateElement @options) )
+                    $null = $tokens.Add( ($content | New-TemplateElement @options) )
                 } else {
                     $instruction = $patternMatch.Groups['instr'].Value
                     $code = $patternMatch.Groups['code'].Value
@@ -143,9 +146,9 @@ function Convert-StringToTemplateTree {
                     #>
 
                     if (($instruction -ne '-') -and ($contentLength -ne 0)) {
-                        $options.Type = 'content'
+                        $options.Type = 'Text'
                         Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
-                        $null = $templateTree.Add( ($content | New-TemplateElement @options) )
+                        $null = $tokens.Add( ($content | New-TemplateElement @options) )
 
                     }
 
@@ -165,10 +168,10 @@ function Convert-StringToTemplateTree {
                             The EXPAND directive executes the code and outputs the result
                             #>
                             Write-Debug ' EXPAND'
-                            $options.Type = 'expand'
+                            $options.Type = 'Expand'
                             $options.Start = $directiveStart
                             $options.Length = $directiveLength
-                            $null = $templateTree.Add( ($code | New-TemplateElement @options) )
+                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
                             continue
                         }
                         '+' {
@@ -179,7 +182,7 @@ function Convert-StringToTemplateTree {
                             $options.Type = 'include'
                             $options.Start = $directiveStart
                             $options.Length = $directiveLength
-                            $null = $templateTree.Add( ($code | New-TemplateElement @options) )
+                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
                             continue
                         }
                         '-' {
@@ -191,14 +194,14 @@ function Convert-StringToTemplateTree {
                             $options.Start = $contentStart
                             $options.Length = $contentLength
                             $options.RemoveLeadingWhitespace = $true
-                            $null = $templateTree.Add( ($content | New-TemplateElement @options) )
+                            $null = $tokens.Add( ($content | New-TemplateElement @options) )
                             $options.RemoveLeadingWhitespace = $false
 
                             $options.Type = 'code'
                             $options.Start = $directiveStart
                             $options.Length = $directiveLength
 
-                            $null = $templateTree.Add( ($code | New-TemplateElement @options) )
+                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
                             continue
                         }
                         '' {
@@ -209,7 +212,7 @@ function Convert-StringToTemplateTree {
                             $options.Type = 'code'
                             $options.Start = $directiveStart
                             $options.Length = $directiveLength
-                            $null = $templateTree.Add( ($code | New-TemplateElement @options) )
+                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
                         }
                         '#' {
                             Write-Debug ' COMMENT'
@@ -228,19 +231,19 @@ function Convert-StringToTemplateTree {
             $options.Type = 'content'
             $options.Start = 0
             $options.Length = $Template.Length
-            $null = $templateTree.Add( ($Template | New-TemplateElement @options) )
+            $null = $tokens.Add( ($Template | New-TemplateElement @options) )
         } elseif ($contentStart -lt $Template.Length) {
             Write-Debug 'No more matches, but still text in the template'
             $options.Type = 'content'
             $options.Start = $contentStart
             $options.Length = $Template.Length - $contentStart
             $remainingContent = $Template.Substring($options.Start, $options.Length)
-            $null = $templateTree.Add( ($remainingContent | New-TemplateElement @options) )
+            $null = $tokens.Add( ($remainingContent | New-TemplateElement @options) )
         }
     }
     end {
 
-        $templateTree | Write-Output
+        $tokens | Write-Output
 
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
