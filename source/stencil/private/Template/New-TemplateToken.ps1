@@ -1,0 +1,110 @@
+
+function New-TemplateToken {
+    <#
+    .SYNOPSIS
+        Create a new 'Stencil.TemplateToken' object
+    #>
+    [CmdletBinding(
+        SupportsShouldProcess,
+        ConfirmImpact = 'low'
+    )]
+    param(
+        # The type of Template token to create
+        [Parameter(
+        )]
+        [string]$Type,
+
+        # The content text of the token
+        [Parameter(
+        )]
+        [AllowEmptyString()]
+        [AllowNull()]
+        [string]$Content,
+
+        # The starting position of the template token in the original content
+        [Parameter(
+        )]
+        [int]$Start,
+
+        # The length of the token
+        [Parameter(
+        )]
+        [int]$Length,
+
+        # The instruction just after the start marker
+        [Parameter(
+        )]
+        [string]$Prefix,
+
+        # The instruction just before the end marker
+        [Parameter(
+        )]
+        [string]$Suffix,
+        # Whether to remove leading whitespace from the result
+        [Parameter(
+        )]
+        [string]$RemainingWhiteSpace
+    )
+    begin {
+        Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)"
+        $constOptions = @{
+            Option      = 'Constant'
+            Name        = 'DEFAULT_TYPE'
+            Value       = 'TEXT'
+            Description = 'The default TemplateToken Type'
+        }
+
+        New-Variable @constOptions
+
+        function Format-UpperCase {
+            param([string]$Text)
+            (Get-Culture).TextInfo.ToUpper($Text)
+        }
+
+        function Format-TitleCase {
+            param([string]$Text)
+            (Get-Culture).TextInfo.ToTitleCase($Text)
+        }
+    }
+    process {
+        Write-Debug "Received : $($PSBoundParameters | ConvertTo-Psd)"
+        if ([string]::IsNullorEmpty($Type)) {
+            $Type = $DEFAULT_TYPE
+        }
+        if ($PSCmdlet.ShouldProcess($Name, 'Create new Stitch.TemplateToken')) {
+
+            $tokenInfo = @{
+                PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
+                Type                = (Format-UpperCase $Type)
+                Start               = $Start ?? 0
+                Length              = $Length ?? 0
+                Content             = $Content ?? ''
+                RemainingWhiteSpace = $RemainingWhiteSpace
+                Prefix              = $Prefix ?? ''
+                Suffix              = $Suffix ?? ''
+            }
+
+            $token = [PSCustomObject]$tokenInfo
+            #-------------------------------------------------------------------------------
+            #region Calculate 'End'
+
+            $scriptBody = {
+                return ($this.Start + $this.Length)
+            }
+            $memberOptions = @{
+                MemberType = 'ScriptProperty'
+                Name       = 'End'
+                Value      = $scriptBody
+            }
+
+            $token | Add-Member @memberOptions
+
+            #endregion Calculate 'End'
+            #-------------------------------------------------------------------------------
+            $token
+        }
+    }
+    end {
+        Write-Debug "-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+    }
+}

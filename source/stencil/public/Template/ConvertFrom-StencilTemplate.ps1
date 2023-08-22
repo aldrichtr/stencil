@@ -13,7 +13,7 @@ function ConvertFrom-StencilTemplate {
             ValueFromPipeline
         )]
         [AllowEmptyString()]
-        [string[]]$Template,
+        [string]$Template,
 
         # The data to supply to the template
         [Parameter(
@@ -29,32 +29,22 @@ function ConvertFrom-StencilTemplate {
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        $collect = @()
     }
     process {
-        <#
-        Because we can have the template content come in from the pipeline (which would be one line at a time) or
-        as an array of one or more lines from the parameter, we collect it all here to be used in the `end` block
-        #>
-        $collect += $Template
-    }
-    end {
-
-        if ([string]::IsNullorEmpty($collect)) {
+        if ([string]::IsNullorEmpty($Template)) {
             Write-Verbose 'No content was given'
             return
         } else {
-            Write-Debug "Processing $($collect.Count) lines in template"
-            $templateContent = ($collect -join [System.Environment]::NewLine)
+            Write-Debug "Template is $($Template.Length) characters"
+            $tokens = Convert-StringToToken -Template $Template
         }
-        $syntaxTree = Convert-StringToTemplateTree -Template $templateContent -Data:$Data
 
         if ($AstOnly.IsPresent) {
-            $syntaxTree | Select-Object Name, Type, Start, Length, RemoveLeading, RemoveTrailing, Content, Data
+            $tokens
         } else {
             Convert-TreeToTemplateInfo -Tree $syntaxTree
         }
-
+    } end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }

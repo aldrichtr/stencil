@@ -6,11 +6,11 @@ this should output the end marker %%>
 
 
 
-<% block friendly greeting %>
+<% BLOCK friendly-greeting %>
 
 This should say 'Hello World!' : <%= $Greeting %> World!
 
-<% end %>
+<% END %>
 
 Hope you <%= (echo "all") %> have a nice day
 
@@ -18,4 +18,4 @@ Hope you <%= (echo "all") %> have a nice day
     Write-Output $item
 } %>
 
-<%+ 'section-footer.pst1' %>
+<%- INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8 %>
