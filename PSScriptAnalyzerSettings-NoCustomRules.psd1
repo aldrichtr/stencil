@@ -85,14 +85,6 @@
                 'task'
             )
         }
-        AvoidLongLines = @{}
-        AvoidOverwritingBuiltInCmdlets = @{}
-        ProvideCommentHelp = @{}
-        UseCompatibleCmdlets = @{}
-        UseCompatibleCommands = @{}
-        UseCompatibleSyntax = @{}
-        UseCompatibleTypes = @{}
-
     }
     #endregion Rules
     #-------------------------------------------------------------------------------
