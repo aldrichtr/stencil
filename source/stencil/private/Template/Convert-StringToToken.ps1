@@ -39,80 +39,99 @@ function Convert-StringToToken {
             $endTag = '%>'
             $escapeChar = '%'
         }
+
+        # literal escape tags
         $lStartTag = "$startTag$escapeChar"
         $lEndTag = "$escapeChar$endTag"
         #TODO: I think that if I remove the "escape" from the regex, I can add the matched content to the previous
         # That way, it will just be one solid block of content, not three
         $templatePattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
-                "(?<lit>$lStartTag|$lEndTag)", # double '%' is used to "escape" template markers '<%%' => '<%' in output
+                "(?<lit>$lStartTag|$lEndTag)", # Start/End tag plus Escape Character
                 '|',
-                "$startTag(?<instr>\S)?", # start markers might have additional instructions
-                '(?<code>.*?)', # the "code" inside the markers
-                '(?<tailch>[-=])?', # end markers might have additional instructions '-', '='
+                "$startTag(?<prefix>\S)?", # start markers might have additional instructions
+                '(?<body>.*?)', # the "body" inside the markers
+                '(?<suffix>\S)?', # end markers might have additional instructions '-', '='
                 "(?<!$escapeChar)$endTag", # "zero-width lookbehind '(?<!' for a '%' ')'" and match an end marker '%>'
                 '(?<rspace>[ \t]*\r?\n)?')    # match the different types of whitespace at the end
         )
         Write-Debug "template pattern is $templatePattern"
-        $tokens = [System.Collections.Generic.LinkedList[Object]]::new()
         $contentStart = $contentLength = $directiveStart = $directiveLength = 0
+
+        # Options for creating a new Token
+        $options = @{
+            Type                = 'Text'
+            # The content is the "body" of the token
+            Content             = ''
+            # Zero-based index that the token starts at
+            Start               = 0
+            # I'm not sure the Length is required to be passed here because we can get it from the Content
+            # but it is convenient for Substring
+            Length              = 0
+            # The prefix just after the start marker
+            Prefix              = ''
+            # The prefix just before the end marker
+            Suffix              = ''
+            # Any whitespace after the token
+            RemainingWhiteSpace = ''
+        }
+
 
     }
     process {
         Write-Debug '- Looking for template tokens in content'
+
+        #region Parse the file
         $allMatches = $templatePattern.Matches( $Template )
+        #endregion Parse the file
+
         if ($allMatches.Count -gt 0) {
             Write-Debug "- Found $($allMatches.Count) tokens"
             $count = 0
 
-            <#
-             "import" the data into the current session
-             TODO: Do we import this here, in the main convert function or when we create the directives?
-            #>
-
-            if (-not ([string]::IsNullorEmpty($Data))) {
-                Write-Debug '- Importing Data table into current session'
-                $Data | Import-DataTable
-            }
-
-            <#
-            Set the options for creating the element that will be filled in below
-            #>
-
-            # TODO: I'm not sure I need to send the length of the content if I'm also sending the content
-            $options = @{
-                Type                     = 'Text'
-                Start                    = $contentStart
-                Length                   = $contentLength
-                RemoveLeadingWhitespace  = $false
-                RemoveTrailingLineEnding = $false
-            }
 
             foreach ($patternMatch in $allMatches) {
                 $count++
                 Write-Debug " $('-' * 20)`nThis is match $count`n$($foreach.Current.Value)`n$('-' * 20)"
+
+                # Reset the options for creating the element that will be filled in below
+                $options.Type = 'Text'
+                $options.Start = 0
+                $options.Length = 0
+                $options.Prefix = ''
+                $options.Suffix = ''
+                $options.RemainingWhiteSpace = ''
+
+
+                #-------------------------------------------------------------------------------
+                #region Set Start and Length
+
                 $directiveStart = $patternMatch.Index
                 $directiveLength = $patternMatch.Length
 
                 Write-Debug "- Directive Start $directiveStart, length $directiveLength"
                 # content is the text in the Template that is between the last match and this one
                 $contentLength = $directiveStart - $contentStart
+                # The entire contents of the template is stored in $Template
+                # here, content is the portion "between directives" in that Template
                 $content = $Template.Substring($contentStart, $contentLength)
 
                 Write-Debug "- Content start $contentStart, length $contentLength"
-
                 $options.Start = $contentStart
                 $options.Length = $contentLength
+                #endregion Set Start and Length
+                #-------------------------------------------------------------------------------
 
-                if (-not ([string]::IsNullorEmpty($Data))) {
-                    $options['Data'] = $Data
-                }
+
+                #-------------------------------------------------------------------------------
+                #region Literal marker in template
 
                 #! if the user wanted to escape the markers, lit would be matched
                 $literal = $patternMatch.Groups['lit']
 
                 if ($literal.Success) {
                     Write-Verbose "Found literal marker in region starting at $($patternMatch.Index)"
+                    # Add the literal tag to the content
                     switch ($literal.Value) {
                         $lStartTag {
                             Write-Debug "- Found escaped start marker $lStartTag"
@@ -131,120 +150,70 @@ function Convert-StringToToken {
                     $options.Length = $contentLength
 
                     Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
-                    $null = $tokens.Add( ($content | New-TemplateElement @options) )
+                    $options.Content = $content
+                    New-TemplateToken @options
+                    #endregion Literal marker in template
+                    #-------------------------------------------------------------------------------
                 } else {
-                    $instruction = $patternMatch.Groups['instr'].Value
-                    $code = $patternMatch.Groups['code'].Value
-                    $tail = $patternMatch.Groups['tailch'].Value
-                    $rspace = $patternMatch.Groups['rspace'].Value
+                    #-------------------------------------------------------------------------------
+                    #region Create Content Token
+                    Write-Debug "Content just before: '$content'"
+                    # create a Text token from the content up to the directive
+                    $options.Type = 'Text'
+                    $options.Start = $contentStart
+                    $options.Length = $contentLength
+                    $options.Prefix = ''
+                    $options.Suffix = ''
+                    $options.RemainingWhiteSpace = ''
+                    $options.Content = $content
+                    New-TemplateToken @options
 
-                    <#
-                    TODO: We want to Convert the template string into the proper object and then add it
-                    But for now, we can just create a generic object with the right type to
-                    prove our methodology is sound
-                    $code | ConvertFrom-TemplateString
-                    #>
+                    #endregion Create Content Token
+                    #-------------------------------------------------------------------------------
+                    #-------------------------------------------------------------------------------
+                    #region Create Directive Token
 
-                    if (($instruction -ne '-') -and ($contentLength -ne 0)) {
-                        $options.Type = 'Text'
-                        Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
-                        $null = $tokens.Add( ($content | New-TemplateElement @options) )
+                    # Create the Directive token from the captured groups
 
-                    }
+                    $options.Type = 'Directive'
+                    $options.Length = $directiveLength
+                    $options.Start = $directiveStart
+                    # prefix is the character (if any) after the start tag
+                    $options.Prefix = $patternMatch.Groups['prefix'].Value
+                    # body is the text "inside" the start and end tag
+                    $options.Content = $patternMatch.Groups['body'].Value
+                    # suffix is the character (if any) just before the end tag
+                    $options.Suffix = $patternMatch.Groups['suffix'].Value
+                    # rspace is the additional white space after the directive
+                    $options.RemainingWhiteSpace = $patternMatch.Groups['rspace'].Value
 
-                    if ($tail -eq '-') {
-                        Write-Verbose "This directive has RemoveTrailingLineEnding set"
-                        $options.RemoveTrailingLineEnding = $true
-                    } else {
-                        $options.RemoveTrailingLineEnding = $false
-                    }
-                    if (-not ([string]::IsNullorEmpty($instruction))) {
-                        Write-Verbose "This directive has the $instruction instruction"
-                    }
+                    New-TemplateToken @options
 
-                    switch ($instruction) {
-                        '=' {
-                            <#
-                            The EXPAND directive executes the code and outputs the result
-                            #>
-                            Write-Debug ' EXPAND'
-                            $options.Type = 'Expand'
-                            $options.Start = $directiveStart
-                            $options.Length = $directiveLength
-                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
-                            continue
-                        }
-                        '+' {
-                            Write-Debug ' INCLUDE'
-                            #TODO: Pass in a starting directory for the template includes
-                            #TODO: Expand the string first so the user can do $HOME\my-header.pst1
-                            #TODO: If I use the '+' how do i add the ability to remove the whitespace?
-                            $options.Type = 'include'
-                            $options.Start = $directiveStart
-                            $options.Length = $directiveLength
-                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
-                            continue
-                        }
-                        '-' {
-
-                            Write-Debug ' TRIM_START'
-                            Write-Verbose "Setting RemoveLeadingWhiteSpace on Content"
-                            #$content = $content -replace '(?smi)([\n\r]+|\A)[ \t]+\z', '$1'
-                            $options.Type = 'content'
-                            $options.Start = $contentStart
-                            $options.Length = $contentLength
-                            $options.RemoveLeadingWhitespace = $true
-                            $null = $tokens.Add( ($content | New-TemplateElement @options) )
-                            $options.RemoveLeadingWhitespace = $false
-
-                            $options.Type = 'code'
-                            $options.Start = $directiveStart
-                            $options.Length = $directiveLength
-
-                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
-                            continue
-                        }
-                        '' {
-                            <#
-                            CODEBLOCK: Block is executed but no value is inserted into the output
-                            #>
-                            Write-Debug " EXECUTE -`n code`n {$($code.Trim())}"
-                            $options.Type = 'code'
-                            $options.Start = $directiveStart
-                            $options.Length = $directiveLength
-                            $null = $tokens.Add( ($code | New-TemplateElement @options) )
-                        }
-                        '#' {
-                            Write-Debug ' COMMENT'
-                        }
-                    }
-
-
+                    #endregion Create Directive Token
+                    #-------------------------------------------------------------------------------
                 }
-                # advance the content "pointer" to the end of the directive
+                # advance the cursor to the end of the directive
                 $contentStart = $directiveStart + $directiveLength
             }
         }
 
         if ($contentStart -eq 0) {
             Write-Debug 'No matches found. Output the template'
-            $options.Type = 'content'
+            $options.Type = 'Text'
             $options.Start = 0
             $options.Length = $Template.Length
-            $null = $tokens.Add( ($Template | New-TemplateElement @options) )
+            $options.Content = $Template
+            New-TemplateToken @options
         } elseif ($contentStart -lt $Template.Length) {
             Write-Debug 'No more matches, but still text in the template'
-            $options.Type = 'content'
+            $options.Type = 'Text'
             $options.Start = $contentStart
             $options.Length = $Template.Length - $contentStart
-            $remainingContent = $Template.Substring($options.Start, $options.Length)
-            $null = $tokens.Add( ($remainingContent | New-TemplateElement @options) )
+            $options.Content = $Template.Substring($options.Start, $options.Length)
+            New-TemplateToken @options
         }
     }
     end {
-
-        $tokens | Write-Output
-
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }
