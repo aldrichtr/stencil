@@ -40,7 +40,17 @@ function New-TemplateToken {
         [Parameter(
         )]
         [string]$Suffix,
-        # Whether to remove leading whitespace from the result
+
+        # Remove the preceding whitespace
+        [Parameter(
+        )]
+        [switch]$RemoveIndent,
+
+        # Remove the trailing newline
+        [Parameter(
+        )]
+        [switch]$RemoveNewLine,
+        # any trailing whitespace
         [Parameter(
         )]
         [string]$RemainingWhiteSpace
@@ -82,7 +92,33 @@ function New-TemplateToken {
                 RemainingWhiteSpace = $RemainingWhiteSpace
                 Prefix              = $Prefix ?? ''
                 Suffix              = $Suffix ?? ''
+                # These may be set below after evaluating the Prefix and Suffix
+                RemoveNewLine       = $RemoveNewLine
+                RemoveIndent        = $RemoveIndent
             }
+
+            #-------------------------------------------------------------------------------
+            #region Parse content
+            switch ($tokenInfo.Type) {
+                'TEXT' {
+                    # No processing of a Text chunk at this time
+                    continue
+                }
+                'EXPR' {
+                    switch -Regex ($tokenInfo.Content) {
+                        '(?sm)---(?<fm>.*?)---' {
+                            $tokenInfo.Type = 'FMTR'
+                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Fmtr'
+                        }
+                    }
+                }
+
+            }
+            #endregion Parse content
+            #-------------------------------------------------------------------------------
+
+
+
 
             $token = [PSCustomObject]$tokenInfo
             #-------------------------------------------------------------------------------

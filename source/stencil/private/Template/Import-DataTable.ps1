@@ -17,7 +17,6 @@ function Import-DataTable {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
         if (-not ([string]::IsNullorEmpty($Data))) {
             $Data.GetEnumerator() | ForEach-Object {
                 if ($null -ne (Get-Variable $_.Key -ErrorAction SilentlyContinue)) {
@@ -27,8 +26,6 @@ function Import-DataTable {
                 }
             }
         }
-
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

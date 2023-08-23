@@ -43,8 +43,7 @@ function Convert-StringToToken {
         # literal escape tags
         $lStartTag = "$startTag$escapeChar"
         $lEndTag = "$escapeChar$endTag"
-        #TODO: I think that if I remove the "escape" from the regex, I can add the matched content to the previous
-        # That way, it will just be one solid block of content, not three
+
         $templatePattern = [regex]( -join (
                 '(?sm)', # look for patterns across the whole string
                 "(?<lit>$lStartTag|$lEndTag)", # Start/End tag plus Escape Character
@@ -56,7 +55,7 @@ function Convert-StringToToken {
                 '(?<rspace>[ \t]*\r?\n)?')    # match the different types of whitespace at the end
         )
         Write-Debug "template pattern is $templatePattern"
-        $contentStart = $contentLength = $directiveStart = $directiveLength = 0
+        $contentStart = $contentLength = $expressionStart = $expressionLength = 0
 
         # Options for creating a new Token
         $options = @{
@@ -106,14 +105,14 @@ function Convert-StringToToken {
                 #-------------------------------------------------------------------------------
                 #region Set Start and Length
 
-                $directiveStart = $patternMatch.Index
-                $directiveLength = $patternMatch.Length
+                $expressionStart = $patternMatch.Index
+                $expressionLength = $patternMatch.Length
 
-                Write-Debug "- Directive Start $directiveStart, length $directiveLength"
+                Write-Debug "- Expression Start $expressionStart, length $expressionLength"
                 # content is the text in the Template that is between the last match and this one
-                $contentLength = $directiveStart - $contentStart
+                $contentLength = $expressionStart - $contentStart
                 # The entire contents of the template is stored in $Template
-                # here, content is the portion "between directives" in that Template
+                # here, content is the portion "between expressions" in that Template
                 $content = $Template.Substring($contentStart, $contentLength)
 
                 Write-Debug "- Content start $contentStart, length $contentLength"
@@ -149,7 +148,7 @@ function Convert-StringToToken {
 
                     $options.Length = $contentLength
 
-                    Write-Verbose "Creating content element with characters $contentStart to $directiveStart"
+                    Write-Verbose "Creating content element with characters $contentStart to $expressionStart"
                     $options.Content = $content
                     New-TemplateToken @options
                     #endregion Literal marker in template
@@ -158,8 +157,8 @@ function Convert-StringToToken {
                     #-------------------------------------------------------------------------------
                     #region Create Content Token
                     Write-Debug "Content just before: '$content'"
-                    # create a Text token from the content up to the directive
-                    $options.Type = 'Text'
+                    # create a Text token from the content up to the expression
+                    $options.Type = 'text'
                     $options.Start = $contentStart
                     $options.Length = $contentLength
                     $options.Prefix = ''
@@ -171,29 +170,28 @@ function Convert-StringToToken {
                     #endregion Create Content Token
                     #-------------------------------------------------------------------------------
                     #-------------------------------------------------------------------------------
-                    #region Create Directive Token
+                    #region Create Expression Token
 
-                    # Create the Directive token from the captured groups
+                    # Create the Expression token from the captured groups
 
-                    $options.Type = 'Directive'
-                    $options.Length = $directiveLength
-                    $options.Start = $directiveStart
+                    $options.Type = 'expr'
+                    $options.Length = $expressionLength
+                    $options.Start = $expressionStart
                     # prefix is the character (if any) after the start tag
                     $options.Prefix = $patternMatch.Groups['prefix'].Value
                     # body is the text "inside" the start and end tag
                     $options.Content = $patternMatch.Groups['body'].Value
                     # suffix is the character (if any) just before the end tag
                     $options.Suffix = $patternMatch.Groups['suffix'].Value
-                    # rspace is the additional white space after the directive
+                    # rspace is the additional white space after the expression
                     $options.RemainingWhiteSpace = $patternMatch.Groups['rspace'].Value
 
                     New-TemplateToken @options
-
-                    #endregion Create Directive Token
+                    #endregion Create Expression Token
                     #-------------------------------------------------------------------------------
                 }
-                # advance the cursor to the end of the directive
-                $contentStart = $directiveStart + $directiveLength
+                # advance the cursor to the end of the expression
+                $contentStart = $expressionStart + $expressionLength
             }
         }
 

@@ -1,3 +1,12 @@
+<%-
+---
+title: test Template
+tags:
+  - test
+---
+%>
+
+<%--- What should this be? ---%>
 A test template
 
 this should output the start marker <%%
