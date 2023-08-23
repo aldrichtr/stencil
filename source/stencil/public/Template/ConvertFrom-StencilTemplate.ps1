@@ -35,14 +35,21 @@ function ConvertFrom-StencilTemplate {
             Write-Verbose 'No content was given'
             return
         } else {
+            if (-not ([string]::IsNullorEmpty($Data))) {
+                if ($Data -is [hashtable]) {
+                    $Data | Import-DataTable
+                }
+            }
             Write-Debug "Template is $($Template.Length) characters"
-            $tokens = Convert-StringToToken -Template $Template
-        }
+            Convert-StringToToken -Template $Template | ForEach-Object {
+                $token = $_
+                if ($AstOnly.IsPresent) {
+                    $token | Write-Output
+                } else {
+                    $token | Convert-TokenToTemplateInfo
+                }
+            }
 
-        if ($AstOnly.IsPresent) {
-            $tokens
-        } else {
-            Convert-TreeToTemplateInfo -Tree $syntaxTree
         }
     } end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
