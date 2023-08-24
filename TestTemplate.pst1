@@ -1,3 +1,4 @@
+<%# code: language=eps #%>
 <%-
 ---
 title: test Template
@@ -13,9 +14,9 @@ this should output the start marker <%%
 
 this should output the end marker %%>
 
+<%# this should be a comment #%>
 
-
-<% BLOCK friendly-greeting %>
+           <%- BLOCK friendly-greeting %>
 
 This should say 'Hello World!' : <%= $Greeting %> World!
 

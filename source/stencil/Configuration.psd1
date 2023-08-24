@@ -19,5 +19,7 @@
         TagStyleMap = @{
             default = @('<%', '%>', '%')
         }
+
+        Whitespace = '~'
     }
 }
