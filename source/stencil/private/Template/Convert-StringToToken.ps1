@@ -12,54 +12,38 @@ function Convert-StringToToken {
             Mandatory
         )]
         [AllowEmptyString()]
-        [string]$Template,
-
-        # The data to supply to the template
-        [Parameter(
-        )]
-        [hashtable]$Data
-
+        [string]$Template
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
 
         $config = Import-Configuration | Select-Object -ExpandProperty Template
 
-        if ($null -ne $config) {
-            if (($config.ContainsKey('TagStyleMap')) -and
-                (-not ([string]::IsNullOrEmpty($config.TagStyle)))) {
-                if ($config.TagStyleMap.ContainsKey($config.TagStyle)) {
-                    $startTag, $endTag, $escapeChar = $config.TagStyleMap[$config.TagStyle]
-                }
-            }
-        }
+        #-------------------------------------------------------------------------------
+        #region Tag patterns
 
-        if (($null -eq $startTag) -or ($null -eq $endTag) -or ($null -eq $escapeChar)) {
-            $startTag = '<%'
-            $endTag = '%>'
-            $escapeChar = '%'
-        }
-
+        $startTag, $endTag, $escapeChar = Get-TagStyle
         # literal escape tags
-        $lStartTag = "$startTag$escapeChar"
-        $lEndTag = "$escapeChar$endTag"
+        $startTagPattern = ( -join ( '^', [regex]::Escape($startTag), '$' ))
+        $endTagPattern = ( -join ( '^', [regex]::Escape($endTag), '$' ))
 
-        $templatePattern = [regex]( -join (
-                '(?sm)', # look for patterns across the whole string
-                "(?<lit>$lStartTag|$lEndTag)", # Start/End tag plus Escape Character
-                '|',
-                "$startTag(?<prefix>\S)?", # start markers might have additional instructions
-                '(?<body>.*?)', # the "body" inside the markers
-                '(?<suffix>\S)?', # end markers might have additional instructions '-', '='
-                "(?<!$escapeChar)$endTag", # "zero-width lookbehind '(?<!' for a '%' ')'" and match an end marker '%>'
-                '(?<rspace>[ \t]*\r?\n)?')    # match the different types of whitespace at the end
-        )
-        Write-Debug "template pattern is $templatePattern"
-        $contentStart = $contentLength = $expressionStart = $expressionLength = 0
+        $escapedStartPattern = ( -join ( '^', [regex]::Escape("$startTag$escapeChar"), '$' ))
+        $escapedEndPattern = ( -join ( '^', [regex]::Escape("$escapeChar$endTag"), '$' ))
+
+        $startTagWithPrefixPattern = ( -join ( '^', [regex]::Escape($startTag), '(?<prefix>\S+)' ))
+        $endTagWithSuffixPattern = ( -join ( '(?<suffix>\S+)', [regex]::Escape($endTag), '$' ))
+
+        #endregion Tag patterns
+        #-------------------------------------------------------------------------------
+
+        $lineEndingPattern = '\n$'
 
         # Options for creating a new Token
         $options = @{
             Type                = 'Text'
+            Count               = 0
+            # the spaces or tabs prior to the start tag
+            Indent              = ''
             # The content is the "body" of the token
             Content             = ''
             # Zero-based index that the token starts at
@@ -75,141 +59,94 @@ function Convert-StringToToken {
             RemainingWhiteSpace = ''
         }
 
+        enum ReadState  {
+            NONE
+            TEXT
+            START_TAG
+        }
 
+        #-------------------------------------------------------------------------------
+        #region Split input
+        $lines = $Template.Split($lineEndingPattern)
+        $separator = ' '
+        $buffer = $Template.Split($separator)
+        #endregion Split input
+        #-------------------------------------------------------------------------------
+
+        #-------------------------------------------------------------------------------
+        #region initialize tokenizer
+
+        $cursor = 0
+        $line = 0
+        $startingCursor = 0
+
+        $content = [System.Text.StringBuilder]::new()
+        [ReadState]$state = NONE
+
+        #endregion initialize tokenizer
+        #-------------------------------------------------------------------------------
     }
     process {
         Write-Debug '- Looking for template tokens in content'
-
-        #region Parse the file
-        $allMatches = $templatePattern.Matches( $Template )
-        #endregion Parse the file
-
-        if ($allMatches.Count -gt 0) {
-            Write-Debug "- Found $($allMatches.Count) tokens"
-            $count = 0
-
-
-            foreach ($patternMatch in $allMatches) {
-                $count++
-                Write-Debug " $('-' * 20)`nThis is match $count`n$($foreach.Current.Value)`n$('-' * 20)"
-
-                # Reset the options for creating the element that will be filled in below
-                $options.Type = 'Text'
-                $options.Start = 0
-                $options.Length = 0
-                $options.Prefix = ''
-                $options.Suffix = ''
-                $options.RemainingWhiteSpace = ''
-
-
-                #-------------------------------------------------------------------------------
-                #region Set Start and Length
-
-                $expressionStart = $patternMatch.Index
-                $expressionLength = $patternMatch.Length
-
-                Write-Debug "- Expression Start $expressionStart, length $expressionLength"
-                # content is the text in the Template that is between the last match and this one
-                $contentLength = $expressionStart - $contentStart
-                # The entire contents of the template is stored in $Template
-                # here, content is the portion "between expressions" in that Template
-                $content = $Template.Substring($contentStart, $contentLength)
-
-                Write-Debug "- Content start $contentStart, length $contentLength"
-                $options.Start = $contentStart
-                $options.Length = $contentLength
-                #endregion Set Start and Length
-                #-------------------------------------------------------------------------------
-
-
-                #-------------------------------------------------------------------------------
-                #region Literal marker in template
-
-                #! if the user wanted to escape the markers, lit would be matched
-                $literal = $patternMatch.Groups['lit']
-
-                if ($literal.Success) {
-                    Write-Verbose "Found literal marker in region starting at $($patternMatch.Index)"
-                    # Add the literal tag to the content
-                    switch ($literal.Value) {
-                        $lStartTag {
-                            Write-Debug "- Found escaped start marker $lStartTag"
-                            $content += $startTag
-                            $contentLength = $content.Length
-                            Write-Debug "  - Content now start $contentStart, length $contentLength"
+        :word foreach ($word in $buffer) {
+            $index = $buffer.IndexOf($word)
+            $nextWord = $buffer[($index + 1)]
+            #TODO: Verify that the separator should be added to the front of the word
+            # - for example, the first word will not have a space before it
+            if ($cursor -eq 0) {
+                $lexeme = "$separator$word"
+            } else {
+                $lexeme = "$word"
+            }
+            Write-Debug "${index}: Line: $line cursor $cursor - '$word'"
+            :scan switch -Regex -CaseSensitive ($word) {
+                $lineEndingPattern {
+                    $line = $line + $Matches.Count
+                    Write-Debug "LINES: Update line number to $line"
+                    #! omit continue so that other patterns are processed
+                }
+                #TODO: I may just fold this into the prefix pattern and check for escape character
+                $escapedStartPattern {
+                    Write-Debug 'ESCAPED START - Add start tag to content'
+                    [void]$content.Append("$separator$startTag")
+                    continue scan
+                }
+                $startTagWithPrefixPattern {
+                    :state switch ($state) {
+                        START {
+                            #TODO: Consider a custom exception to throw when nested tag found
+                            throw "Error in template at line ${line}:`n$lines[$line]`nNested tags are not supported"
                         }
-                        $lEndTag {
-                            Write-Debug "- Found escaped end marker $lEndTag"
-                            $content += $endTag
-                            $contentLength = $content.Length
-                            Write-Debug "  - Content now start $contentStart, length $contentLength"
+                        TEXT {
+                            # End of a text block.  Create a token and reset
+                            $options.Content = $content.ToString()
+                            $options.Type = 'text'
+                            $options.Start = $startingCursor
+                            $startingCursor = $cursor
+                            [void]$content.Clear()
                         }
                     }
 
-                    $options.Length = $contentLength
 
-                    Write-Verbose "Creating content element with characters $contentStart to $expressionStart"
-                    $options.Content = $content
-                    New-TemplateToken @options
-                    #endregion Literal marker in template
-                    #-------------------------------------------------------------------------------
-                } else {
-                    #-------------------------------------------------------------------------------
-                    #region Create Content Token
-                    Write-Debug "Content just before: '$content'"
-                    # create a Text token from the content up to the expression
-                    $options.Type = 'text'
-                    $options.Start = $contentStart
-                    $options.Length = $contentLength
-                    $options.Prefix = ''
-                    $options.Suffix = ''
-                    $options.RemainingWhiteSpace = ''
-                    $options.Content = $content
-                    New-TemplateToken @options
-
-                    #endregion Create Content Token
-                    #-------------------------------------------------------------------------------
-                    #-------------------------------------------------------------------------------
-                    #region Create Expression Token
-
-                    # Create the Expression token from the captured groups
-
-                    $options.Type = 'expr'
-                    $options.Length = $expressionLength
-                    $options.Start = $expressionStart
-                    # prefix is the character (if any) after the start tag
-                    $options.Prefix = $patternMatch.Groups['prefix'].Value
-                    # body is the text "inside" the start and end tag
-                    $options.Content = $patternMatch.Groups['body'].Value
-                    # suffix is the character (if any) just before the end tag
-                    $options.Suffix = $patternMatch.Groups['suffix'].Value
-                    # rspace is the additional white space after the expression
-                    $options.RemainingWhiteSpace = $patternMatch.Groups['rspace'].Value
-
-                    New-TemplateToken @options
-                    #endregion Create Expression Token
-                    #-------------------------------------------------------------------------------
+                    $options.Prefix = $Matches.prefix
+                    $startingCursor = $cursor
+                    $state = START_TAG
+                    continue scan
                 }
-                # advance the cursor to the end of the expression
-                $contentStart = $expressionStart + $expressionLength
+                $startTagPattern {
+                    $state = START_TAG
+                    continue scan
+                }
+
+                $escapedEndPattern {
+                    [void]$content.Append($lexeme)
+                    continue scan
+                }
+                default {}
             }
+            $cursor = $cursor + $lexeme.Length
         }
 
-        if ($contentStart -eq 0) {
-            Write-Debug 'No matches found. Output the template'
-            $options.Type = 'Text'
-            $options.Start = 0
-            $options.Length = $Template.Length
-            $options.Content = $Template
-            New-TemplateToken @options
-        } elseif ($contentStart -lt $Template.Length) {
-            Write-Debug 'No more matches, but still text in the template'
-            $options.Type = 'Text'
-            $options.Start = $contentStart
-            $options.Length = $Template.Length - $contentStart
-            $options.Content = $Template.Substring($options.Start, $options.Length)
-            New-TemplateToken @options
-        }
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

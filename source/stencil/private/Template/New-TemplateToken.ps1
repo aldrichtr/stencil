@@ -14,6 +14,16 @@ function New-TemplateToken {
         )]
         [string]$Type,
 
+        # The index number of the token
+        [Parameter(
+        )]
+        [int]$Count,
+
+        # The spaces or tabs prior to the start tag
+        [Parameter(
+        )]
+        [string]$Indent,
+
         # The content text of the token
         [Parameter(
         )]
@@ -75,6 +85,13 @@ function New-TemplateToken {
             param([string]$Text)
             (Get-Culture).TextInfo.ToTitleCase($Text)
         }
+
+        $keywords = @(
+            'include'
+            'block'
+            'end'
+            'wrapper'
+        )
     }
     process {
         Write-Debug "Received : $($PSBoundParameters | ConvertTo-Psd)"
@@ -86,8 +103,10 @@ function New-TemplateToken {
             $tokenInfo = @{
                 PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
                 Type                = (Format-UpperCase $Type)
+                Count               = $Count ?? 0
                 Start               = $Start ?? 0
                 Length              = $Length ?? 0
+                Indent              = $Indent ?? ''
                 Content             = $Content ?? ''
                 RemainingWhiteSpace = $RemainingWhiteSpace
                 Prefix              = $Prefix ?? ''
@@ -104,15 +123,36 @@ function New-TemplateToken {
                     # No processing of a Text chunk at this time
                     continue
                 }
+                #TODO: Find a better name for expr.  Node, Block, Statement, Element
                 'EXPR' {
+                    switch ($tokenInfo.Prefix) {
+                        '#' {
+                            if ($tokenInfo.Suffix -eq '#') {
+                                $tokenInfo.Type = 'CMNT'
+                                $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Comment'
+                            }
+                        }
+                        '-' {
+                            $tokenInfo.RemoveIndent = $true
+                        }
+                        # The Statement type is used to *evaluate* some chunk of powershell code,
+                        # capture the output, and put that back into the output
+                        '=' {
+                            $tokenInfo.Type = 'STMT'
+                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Statement'
+                        }
+                    }
+                    # Look for "special content"
                     switch -Regex ($tokenInfo.Content) {
                         '(?sm)---(?<fm>.*?)---' {
                             $tokenInfo.Type = 'FMTR'
-                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Fmtr'
+                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.FrontMatter'
                         }
-                    }
-                }
 
+                    }
+
+
+                }
             }
             #endregion Parse content
             #-------------------------------------------------------------------------------
