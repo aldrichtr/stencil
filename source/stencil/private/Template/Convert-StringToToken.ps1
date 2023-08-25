@@ -42,9 +42,6 @@ function Convert-StringToToken {
             Content             = ''
             # Zero-based index that the token starts at
             Start               = 0
-            # I'm not sure the Length is required to be passed here because we can get it from the Content
-            # but it is convenient for Substring
-            Length              = 0
             # The prefix just after the start marker
             Prefix              = ''
             # The prefix just before the end marker
@@ -85,14 +82,13 @@ function Convert-StringToToken {
         :word foreach ($word in $buffer) {
             $index = $buffer.IndexOf($word)
             $nextWord = $buffer[($index + 1)]
-            #TODO: Verify that the separator should be added to the front of the word
-            # - for example, the first word will not have a space before it
+            #TODO: Add the space to the front of the word only if it is not the first word in the token
             if ($cursor -eq 0) {
-                $lexeme = "$separator$word"
-            } else {
                 $lexeme = "$word"
+            } else {
+                $lexeme = (-join ($separator,$word))
             }
-            Write-Debug "${index}: Line: $line cursor $cursor - '$word'"
+            Write-Debug "${index}: Line: $line cursor $cursor - '$word' lexeme '$lexeme'"
             :scan switch -Regex -CaseSensitive ($word) {
                 $lineEndingPattern {
                     $line = $line + $Matches.Count
@@ -101,6 +97,7 @@ function Convert-StringToToken {
                 }
 
                 $startTagPattern {
+                    Write-Debug "MATCH: Start tag ($startTagPattern)"
                     :startState switch ($state) {
                         ([ReadState]::START_TAG) {
                             #TODO: Consider a custom exception to throw when nested tag found
@@ -210,6 +207,7 @@ function Convert-StringToToken {
                     } # end startState
                 } # end start tag
                 $endTagPattern {
+                    Write-Debug "MATCH: End Tag ($endTagPattern)"
                     :endState switch ($state) {
                         ([ReadState]::NONE) {
                             # move to TEXT , same error
@@ -258,19 +256,21 @@ function Convert-StringToToken {
                             if ($hasSuffix) {
                                 $options.Suffix = $leftOfEndTag
                             }
+                            Write-Debug "Creating Token"
                             New-TemplateToken @options
 
                             #endregion Create Expression
                             #-------------------------------------------------------------------------------
                             #-------------------------------------------------------------------------------
                             #region Reset
-
+                            #TODO: Set the cursor to the proper location
                             $startingCursor = $cursor
-
+                            [void]$content.Clear()
                             #endregion Reset
                             #-------------------------------------------------------------------------------
 
                             #TODO: Is it ok to set the state to TEXT here?
+                            Write-Debug "Setting state to TEXT"
                             $state = [ReadState]::TEXT
                             continue scan
                         }
@@ -278,11 +278,38 @@ function Convert-StringToToken {
 
                 }
                 default {
+                    Write-Debug "MATCH: default"
+                    switch ($state) {
+                        ([ReadState]::NONE) {
+                            $state = [ReadState]::TEXT
+                        }
+                    }
+                    Write-Debug "Adding to content"
                     [void]$content.Append($lexeme)
                 }
             } # end scan
             $cursor = $cursor + $lexeme.Length
-        } # end word
+        } # end foreach word
+
+        # if there is still content
+        Write-Debug "Reached End of input"
+        if ($content.Length -gt 0) {
+            Write-Debug ""
+            switch ($state) {
+                ([ReadState]::START_TAG) {
+                    throw "Error in template. No closing tag found before end of input"
+                }
+                ([ReadState]::TEXT) {
+                    $options.Type = 'text'
+                    $options.Content = $content.ToString()
+                    $options.Start = $startingCursor
+
+                    New-TemplateToken @options
+
+                    [void]$content.Clear()
+                }
+            }
+        }
 
     }
     end {
