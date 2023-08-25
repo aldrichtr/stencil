@@ -50,7 +50,7 @@ function Get-TagStyle {
         if ($null -eq $endTag) { $endTag = $defaultEndTag }
         if ($null -eq $escapeChar) { $escapeChar = $defaultEscape }
 
-        Write-Output @($startTag, $endTag, $escapeChar) -NoEnumerate
+        Write-Output @($startTag, $endTag, $escapeChar)
     } end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
