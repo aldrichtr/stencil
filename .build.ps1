@@ -362,7 +362,7 @@ param(
         [Parameter()][String]$ModuleFileSuffix,
 
         <#
-    If the module should be part of a larger namespace, set the namespace here.  ModuleNamespace is 
+    If the module should be part of a larger namespace, set the namespace here.  ModuleNamespace is
     a hashtable where the key is the module name and the value is the namespace like:
     @{
         Module1 = 'Fabricam.Automation'
@@ -681,7 +681,7 @@ begin {
         Write-Debug "- BuildConfigRoot was set to '$BuildConfigRoot' by Parameters"
     } else {
         # Now that we have a starting point, see if we can find the BuildConfigRoot
-        $possibleBuildConfigRoot = ($startingDirectory | Find-BuildConfigurationRootDirectory -Debug)
+        $possibleBuildConfigRoot = ($startingDirectory | Find-BuildConfigurationRootDirectory)
         Write-Debug "- found BuildConfigRoot in '$possibleBuildConfigRoot'"
         if ($null -ne $possibleBuildConfigRoot) {
             $BuildConfigRoot = $possibleBuildConfigRoot
@@ -925,4 +925,3 @@ process {
 end {
     Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
 }
-

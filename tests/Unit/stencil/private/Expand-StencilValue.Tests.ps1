@@ -1,4 +1,16 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+param()
 
+BeforeAll {
+    $sourceFile = (Get-SourceFilePath $PSCommandPath)
+    if (Test-Path $sourceFile) {
+        . $sourceFile
+    } else {
+        throw "Could not find $sourceFile from $PSCommandPath"
+    }
+
+    $dataDirectory = (Get-TestDataPath $PSCommandPath)
+}
 Describe 'Private function Expand-StencilValue' {
     Context 'The function is available from the module' {
         BeforeAll {
