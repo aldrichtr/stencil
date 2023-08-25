@@ -36,11 +36,6 @@ function New-TemplateToken {
         )]
         [int]$Start,
 
-        # The length of the token
-        [Parameter(
-        )]
-        [int]$Length,
-
         # The instruction just after the start marker
         [Parameter(
         )]
@@ -94,7 +89,7 @@ function New-TemplateToken {
         )
     }
     process {
-        Write-Debug "Received : $($PSBoundParameters | ConvertTo-Psd)"
+        Write-Debug "Received : $($PSBoundParameters | ConvertTo-Psd | Out-String)"
         if ([string]::IsNullorEmpty($Type)) {
             $Type = $DEFAULT_TYPE
         }
@@ -105,7 +100,7 @@ function New-TemplateToken {
                 Type                = (Format-UpperCase $Type)
                 Count               = $Count ?? 0
                 Start               = $Start ?? 0
-                Length              = $Length ?? 0
+                Length              = ($Content.Length) ?? 0
                 Indent              = $Indent ?? ''
                 Content             = $Content ?? ''
                 RemainingWhiteSpace = $RemainingWhiteSpace
