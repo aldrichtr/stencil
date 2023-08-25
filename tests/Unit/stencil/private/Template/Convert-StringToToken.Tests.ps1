@@ -39,5 +39,38 @@ Describe "Testing private function Convert-StringToToken" -Tags @('unit', 'Strin
                 $command.Parameters['Template'].Attributes.Mandatory | Should -BeTrue
             }
     }
-}
+    Context "When given the string '<Template>' to tokenize" -Foreach @(
+        @{
+            Template = 'This is a basic test'
+            Count = 1
+            Type = 'Text'
+        }
+    ) {
+        BeforeAll {
 
+            function Get-TagStyle {}
+
+            Mock Get-TagStyle {
+                return @('<%', '%>', '%')
+            }
+            function Import-Configuration {}
+            Mock Import-Configuration {
+                return @{
+                    Template = @{
+                        TagStyle    = 'default'
+
+                        TagStyleMap = @{
+                            default = @('<%', '%>', '%')
+                        }
+
+                        Whitespace  = '~'
+                    }
+                }
+            }
+            $tokens = Convert-StringToToken -Template $Template
+        }
+        It 'Then it should generate <Count> tokens' {
+            $tokens.Count | Should -Be $Count
+        }
+    }
+}
