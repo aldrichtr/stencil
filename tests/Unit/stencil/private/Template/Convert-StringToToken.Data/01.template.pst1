@@ -22,7 +22,7 @@ This should say 'Hello World!' : <%= $Greeting %> World!
 
 <% END %>
 
-Hope  you <%= (echo "all") %> have a nice day
+Hope you <%= (echo "all") %> have a nice day
 
 <% foreach ($item in $items) {
     Write-Output $item

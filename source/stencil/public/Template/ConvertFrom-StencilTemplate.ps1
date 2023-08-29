@@ -40,7 +40,6 @@ function ConvertFrom-StencilTemplate {
                     $Data | Import-DataTable
                 }
             }
-            Write-Debug "Template is $($Template.Length) characters"
             Convert-StringToToken -Template $Template | ForEach-Object {
                 $token = $_
                 if ($AstOnly.IsPresent) {
