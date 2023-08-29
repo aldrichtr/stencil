@@ -46,15 +46,36 @@ function Get-TestDataPath {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
         $testFileItem = Get-Item $TestFile
         $currentDirectory = $testFileItem.Directory
         $commandName = $testFileItem.BaseName -replace '\.Tests', ''
         $dataDirectory = (Join-Path $currentDirectory "$commandName.Data")
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {
         $dataDirectory
+        Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+    }
+}
+
+function Get-TestData {
+    [CmdletBinding()]
+    param(
+        # The test file to get the data for
+        [Parameter(
+        )]
+        [string]$TestFile
+    )
+
+    begin {
+        Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+    }
+    process {
+        $dataDir = Get-TestDataPath
+        if (-not ([string]::IsNullorEmpty($dataDir))) {
+            Get-ChildItem -Path $dataDir
+        }
+    }
+    end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }

@@ -1,0 +1,870 @@
+
+--------------------------------------------------------------------------------
+-- Begin ConvertFrom-StencilTemplate
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Convert-StringToToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Get-TagStyle
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Get-TagStyle
+--------------------------------------------------------------------------------
+Template is 521 characters
+Template contains 32 lines
+- Looking for template tokens in content
+----------------------------------------
+Index - (0):
+- Line:   0
+- Cursor: 0
+- Word:   [<%#]
+- Lexeme: [<%#]
+- State:  TEXT
+- ---
+- Content: []
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+STATE CHANGE: START_TAG
+----------------------------------------
+Index - (1):
+- Line:   0
+- Cursor: 3
+- Word:   [code:]
+- Lexeme: [ code:]
+- State:  START_TAG
+- ---
+- Content: []
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (2):
+- Line:   0
+- Cursor: 9
+- Word:   [language=eps]
+- Lexeme: [ language=eps]
+- State:  START_TAG
+- ---
+- Content: [ code:]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (3):
+- Line:   0
+- Cursor: 22
+- Word:   [#%>
+<%-
+---
+title:]
+- Lexeme: [ #%>
+<%-
+---
+title:]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 1
+- Last line number is at position 34
+----------------------------------------
+Index - (4):
+- Line:   1
+- Cursor: 41
+- Word:   [test]
+- Lexeme: [ test]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (5):
+- Line:   1
+- Cursor: 46
+- Word:   [Template
+tags:
+]
+- Lexeme: [ Template
+tags:
+]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 2
+- Last line number is at position 61
+----------------------------------------
+Index - (6):
+- Line:   2
+- Cursor: 62
+- Word:   []
+- Lexeme: [ ]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (7):
+- Line:   2
+- Cursor: 63
+- Word:   [-]
+- Lexeme: [ -]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (8):
+- Line:   2
+- Cursor: 65
+- Word:   [test
+---
+%>
+
+<%---]
+- Lexeme: [ test
+---
+%>
+
+<%---]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  -]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 3
+- Last line number is at position 78
+----------------------------------------
+Index - (9):
+- Line:   3
+- Cursor: 84
+- Word:   [What]
+- Lexeme: [ What]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  -]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (10):
+- Line:   3
+- Cursor: 89
+- Word:   [should]
+- Lexeme: [ should]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (11):
+- Line:   3
+- Cursor: 96
+- Word:   [this]
+- Lexeme: [ this]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (12):
+- Line:   3
+- Cursor: 101
+- Word:   [be?]
+- Lexeme: [ be?]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (13):
+- Line:   3
+- Cursor: 105
+- Word:   [---%>
+A]
+- Lexeme: [ ---%>
+A]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be?]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 4
+- Last line number is at position 111
+----------------------------------------
+Index - (14):
+- Line:   4
+- Cursor: 113
+- Word:   [test]
+- Lexeme: [ test]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be?]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (15):
+- Line:   4
+- Cursor: 118
+- Word:   [template
+
+this]
+- Lexeme: [ template
+
+this]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 5
+- Last line number is at position 128
+----------------------------------------
+Index - (16):
+- Line:   5
+- Cursor: 133
+- Word:   [should]
+- Lexeme: [ should]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (17):
+- Line:   5
+- Cursor: 140
+- Word:   [output]
+- Lexeme: [ output]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test should]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (18):
+- Line:   5
+- Cursor: 147
+- Word:   [the]
+- Lexeme: [ the]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (19):
+- Line:   5
+- Cursor: 151
+- Word:   [start]
+- Lexeme: [ start]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (20):
+- Line:   5
+- Cursor: 157
+- Word:   [marker]
+- Lexeme: [ marker]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (21):
+- Line:   5
+- Cursor: 164
+- Word:   [<%%
+
+this]
+- Lexeme: [ <%%
+
+this]
+- State:  START_TAG
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 6
+- Last line number is at position 169
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+ESCAPED START - Add start tag to content
+----------------------------------------
+Index - (21):
+- Line:   6
+- Cursor: 174
+- Word:   [should]
+- Lexeme: [ should]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (22):
+- Line:   6
+- Cursor: 181
+- Word:   [output]
+- Lexeme: [ output]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (23):
+- Line:   6
+- Cursor: 188
+- Word:   [the]
+- Lexeme: [ the]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (24):
+- Line:   6
+- Cursor: 192
+- Word:   [end]
+- Lexeme: [ end]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (25):
+- Line:   6
+- Cursor: 196
+- Word:   [marker]
+- Lexeme: [ marker]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (26):
+- Line:   6
+- Cursor: 203
+- Word:   [%%>
+
+<%#]
+- Lexeme: [ %%>
+
+<%#]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 7
+- Last line number is at position 208
+----------------------------------------
+Index - (27):
+- Line:   7
+- Cursor: 212
+- Word:   [this]
+- Lexeme: [ this]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (28):
+- Line:   7
+- Cursor: 217
+- Word:   [should]
+- Lexeme: [ should]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (29):
+- Line:   7
+- Cursor: 224
+- Word:   [be]
+- Lexeme: [ be]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (30):
+- Line:   7
+- Cursor: 227
+- Word:   [a]
+- Lexeme: [ a]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (31):
+- Line:   7
+- Cursor: 229
+- Word:   [comment]
+- Lexeme: [ comment]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (32):
+- Line:   7
+- Cursor: 237
+- Word:   [#%>
+
+]
+- Lexeme: [ #%>
+
+]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 8
+- Last line number is at position 242
+----------------------------------------
+Index - (33):
+- Line:   8
+- Cursor: 243
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (34):
+- Line:   8
+- Cursor: 244
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 2
+----------------------------------------
+Index - (35):
+- Line:   8
+- Cursor: 245
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment  ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 3
+----------------------------------------
+Index - (36):
+- Line:   8
+- Cursor: 246
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment   ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 4
+----------------------------------------
+Index - (37):
+- Line:   8
+- Cursor: 247
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment    ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 5
+----------------------------------------
+Index - (38):
+- Line:   8
+- Cursor: 248
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment     ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 6
+----------------------------------------
+Index - (39):
+- Line:   8
+- Cursor: 249
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment      ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 7
+----------------------------------------
+Index - (40):
+- Line:   8
+- Cursor: 250
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment       ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 8
+----------------------------------------
+Index - (41):
+- Line:   8
+- Cursor: 251
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment        ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 9
+----------------------------------------
+Index - (42):
+- Line:   8
+- Cursor: 252
+- Word:   []
+- Lexeme: [ ]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment         ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Null - add a space to content
+- Adding to indent. Now 10
+----------------------------------------
+Index - (43):
+- Line:   8
+- Cursor: 253
+- Word:   [<%-]
+- Lexeme: [ <%-]
+- State:  TEXT
+- ---
+- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment          ]
+- Prefix:  [#]
+- Suffix:  [#]
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+@{
+    Content = ' code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment          '
+    RemainingWhiteSpace = ''
+    Prefix = '#'
+    Indent = 10
+    Suffix = ''
+    Number = 1
+    Start = 0
+    Type = 'text'
+    LineNumber = 8
+}
+
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = ' code: language=eps test  - What should this be? test should output the start marker <%%
+
+this should output the end marker this should be a comment          '
+    RemainingWhiteSpace = ''
+    Prefix = '#'
+    Indent = '10'
+    Suffix = ''
+    Number = 1
+    Start = 0
+    Type = 'text'
+    LineNumber = 8
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+STATE CHANGE: START_TAG
+----------------------------------------
+Index - (44):
+- Line:   8
+- Cursor: 257
+- Word:   [BLOCK]
+- Lexeme: [ BLOCK]
+- State:  START_TAG
+- ---
+- Content: []
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (45):
+- Line:   8
+- Cursor: 263
+- Word:   [friendly-greeting]
+- Lexeme: [ friendly-greeting]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (46):
+- Line:   8
+- Cursor: 281
+- Word:   [%>
+
+This]
+- Lexeme: [ %>
+
+This]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: line ending
+- Word has 1 newlines
+- Update lineNumber number to 9
+- Last line number is at position 285
+----------------------------------------
+Index - (47):
+- Line:   9
+- Cursor: 290
+- Word:   [should]
+- Lexeme: [ should]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (48):
+- Line:   9
+- Cursor: 297
+- Word:   [say]
+- Lexeme: [ say]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting should]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (49):
+- Line:   9
+- Cursor: 301
+- Word:   ['Hello]
+- Lexeme: [ 'Hello]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting should say]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (50):
+- Line:   9
+- Cursor: 308
+- Word:   [World!']
+- Lexeme: [ World!']
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting should say 'Hello]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (51):
+- Line:   9
+- Cursor: 316
+- Word:   [:]
+- Lexeme: [ :]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting should say 'Hello World!']
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (52):
+- Line:   9
+- Cursor: 318
+- Word:   [<%=]
+- Lexeme: [ <%=]
+- State:  START_TAG
+- ---
+- Content: [ BLOCK friendly-greeting should say 'Hello World!' :]
+- Prefix:  [-]
+- Suffix:  [-]
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Error Found start tag while in a template element **
+Index 52:
+-Content  BLOCK friendly-greeting should say 'Hello World!' :
+-Word <%=
+-Line 9:
+<%--- What should this be? ---%>
+
+--------------------------------------------------------------------------------
+-- End ConvertFrom-StencilTemplate
+--------------------------------------------------------------------------------
