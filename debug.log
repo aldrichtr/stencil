@@ -16,854 +16,2312 @@
 --------------------------------------------------------------------------------
 Template is 521 characters
 Template contains 32 lines
-- Looking for template tokens in content
 ----------------------------------------
 Index - (0):
 - Line:   0
 - Cursor: 0
+- Column: 0
 - Word:   [<%#]
-- Lexeme: [<%#]
+- Next:   [code:]
 - State:  TEXT
 - ---
 - Content: []
 - Prefix:  []
 - Suffix:  []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
-STATE CHANGE: START_TAG
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
 ----------------------------------------
 Index - (1):
 - Line:   0
 - Cursor: 3
+- Column: 3
 - Word:   [code:]
-- Lexeme: [ code:]
-- State:  START_TAG
+- Next:   [language=eps]
+- State:  OPEN
 - ---
 - Content: []
 - Prefix:  [#]
-- Suffix:  [#]
+- Suffix:  []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (2):
 - Line:   0
-- Cursor: 9
+- Cursor: 8
+- Column: 8
 - Word:   [language=eps]
-- Lexeme: [ language=eps]
-- State:  START_TAG
+- Next:   [#%>]
+- State:  ELMT
 - ---
-- Content: [ code:]
+- Content: [code:]
 - Prefix:  [#]
-- Suffix:  [#]
+- Suffix:  []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (3):
 - Line:   0
-- Cursor: 22
-- Word:   [#%>
-<%-
----
-title:]
-- Lexeme: [ #%>
-<%-
----
-title:]
-- State:  START_TAG
+- Cursor: 21
+- Column: 21
+- Word:   [#%>]
+- Next:   []
+- State:  ELMT
 - ---
-- Content: [ code: language=eps]
+- Content: [code: language=eps]
 - Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 1
-- Last line number is at position 34
-----------------------------------------
-Index - (4):
-- Line:   1
-- Cursor: 41
-- Word:   [test]
-- Lexeme: [ test]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (5):
-- Line:   1
-- Cursor: 46
-- Word:   [Template
-tags:
-]
-- Lexeme: [ Template
-tags:
-]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 2
-- Last line number is at position 61
-----------------------------------------
-Index - (6):
-- Line:   2
-- Cursor: 62
-- Word:   []
-- Lexeme: [ ]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- space after newline (add to indent)
-----------------------------------------
-Index - (7):
-- Line:   2
-- Cursor: 63
-- Word:   [-]
-- Lexeme: [ -]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (8):
-- Line:   2
-- Cursor: 65
-- Word:   [test
----
-%>
-
-<%---]
-- Lexeme: [ test
----
-%>
-
-<%---]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  -]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 3
-- Last line number is at position 78
-----------------------------------------
-Index - (9):
-- Line:   3
-- Cursor: 84
-- Word:   [What]
-- Lexeme: [ What]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  -]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (10):
-- Line:   3
-- Cursor: 89
-- Word:   [should]
-- Lexeme: [ should]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (11):
-- Line:   3
-- Cursor: 96
-- Word:   [this]
-- Lexeme: [ this]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (12):
-- Line:   3
-- Cursor: 101
-- Word:   [be?]
-- Lexeme: [ be?]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (13):
-- Line:   3
-- Cursor: 105
-- Word:   [---%>
-A]
-- Lexeme: [ ---%>
-A]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be?]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 4
-- Last line number is at position 111
-----------------------------------------
-Index - (14):
-- Line:   4
-- Cursor: 113
-- Word:   [test]
-- Lexeme: [ test]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be?]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (15):
-- Line:   4
-- Cursor: 118
-- Word:   [template
-
-this]
-- Lexeme: [ template
-
-this]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 5
-- Last line number is at position 128
-----------------------------------------
-Index - (16):
-- Line:   5
-- Cursor: 133
-- Word:   [should]
-- Lexeme: [ should]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (17):
-- Line:   5
-- Cursor: 140
-- Word:   [output]
-- Lexeme: [ output]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test should]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (18):
-- Line:   5
-- Cursor: 147
-- Word:   [the]
-- Lexeme: [ the]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (19):
-- Line:   5
-- Cursor: 151
-- Word:   [start]
-- Lexeme: [ start]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (20):
-- Line:   5
-- Cursor: 157
-- Word:   [marker]
-- Lexeme: [ marker]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (21):
-- Line:   5
-- Cursor: 164
-- Word:   [<%%
-
-this]
-- Lexeme: [ <%%
-
-this]
-- State:  START_TAG
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 6
-- Last line number is at position 169
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
-ESCAPED START - Add start tag to content
-----------------------------------------
-Index - (21):
-- Line:   6
-- Cursor: 174
-- Word:   [should]
-- Lexeme: [ should]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (22):
-- Line:   6
-- Cursor: 181
-- Word:   [output]
-- Lexeme: [ output]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (23):
-- Line:   6
-- Cursor: 188
-- Word:   [the]
-- Lexeme: [ the]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (24):
-- Line:   6
-- Cursor: 192
-- Word:   [end]
-- Lexeme: [ end]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (25):
-- Line:   6
-- Cursor: 196
-- Word:   [marker]
-- Lexeme: [ marker]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (26):
-- Line:   6
-- Cursor: 203
-- Word:   [%%>
-
-<%#]
-- Lexeme: [ %%>
-
-<%#]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 7
-- Last line number is at position 208
-----------------------------------------
-Index - (27):
-- Line:   7
-- Cursor: 212
-- Word:   [this]
-- Lexeme: [ this]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (28):
-- Line:   7
-- Cursor: 217
-- Word:   [should]
-- Lexeme: [ should]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (29):
-- Line:   7
-- Cursor: 224
-- Word:   [be]
-- Lexeme: [ be]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (30):
-- Line:   7
-- Cursor: 227
-- Word:   [a]
-- Lexeme: [ a]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (31):
-- Line:   7
-- Cursor: 229
-- Word:   [comment]
-- Lexeme: [ comment]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (32):
-- Line:   7
-- Cursor: 237
-- Word:   [#%>
-
-]
-- Lexeme: [ #%>
-
-]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 8
-- Last line number is at position 242
-----------------------------------------
-Index - (33):
-- Line:   8
-- Cursor: 243
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- space after newline (add to indent)
-----------------------------------------
-Index - (34):
-- Line:   8
-- Cursor: 244
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 2
-----------------------------------------
-Index - (35):
-- Line:   8
-- Cursor: 245
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment  ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 3
-----------------------------------------
-Index - (36):
-- Line:   8
-- Cursor: 246
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment   ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 4
-----------------------------------------
-Index - (37):
-- Line:   8
-- Cursor: 247
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment    ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 5
-----------------------------------------
-Index - (38):
-- Line:   8
-- Cursor: 248
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment     ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 6
-----------------------------------------
-Index - (39):
-- Line:   8
-- Cursor: 249
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment      ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 7
-----------------------------------------
-Index - (40):
-- Line:   8
-- Cursor: 250
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment       ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 8
-----------------------------------------
-Index - (41):
-- Line:   8
-- Cursor: 251
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment        ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 9
-----------------------------------------
-Index - (42):
-- Line:   8
-- Cursor: 252
-- Word:   []
-- Lexeme: [ ]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment         ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Null - add a space to content
-- Adding to indent. Now 10
-----------------------------------------
-Index - (43):
-- Line:   8
-- Cursor: 253
-- Word:   [<%-]
-- Lexeme: [ <%-]
-- State:  TEXT
-- ---
-- Content: [ code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment          ]
-- Prefix:  [#]
-- Suffix:  [#]
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
+- Suffix:  []
+MATCH: End Tag
 ** Create Token **
-@{
-    Content = ' code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment          '
-    RemainingWhiteSpace = ''
-    Prefix = '#'
-    Indent = 10
-    Suffix = ''
-    Number = 1
-    Start = 0
-    Type = 'text'
-    LineNumber = 8
-}
-
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = ' code: language=eps test  - What should this be? test should output the start marker <%%
-
-this should output the end marker this should be a comment          '
+    Content = 'code: language=eps'
     RemainingWhiteSpace = ''
     Prefix = '#'
-    Indent = '10'
-    Suffix = ''
+    Indent = '0'
+    Suffix = '#'
     Number = 1
     Start = 0
-    Type = 'text'
-    LineNumber = 8
+    Type = 'Expression'
+    LineNumber = 0
 }
 
 -- End New-TemplateToken
 --------------------------------------------------------------------------------
-STATE CHANGE: START_TAG
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
 ----------------------------------------
-Index - (44):
+Index - (4):
+- Line:   1
+- Cursor: 25
+- Column: 0
+- Word:   [<%-]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+----------------------------------------
+Index - (5):
+- Line:   2
+- Cursor: 29
+- Column: 0
+- Word:   [---]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (6):
+- Line:   3
+- Cursor: 33
+- Column: 0
+- Word:   [title:]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (7):
+- Line:   3
+- Cursor: 40
+- Column: 7
+- Word:   [test]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title:]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (8):
+- Line:   3
+- Cursor: 45
+- Column: 12
+- Word:   [Template]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (9):
+- Line:   4
+- Cursor: 54
+- Column: 0
+- Word:   [tags:]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (10):
+- Line:   5
+- Cursor: 60
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (11):
+- Line:   5
+- Cursor: 61
+- Column: 1
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+ ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 2
+----------------------------------------
+Index - (12):
+- Line:   5
+- Cursor: 62
+- Column: 2
+- Word:   [-]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+  ]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (13):
+- Line:   5
+- Cursor: 64
+- Column: 4
+- Word:   [test]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+   -]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (14):
+- Line:   6
+- Cursor: 69
+- Column: 0
+- Word:   [---]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+   - test
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (15):
+- Line:   7
+- Cursor: 73
+- Column: 0
+- Word:   [%>]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+   - test
+ ---
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+----------------------------------------
+Index - (16):
 - Line:   8
-- Cursor: 257
-- Word:   [BLOCK]
-- Lexeme: [ BLOCK]
-- State:  START_TAG
+- Cursor: 76
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+   - test
+ ---
+
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (17):
+- Line:   9
+- Cursor: 77
+- Column: 0
+- Word:   [<%---]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+
+ ---
+ title: test Template
+ tags:
+   - test
+ ---
+
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '
+
+ ---
+ title: test Template
+ tags:
+   - test
+ ---
+
+ 
+'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '1'
+    Suffix = ''
+    Number = 2
+    Start = 21
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (18):
+- Line:   9
+- Cursor: 83
+- Column: 6
+- Word:   [What]
+- Next:   []
+- State:  OPEN
 - ---
 - Content: []
-- Prefix:  [-]
-- Suffix:  [-]
+- Prefix:  [---]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (19):
+- Line:   9
+- Cursor: 87
+- Column: 10
+- Word:   [should]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [What]
+- Prefix:  [---]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (20):
+- Line:   9
+- Cursor: 94
+- Column: 17
+- Word:   [this]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [What should]
+- Prefix:  [---]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (21):
+- Line:   9
+- Cursor: 99
+- Column: 22
+- Word:   [be?]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [What should this]
+- Prefix:  [---]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (22):
+- Line:   9
+- Cursor: 103
+- Column: 26
+- Word:   [---%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [What should this be?]
+- Prefix:  [---]
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = 'What should this be?'
+    RemainingWhiteSpace = ''
+    Prefix = '---'
+    Indent = '0'
+    Suffix = '---'
+    Number = 3
+    Start = 77
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+----------------------------------------
+Index - (23):
+- Line:   10
+- Cursor: 109
+- Column: 0
+- Word:   [A]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (24):
+- Line:   10
+- Cursor: 111
+- Column: 2
+- Word:   [test]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (25):
+- Line:   10
+- Cursor: 116
+- Column: 7
+- Word:   [template]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (26):
+- Line:   11
+- Cursor: 125
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (27):
+- Line:   12
+- Cursor: 126
+- Column: 0
+- Word:   [this]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (28):
+- Line:   12
+- Cursor: 131
+- Column: 5
+- Word:   [should]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (29):
+- Line:   12
+- Cursor: 138
+- Column: 12
+- Word:   [output]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this should]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (30):
+- Line:   12
+- Cursor: 145
+- Column: 19
+- Word:   [the]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this should output]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (31):
+- Line:   12
+- Cursor: 149
+- Column: 23
+- Word:   [start]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (32):
+- Line:   12
+- Cursor: 155
+- Column: 29
+- Word:   [marker]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (33):
+- Line:   12
+- Cursor: 162
+- Column: 36
+- Word:   [<%%]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+ESCAPED START - Add start tag to content
+----------------------------------------
+Index - (33):
+- Line:   13
+- Cursor: 166
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  OPEN
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (34):
+- Line:   14
+- Cursor: 167
+- Column: 0
+- Word:   [this]
+- Next:   []
+- State:  OPEN
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (35):
+- Line:   14
+- Cursor: 172
+- Column: 5
+- Word:   [should]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (36):
+- Line:   14
+- Cursor: 179
+- Column: 12
+- Word:   [output]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (37):
+- Line:   14
+- Cursor: 186
+- Column: 19
+- Word:   [the]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (38):
+- Line:   14
+- Cursor: 190
+- Column: 23
+- Word:   [end]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (39):
+- Line:   14
+- Cursor: 194
+- Column: 27
+- Word:   [marker]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (40):
+- Line:   14
+- Cursor: 201
+- Column: 34
+- Word:   [%%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+ESCAPED END - Add end tag to content
+----------------------------------------
+Index - (40):
+- Line:   15
+- Cursor: 204
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (41):
+- Line:   16
+- Cursor: 205
+- Column: 0
+- Word:   [<%#]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Error Found start tag in element
+----------------------------------------
+Index - (42):
+- Line:   16
+- Cursor: 209
+- Column: 4
+- Word:   [this]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (43):
+- Line:   16
+- Cursor: 214
+- Column: 9
+- Word:   [should]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (44):
+- Line:   16
+- Cursor: 221
+- Column: 16
+- Word:   [be]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this should]
+- Prefix:  []
+- Suffix:  []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (45):
-- Line:   8
-- Cursor: 263
-- Word:   [friendly-greeting]
-- Lexeme: [ friendly-greeting]
-- State:  START_TAG
+- Line:   16
+- Cursor: 224
+- Column: 19
+- Word:   [a]
+- Next:   []
+- State:  ELMT
 - ---
-- Content: [ BLOCK]
-- Prefix:  [-]
-- Suffix:  [-]
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this should be]
+- Prefix:  []
+- Suffix:  []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (46):
-- Line:   8
-- Cursor: 281
-- Word:   [%>
-
-This]
-- Lexeme: [ %>
-
-This]
-- State:  START_TAG
+- Line:   16
+- Cursor: 226
+- Column: 21
+- Word:   [comment]
+- Next:   []
+- State:  ELMT
 - ---
-- Content: [ BLOCK friendly-greeting]
-- Prefix:  [-]
-- Suffix:  [-]
-MATCH: line ending
-- Word has 1 newlines
-- Update lineNumber number to 9
-- Last line number is at position 285
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this should be a]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
 ----------------------------------------
 Index - (47):
-- Line:   9
-- Cursor: 290
-- Word:   [should]
-- Lexeme: [ should]
-- State:  START_TAG
+- Line:   16
+- Cursor: 234
+- Column: 29
+- Word:   [#%>]
+- Next:   []
+- State:  ELMT
 - ---
-- Content: [ BLOCK friendly-greeting]
-- Prefix:  [-]
-- Suffix:  [-]
-MATCH: default
-Adding to content
+- Content: [
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this should be a comment]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '
+ A test template
+ 
+ this should output the start marker <%%
+ 
+ this should output the end marker %>
+ 
+ this should be a comment'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '0'
+    Suffix = '#'
+    Number = 4
+    Start = 103
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
 ----------------------------------------
 Index - (48):
-- Line:   9
-- Cursor: 297
-- Word:   [say]
-- Lexeme: [ say]
-- State:  START_TAG
+- Line:   17
+- Cursor: 238
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  CLOSE
 - ---
-- Content: [ BLOCK friendly-greeting should]
-- Prefix:  [-]
-- Suffix:  [-]
-MATCH: default
-Adding to content
+- Content: [
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
 ----------------------------------------
 Index - (49):
-- Line:   9
-- Cursor: 301
-- Word:   ['Hello]
-- Lexeme: [ 'Hello]
-- State:  START_TAG
+- Line:   18
+- Cursor: 239
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  CLOSE
 - ---
-- Content: [ BLOCK friendly-greeting should say]
-- Prefix:  [-]
-- Suffix:  [-]
-MATCH: default
-Adding to content
+- Content: [
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
 ----------------------------------------
 Index - (50):
-- Line:   9
-- Cursor: 308
-- Word:   [World!']
-- Lexeme: [ World!']
-- State:  START_TAG
+- Line:   18
+- Cursor: 240
+- Column: 1
+- Word:   []
+- Next:   []
+- State:  CLOSE
 - ---
-- Content: [ BLOCK friendly-greeting should say 'Hello]
-- Prefix:  [-]
-- Suffix:  [-]
-MATCH: default
-Adding to content
+- Content: [
+ 
+ ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 2
 ----------------------------------------
 Index - (51):
-- Line:   9
-- Cursor: 316
-- Word:   [:]
-- Lexeme: [ :]
-- State:  START_TAG
+- Line:   18
+- Cursor: 241
+- Column: 2
+- Word:   []
+- Next:   []
+- State:  CLOSE
 - ---
-- Content: [ BLOCK friendly-greeting should say 'Hello World!']
-- Prefix:  [-]
-- Suffix:  [-]
+- Content: [
+ 
+  ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 3
+----------------------------------------
+Index - (52):
+- Line:   18
+- Cursor: 242
+- Column: 3
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+   ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 4
+----------------------------------------
+Index - (53):
+- Line:   18
+- Cursor: 243
+- Column: 4
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+    ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 5
+----------------------------------------
+Index - (54):
+- Line:   18
+- Cursor: 244
+- Column: 5
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+     ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 6
+----------------------------------------
+Index - (55):
+- Line:   18
+- Cursor: 245
+- Column: 6
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+      ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 7
+----------------------------------------
+Index - (56):
+- Line:   18
+- Cursor: 246
+- Column: 7
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+       ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 8
+----------------------------------------
+Index - (57):
+- Line:   18
+- Cursor: 247
+- Column: 8
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+        ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 9
+----------------------------------------
+Index - (58):
+- Line:   18
+- Cursor: 248
+- Column: 9
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+         ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 10
+----------------------------------------
+Index - (59):
+- Line:   18
+- Cursor: 249
+- Column: 10
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+          ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 11
+----------------------------------------
+Index - (60):
+- Line:   18
+- Cursor: 250
+- Column: 11
+- Word:   [<%-]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+           ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+----------------------------------------
+Index - (61):
+- Line:   18
+- Cursor: 254
+- Column: 15
+- Word:   [BLOCK]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+           ]
+- Prefix:  []
+- Suffix:  []
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (52):
-- Line:   9
-- Cursor: 318
-- Word:   [<%=]
-- Lexeme: [ <%=]
-- State:  START_TAG
+Index - (62):
+- Line:   18
+- Cursor: 260
+- Column: 21
+- Word:   [friendly-greeting]
+- Next:   []
+- State:  TEXT
 - ---
-- Content: [ BLOCK friendly-greeting should say 'Hello World!' :]
-- Prefix:  [-]
-- Suffix:  [-]
+- Content: [
+ 
+            BLOCK]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (63):
+- Line:   18
+- Cursor: 278
+- Column: 39
+- Word:   [%>]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+----------------------------------------
+Index - (64):
+- Line:   19
+- Cursor: 281
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (65):
+- Line:   20
+- Cursor: 282
+- Column: 0
+- Word:   [This]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (66):
+- Line:   20
+- Cursor: 287
+- Column: 5
+- Word:   [should]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (67):
+- Line:   20
+- Cursor: 294
+- Column: 12
+- Word:   [say]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This should]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (68):
+- Line:   20
+- Cursor: 298
+- Column: 16
+- Word:   ['Hello]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This should say]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (69):
+- Line:   20
+- Cursor: 305
+- Column: 23
+- Word:   [World!']
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This should say 'Hello]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (70):
+- Line:   20
+- Cursor: 313
+- Column: 31
+- Word:   [:]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This should say 'Hello World!']
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (71):
+- Line:   20
+- Cursor: 315
+- Column: 33
+- Word:   [<%=]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+            BLOCK friendly-greeting
+ 
+ This should say 'Hello World!' :]
+- Prefix:  []
+- Suffix:  []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
-** Error Found start tag while in a template element **
-Index 52:
--Content  BLOCK friendly-greeting should say 'Hello World!' :
--Word <%=
--Line 9:
-<%--- What should this be? ---%>
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '
+ 
+            BLOCK friendly-greeting
+ 
+ This should say ''Hello World!'' :'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '0'
+    Suffix = ''
+    Number = 5
+    Start = 234
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (72):
+- Line:   20
+- Cursor: 319
+- Column: 37
+- Word:   [$Greeting]
+- Next:   []
+- State:  OPEN
+- ---
+- Content: []
+- Prefix:  [=]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (73):
+- Line:   20
+- Cursor: 328
+- Column: 46
+- Word:   [%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [$Greeting]
+- Prefix:  [=]
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '$Greeting'
+    RemainingWhiteSpace = ''
+    Prefix = '='
+    Indent = '0'
+    Suffix = ''
+    Number = 6
+    Start = 315
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+----------------------------------------
+Index - (74):
+- Line:   20
+- Cursor: 331
+- Column: 49
+- Word:   [World!]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: []
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (75):
+- Line:   21
+- Cursor: 337
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [World!
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (76):
+- Line:   22
+- Cursor: 338
+- Column: 0
+- Word:   [<%]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [World!
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = 'World!
+ 
+'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '1'
+    Suffix = ''
+    Number = 7
+    Start = 328
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (77):
+- Line:   22
+- Cursor: 341
+- Column: 3
+- Word:   [END]
+- Next:   []
+- State:  OPEN
+- ---
+- Content: []
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (78):
+- Line:   22
+- Cursor: 344
+- Column: 6
+- Word:   [%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [END]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = 'END'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '0'
+    Suffix = ''
+    Number = 8
+    Start = 338
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+----------------------------------------
+Index - (79):
+- Line:   23
+- Cursor: 347
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (80):
+- Line:   24
+- Cursor: 348
+- Column: 0
+- Word:   [Hope]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (81):
+- Line:   24
+- Cursor: 353
+- Column: 5
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ Hope]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+----------------------------------------
+Index - (82):
+- Line:   24
+- Cursor: 354
+- Column: 6
+- Word:   [you]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ Hope ]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (83):
+- Line:   24
+- Cursor: 358
+- Column: 10
+- Word:   [<%=]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ Hope  you]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '
+ 
+ Hope  you'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '0'
+    Suffix = ''
+    Number = 9
+    Start = 344
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (84):
+- Line:   24
+- Cursor: 362
+- Column: 14
+- Word:   [(echo]
+- Next:   []
+- State:  OPEN
+- ---
+- Content: []
+- Prefix:  [=]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (85):
+- Line:   24
+- Cursor: 367
+- Column: 19
+- Word:   ["all")]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [(echo]
+- Prefix:  [=]
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (86):
+- Line:   24
+- Cursor: 374
+- Column: 26
+- Word:   [%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [(echo "all")]
+- Prefix:  [=]
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '(echo "all")'
+    RemainingWhiteSpace = ''
+    Prefix = '='
+    Indent = '0'
+    Suffix = ''
+    Number = 10
+    Start = 358
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+----------------------------------------
+Index - (87):
+- Line:   24
+- Cursor: 377
+- Column: 29
+- Word:   [have]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: []
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (88):
+- Line:   24
+- Cursor: 381
+- Column: 33
+- Word:   [a]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [have]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (89):
+- Line:   24
+- Cursor: 383
+- Column: 35
+- Word:   [nice]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [have a]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (90):
+- Line:   24
+- Cursor: 388
+- Column: 40
+- Word:   [day]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [have a nice]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (91):
+- Line:   25
+- Cursor: 392
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [have a nice day
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (92):
+- Line:   26
+- Cursor: 393
+- Column: 0
+- Word:   [<%]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [have a nice day
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = 'have a nice day
+ 
+'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '1'
+    Suffix = ''
+    Number = 11
+    Start = 374
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (93):
+- Line:   26
+- Cursor: 396
+- Column: 3
+- Word:   [foreach]
+- Next:   []
+- State:  OPEN
+- ---
+- Content: []
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (94):
+- Line:   26
+- Cursor: 403
+- Column: 10
+- Word:   [($item]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (95):
+- Line:   26
+- Cursor: 410
+- Column: 17
+- Word:   [in]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (96):
+- Line:   26
+- Cursor: 413
+- Column: 20
+- Word:   [$items)]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (97):
+- Line:   26
+- Cursor: 421
+- Column: 28
+- Word:   [{]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items)]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (98):
+- Line:   27
+- Cursor: 423
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (99):
+- Line:   27
+- Cursor: 424
+- Column: 1
+- Word:   []
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+ ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 2
+----------------------------------------
+Index - (100):
+- Line:   27
+- Cursor: 425
+- Column: 2
+- Word:   []
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+  ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 3
+----------------------------------------
+Index - (101):
+- Line:   27
+- Cursor: 426
+- Column: 3
+- Word:   []
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+   ]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- Adding to indent. Now 4
+----------------------------------------
+Index - (102):
+- Line:   27
+- Cursor: 427
+- Column: 4
+- Word:   [Write-Output]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+    ]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (103):
+- Line:   27
+- Cursor: 440
+- Column: 17
+- Word:   [$item]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+     Write-Output]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (104):
+- Line:   28
+- Cursor: 446
+- Column: 0
+- Word:   [}]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+     Write-Output $item
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (105):
+- Line:   28
+- Cursor: 448
+- Column: 2
+- Word:   [%>]
+- Next:   []
+- State:  ELMT
+- ---
+- Content: [foreach ($item in $items) {
+     Write-Output $item
+ }]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = 'foreach ($item in $items) {
+     Write-Output $item
+ }'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '0'
+    Suffix = ''
+    Number = 12
+    Start = 393
+    Type = 'Expression'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+----------------------------------------
+Index - (106):
+- Line:   29
+- Cursor: 451
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (107):
+- Line:   30
+- Cursor: 452
+- Column: 0
+- Word:   [<%-]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+----------------------------------------
+Index - (108):
+- Line:   30
+- Cursor: 456
+- Column: 4
+- Word:   [INCLUDE]
+- Next:   []
+- State:  CLOSE
+- ---
+- Content: [
+ 
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (109):
+- Line:   30
+- Cursor: 464
+- Column: 12
+- Word:   ['section-footer.pst1']
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (110):
+- Line:   30
+- Cursor: 486
+- Column: 34
+- Word:   [-Test1]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE 'section-footer.pst1']
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (111):
+- Line:   30
+- Cursor: 493
+- Column: 41
+- Word:   [-Encoding]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE 'section-footer.pst1' -Test1]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (112):
+- Line:   30
+- Cursor: 503
+- Column: 51
+- Word:   [UTF8]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE 'section-footer.pst1' -Test1 -Encoding]
+- Prefix:  []
+- Suffix:  []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (113):
+- Line:   30
+- Cursor: 508
+- Column: 56
+- Word:   [%>]
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8]
+- Prefix:  []
+- Suffix:  []
+MATCH: End Tag
+----------------------------------------
+Index - (114):
+- Line:   31
+- Cursor: 511
+- Column: 0
+- Word:   []
+- Next:   []
+- State:  TEXT
+- ---
+- Content: [
+ 
+ INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8
+]
+- Prefix:  []
+- Suffix:  []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+Reached End of input
+
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Content = '
+ 
+ INCLUDE ''section-footer.pst1'' -Test1 -Encoding UTF8
+ 
+'
+    RemainingWhiteSpace = ''
+    Prefix = ''
+    Indent = '1'
+    Suffix = ''
+    Number = 13
+    Start = 448
+    Type = 'text'
+    LineNumber = 0
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Convert-StringToToken
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 -- End ConvertFrom-StencilTemplate
