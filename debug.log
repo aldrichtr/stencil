@@ -16,18 +16,24 @@
 --------------------------------------------------------------------------------
 Template is 521 characters
 Template contains 32 lines
+=================================== Line 000 ====================================
+<%# code: language=eps #%>
 ----------------------------------------
 Index - (0):
-- Line:   0
-- Cursor: 0
-- Column: 0
-- Word:   [<%#]
-- Next:   [code:]
-- State:  TEXT
+- Order:     0
+- Line:      0
+- Cursor:    0
+- Column:    0
 - ---
-- Content: []
-- Prefix:  []
-- Suffix:  []
+- WordCount: 0
+- Previous:  []
+- Word:      [<%#] <---
+- Next:      [code:]
+- ---
+- State:     TEXT
+- Content:   []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 
 --------------------------------------------------------------------------------
@@ -40,59 +46,72 @@ MATCH: Start tag (^<%(?<rightOf>\S+)?)
 STATE CHANGE: OPEN
 ----------------------------------------
 Index - (1):
-- Line:   0
-- Cursor: 3
-- Column: 3
-- Word:   [code:]
-- Next:   [language=eps]
-- State:  OPEN
+- Order:     1
+- Line:      0
+- Cursor:    3
+- Column:    3
 - ---
-- Content: []
-- Prefix:  [#]
-- Suffix:  []
+- WordCount: 1
+- Previous:  [<%#]
+- Word:      [code:] <---
+- Next:      [language=eps]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [#]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (2):
-- Line:   0
-- Cursor: 8
-- Column: 8
-- Word:   [language=eps]
-- Next:   [#%>]
-- State:  ELMT
+- Order:     1
+- Line:      0
+- Cursor:    8
+- Column:    8
 - ---
-- Content: [code:]
-- Prefix:  [#]
-- Suffix:  []
+- WordCount: 2
+- Previous:  [code:]
+- Word:      [language=eps] <---
+- Next:      [#%>]
+- ---
+- State:     ELMT
+- Content:   [code:]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (3):
-- Line:   0
-- Cursor: 21
-- Column: 21
-- Word:   [#%>]
-- Next:   []
-- State:  ELMT
+- Order:     1
+- Line:      0
+- Cursor:    21
+- Column:    21
 - ---
-- Content: [code: language=eps]
-- Prefix:  [#]
-- Suffix:  []
+- WordCount: 3
+- Previous:  [language=eps]
+- Word:      [#%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [code: language=eps]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = 'code: language=eps'
-    RemainingWhiteSpace = ''
-    Prefix = '#'
-    Indent = '0'
-    Suffix = '#'
-    Number = 1
-    Start = 0
-    Type = 'Expression'
+    Type = 'elmt'
+    Order = 1
     LineNumber = 0
+    Start = 0
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = '#'
+    Suffix = '#'
+    Content = 'code: language=eps'
 }
 
 -- End New-TemplateToken
@@ -106,288 +125,401 @@ Received : @{
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 001 ====================================
+<%-
 ----------------------------------------
 Index - (4):
-- Line:   1
-- Cursor: 25
-- Column: 0
-- Word:   [<%-]
-- Next:   []
-- State:  CLOSE
+- Order:     2
+- Line:      1
+- Cursor:    25
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  [#%>]
+- Word:      [<%-] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
 ]
-- Prefix:  []
-- Suffix:  []
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
-----------------------------------------
-Index - (5):
-- Line:   2
-- Cursor: 29
-- Column: 0
-- Word:   [---]
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
-
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (6):
-- Line:   3
-- Cursor: 33
-- Column: 0
-- Word:   [title:]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (7):
-- Line:   3
-- Cursor: 40
-- Column: 7
-- Word:   [test]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title:]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (8):
-- Line:   3
-- Cursor: 45
-- Column: 12
-- Word:   [Template]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (9):
-- Line:   4
-- Cursor: 54
-- Column: 0
-- Word:   [tags:]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (10):
-- Line:   5
-- Cursor: 60
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
-----------------------------------------
-Index - (11):
-- Line:   5
-- Cursor: 61
-- Column: 1
-- Word:   []
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
- ]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- Adding to indent. Now 2
-----------------------------------------
-Index - (12):
-- Line:   5
-- Cursor: 62
-- Column: 2
-- Word:   [-]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-  ]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (13):
-- Line:   5
-- Cursor: 64
-- Column: 4
-- Word:   [test]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-   -]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (14):
-- Line:   6
-- Cursor: 69
-- Column: 0
-- Word:   [---]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-   - test
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (15):
-- Line:   7
-- Cursor: 73
-- Column: 0
-- Word:   [%>]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-   - test
- ---
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: End Tag
-----------------------------------------
-Index - (16):
-- Line:   8
-- Cursor: 76
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-   - test
- ---
-
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
-----------------------------------------
-Index - (17):
-- Line:   9
-- Cursor: 77
-- Column: 0
-- Word:   [<%---]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
-
- ---
- title: test Template
- tags:
-   - test
- ---
-
- 
-]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 2
+    LineNumber = 1
+    Start = 21
+    RemainingWhiteSpace = ''
+    Indent = ''
+    Prefix = ''
+    Suffix = ''
     Content = '
+'
+}
 
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+================================================================================
+=================================== Line 002 ====================================
+---
+----------------------------------------
+Index - (5):
+- Order:     3
+- Line:      2
+- Cursor:    29
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [<%-]
+- Word:      [---] <---
+- Next:      []
+- ---
+- State:     OPEN
+- Content:   [
+]
+- Prefix:    [-]
+- Suffix:    []
+STATE CHANGE: ELMT
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 003 ====================================
+title: test Template
+----------------------------------------
+Index - (6):
+- Order:     3
+- Line:      3
+- Cursor:    33
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [---]
+- Word:      [title:] <---
+- Next:      [test]
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (7):
+- Order:     3
+- Line:      3
+- Cursor:    40
+- Column:    7
+- ---
+- WordCount: 1
+- Previous:  [title:]
+- Word:      [test] <---
+- Next:      [Template]
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title:]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (8):
+- Order:     3
+- Line:      3
+- Cursor:    45
+- Column:    12
+- ---
+- WordCount: 2
+- Previous:  [test]
+- Word:      [Template] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 004 ====================================
+tags:
+----------------------------------------
+Index - (9):
+- Order:     3
+- Line:      4
+- Cursor:    54
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [Template]
+- Word:      [tags:] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 005 ====================================
+  - test
+----------------------------------------
+Index - (10):
+- Order:     3
+- Line:      5
+- Cursor:    60
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [tags:]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+ tags:
+]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+----------------------------------------
+Index - (11):
+- Order:     3
+- Line:      5
+- Cursor:    61
+- Column:    1
+- ---
+- WordCount: 1
+- Previous:  []
+- Word:      [] <---
+- Next:      [-]
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+ tags:
+ ]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: Null - add a space to content
+- Adding to indent. Now 2
+----------------------------------------
+Index - (12):
+- Order:     3
+- Line:      5
+- Cursor:    62
+- Column:    2
+- ---
+- WordCount: 2
+- Previous:  []
+- Word:      [-] <---
+- Next:      [test]
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+ tags:
+  ]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (13):
+- Order:     3
+- Line:      5
+- Cursor:    64
+- Column:    4
+- ---
+- WordCount: 3
+- Previous:  [-]
+- Word:      [test] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+ tags:
+   -]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 006 ====================================
+---
+----------------------------------------
+Index - (14):
+- Order:     3
+- Line:      6
+- Cursor:    69
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [test]
+- Word:      [---] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
+ ---
+ title: test Template
+ tags:
+   - test
+]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 007 ====================================
+%>
+----------------------------------------
+Index - (15):
+- Order:     3
+- Line:      7
+- Cursor:    73
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [---]
+- Word:      [%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
  ---
  title: test Template
  tags:
    - test
  ---
+]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: End Tag
+** Create Token **
 
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'elmt'
+    Order = 3
+    LineNumber = 7
+    Start = 25
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = '-'
+    Suffix = ''
+    Content = '
+ ---
+ title: test Template
+ tags:
+   - test
+ ---
+'
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 008 ====================================
+
+----------------------------------------
+Index - (16):
+- Order:     4
+- Line:      8
+- Cursor:    76
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 009 ====================================
+<%--- What should this be? ---%>
+----------------------------------------
+Index - (17):
+- Order:     4
+- Line:      9
+- Cursor:    77
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [<%---] <---
+- Next:      [What]
+- ---
+- State:     CLOSE
+- Content:   [
+ 
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'text'
+    Order = 4
+    LineNumber = 9
+    Start = 73
+    RemainingWhiteSpace = ''
+    Indent = '1'
+    Prefix = ''
+    Suffix = ''
+    Content = '
  
 '
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '1'
-    Suffix = ''
-    Number = 2
-    Start = 21
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -403,87 +535,108 @@ Received : @{
 STATE CHANGE: OPEN
 ----------------------------------------
 Index - (18):
-- Line:   9
-- Cursor: 83
-- Column: 6
-- Word:   [What]
-- Next:   []
-- State:  OPEN
+- Order:     5
+- Line:      9
+- Cursor:    83
+- Column:    6
 - ---
-- Content: []
-- Prefix:  [---]
-- Suffix:  []
+- WordCount: 1
+- Previous:  [<%---]
+- Word:      [What] <---
+- Next:      [should]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [---]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (19):
-- Line:   9
-- Cursor: 87
-- Column: 10
-- Word:   [should]
-- Next:   []
-- State:  ELMT
+- Order:     5
+- Line:      9
+- Cursor:    87
+- Column:    10
 - ---
-- Content: [What]
-- Prefix:  [---]
-- Suffix:  []
+- WordCount: 2
+- Previous:  [What]
+- Word:      [should] <---
+- Next:      [this]
+- ---
+- State:     ELMT
+- Content:   [What]
+- Prefix:    [---]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (20):
-- Line:   9
-- Cursor: 94
-- Column: 17
-- Word:   [this]
-- Next:   []
-- State:  ELMT
+- Order:     5
+- Line:      9
+- Cursor:    94
+- Column:    17
 - ---
-- Content: [What should]
-- Prefix:  [---]
-- Suffix:  []
+- WordCount: 3
+- Previous:  [should]
+- Word:      [this] <---
+- Next:      [be?]
+- ---
+- State:     ELMT
+- Content:   [What should]
+- Prefix:    [---]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (21):
-- Line:   9
-- Cursor: 99
-- Column: 22
-- Word:   [be?]
-- Next:   []
-- State:  ELMT
+- Order:     5
+- Line:      9
+- Cursor:    99
+- Column:    22
 - ---
-- Content: [What should this]
-- Prefix:  [---]
-- Suffix:  []
+- WordCount: 4
+- Previous:  [this]
+- Word:      [be?] <---
+- Next:      [---%>]
+- ---
+- State:     ELMT
+- Content:   [What should this]
+- Prefix:    [---]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (22):
-- Line:   9
-- Cursor: 103
-- Column: 26
-- Word:   [---%>]
-- Next:   []
-- State:  ELMT
+- Order:     5
+- Line:      9
+- Cursor:    103
+- Column:    26
 - ---
-- Content: [What should this be?]
-- Prefix:  [---]
-- Suffix:  []
+- WordCount: 5
+- Previous:  [be?]
+- Word:      [---%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [What should this be?]
+- Prefix:    [---]
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = 'What should this be?'
-    RemainingWhiteSpace = ''
-    Prefix = '---'
-    Indent = '0'
-    Suffix = '---'
-    Number = 3
+    Type = 'elmt'
+    Order = 5
+    LineNumber = 9
     Start = 77
-    Type = 'Expression'
-    LineNumber = 0
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = '---'
+    Suffix = '---'
+    Content = 'What should this be?'
 }
 
 -- End New-TemplateToken
@@ -497,524 +650,657 @@ Received : @{
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 010 ====================================
+A test template
 ----------------------------------------
 Index - (23):
-- Line:   10
-- Cursor: 109
-- Column: 0
-- Word:   [A]
-- Next:   []
-- State:  CLOSE
+- Order:     6
+- Line:      10
+- Cursor:    109
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  [---%>]
+- Word:      [A] <---
+- Next:      [test]
+- ---
+- State:     CLOSE
+- Content:   [
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: TEXT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (24):
-- Line:   10
-- Cursor: 111
-- Column: 2
-- Word:   [test]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      10
+- Cursor:    111
+- Column:    2
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  [A]
+- Word:      [test] <---
+- Next:      [template]
+- ---
+- State:     TEXT
+- Content:   [
  A]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (25):
-- Line:   10
-- Cursor: 116
-- Column: 7
-- Word:   [template]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      10
+- Cursor:    116
+- Column:    7
 - ---
-- Content: [
+- WordCount: 2
+- Previous:  [test]
+- Word:      [template] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [
  A test]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
+================================================================================
+=================================== Line 011 ====================================
+
 ----------------------------------------
 Index - (26):
-- Line:   11
-- Cursor: 125
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      11
+- Cursor:    125
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  [template]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [
  A test template
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - space after newline (add to indent)
+================================================================================
+=================================== Line 012 ====================================
+this should output the start marker <%%
 ----------------------------------------
 Index - (27):
-- Line:   12
-- Cursor: 126
-- Column: 0
-- Word:   [this]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    126
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  []
+- Word:      [this] <---
+- Next:      [should]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (28):
-- Line:   12
-- Cursor: 131
-- Column: 5
-- Word:   [should]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    131
+- Column:    5
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  [this]
+- Word:      [should] <---
+- Next:      [output]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (29):
-- Line:   12
-- Cursor: 138
-- Column: 12
-- Word:   [output]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    138
+- Column:    12
 - ---
-- Content: [
+- WordCount: 2
+- Previous:  [should]
+- Word:      [output] <---
+- Next:      [the]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this should]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (30):
-- Line:   12
-- Cursor: 145
-- Column: 19
-- Word:   [the]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    145
+- Column:    19
 - ---
-- Content: [
+- WordCount: 3
+- Previous:  [output]
+- Word:      [the] <---
+- Next:      [start]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this should output]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (31):
-- Line:   12
-- Cursor: 149
-- Column: 23
-- Word:   [start]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    149
+- Column:    23
 - ---
-- Content: [
+- WordCount: 4
+- Previous:  [the]
+- Word:      [start] <---
+- Next:      [marker]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this should output the]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (32):
-- Line:   12
-- Cursor: 155
-- Column: 29
-- Word:   [marker]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    155
+- Column:    29
 - ---
-- Content: [
+- WordCount: 5
+- Previous:  [start]
+- Word:      [marker] <---
+- Next:      [<%%]
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this should output the start]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (33):
-- Line:   12
-- Cursor: 162
-- Column: 36
-- Word:   [<%%]
-- Next:   []
-- State:  TEXT
+- Order:     6
+- Line:      12
+- Cursor:    162
+- Column:    36
 - ---
-- Content: [
+- WordCount: 6
+- Previous:  [marker]
+- Word:      [<%%] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [
  A test template
  
  this should output the start marker]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ESCAPED START - Add start tag to content
+================================================================================
+=================================== Line 013 ====================================
+
 ----------------------------------------
 Index - (33):
-- Line:   13
-- Cursor: 166
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  OPEN
+- Order:     6
+- Line:      13
+- Cursor:    166
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  [marker]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     OPEN
+- Content:   [
  A test template
  
  this should output the start marker <%%
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - space after newline (add to indent)
+================================================================================
+=================================== Line 014 ====================================
+this should output the end marker %%>
 ----------------------------------------
 Index - (34):
-- Line:   14
-- Cursor: 167
-- Column: 0
-- Word:   [this]
-- Next:   []
-- State:  OPEN
+- Order:     6
+- Line:      14
+- Cursor:    167
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  []
+- Word:      [this] <---
+- Next:      [should]
+- ---
+- State:     OPEN
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (35):
-- Line:   14
-- Cursor: 172
-- Column: 5
-- Word:   [should]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    172
+- Column:    5
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  [this]
+- Word:      [should] <---
+- Next:      [output]
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (36):
-- Line:   14
-- Cursor: 179
-- Column: 12
-- Word:   [output]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    179
+- Column:    12
 - ---
-- Content: [
+- WordCount: 2
+- Previous:  [should]
+- Word:      [output] <---
+- Next:      [the]
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this should]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (37):
-- Line:   14
-- Cursor: 186
-- Column: 19
-- Word:   [the]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    186
+- Column:    19
 - ---
-- Content: [
+- WordCount: 3
+- Previous:  [output]
+- Word:      [the] <---
+- Next:      [end]
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this should output]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (38):
-- Line:   14
-- Cursor: 190
-- Column: 23
-- Word:   [end]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    190
+- Column:    23
 - ---
-- Content: [
+- WordCount: 4
+- Previous:  [the]
+- Word:      [end] <---
+- Next:      [marker]
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this should output the]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (39):
-- Line:   14
-- Cursor: 194
-- Column: 27
-- Word:   [marker]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    194
+- Column:    27
 - ---
-- Content: [
+- WordCount: 5
+- Previous:  [end]
+- Word:      [marker] <---
+- Next:      [%%>]
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this should output the end]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (40):
-- Line:   14
-- Cursor: 201
-- Column: 34
-- Word:   [%%>]
-- Next:   []
-- State:  ELMT
+- Order:     6
+- Line:      14
+- Cursor:    201
+- Column:    34
 - ---
-- Content: [
+- WordCount: 6
+- Previous:  [marker]
+- Word:      [%%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [
  A test template
  
  this should output the start marker <%%
  
  this should output the end marker]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: End Tag
 ESCAPED END - Add end tag to content
-----------------------------------------
-Index - (40):
-- Line:   15
-- Cursor: 204
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  ELMT
-- ---
-- Content: [
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'elmt'
+    Order = 6
+    LineNumber = 14
+    Start = 103
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = ''
+    Suffix = ''
+    Content = '
  A test template
  
  this should output the start marker <%%
  
- this should output the end marker %>
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+ this should output the end marker %>'
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 015 ====================================
+
 ----------------------------------------
 Index - (41):
-- Line:   16
-- Cursor: 205
-- Column: 0
-- Word:   [<%#]
-- Next:   []
-- State:  ELMT
+- Order:     7
+- Line:      15
+- Cursor:    204
+- Column:    0
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
+- WordCount: 0
+- Previous:  [%%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
 ]
-- Prefix:  []
-- Suffix:  []
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
-** Error Found start tag in element
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 016 ====================================
+<%# this should be a comment #%>
 ----------------------------------------
 Index - (42):
-- Line:   16
-- Cursor: 209
-- Column: 4
-- Word:   [this]
-- Next:   []
-- State:  ELMT
+- Order:     7
+- Line:      16
+- Cursor:    205
+- Column:    0
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
+- WordCount: 0
+- Previous:  []
+- Word:      [<%#] <---
+- Next:      [this]
+- ---
+- State:     CLOSE
+- Content:   [
  
 ]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
+- Prefix:    []
+- Suffix:    []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'text'
+    Order = 7
+    LineNumber = 16
+    Start = 201
+    RemainingWhiteSpace = ''
+    Indent = '1'
+    Prefix = ''
+    Suffix = ''
+    Content = '
+ 
+'
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
 ----------------------------------------
 Index - (43):
-- Line:   16
-- Cursor: 214
-- Column: 9
-- Word:   [should]
-- Next:   []
-- State:  ELMT
+- Order:     8
+- Line:      16
+- Cursor:    209
+- Column:    4
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 1
+- Previous:  [<%#]
+- Word:      [this] <---
+- Next:      [should]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [#]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (44):
-- Line:   16
-- Cursor: 221
-- Column: 16
-- Word:   [be]
-- Next:   []
-- State:  ELMT
+- Order:     8
+- Line:      16
+- Cursor:    213
+- Column:    8
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this should]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 2
+- Previous:  [this]
+- Word:      [should] <---
+- Next:      [be]
+- ---
+- State:     ELMT
+- Content:   [this]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (45):
-- Line:   16
-- Cursor: 224
-- Column: 19
-- Word:   [a]
-- Next:   []
-- State:  ELMT
+- Order:     8
+- Line:      16
+- Cursor:    220
+- Column:    15
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this should be]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 3
+- Previous:  [should]
+- Word:      [be] <---
+- Next:      [a]
+- ---
+- State:     ELMT
+- Content:   [this should]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (46):
-- Line:   16
-- Cursor: 226
-- Column: 21
-- Word:   [comment]
-- Next:   []
-- State:  ELMT
+- Order:     8
+- Line:      16
+- Cursor:    223
+- Column:    18
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this should be a]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 4
+- Previous:  [be]
+- Word:      [a] <---
+- Next:      [comment]
+- ---
+- State:     ELMT
+- Content:   [this should be]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (47):
-- Line:   16
-- Cursor: 234
-- Column: 29
-- Word:   [#%>]
-- Next:   []
-- State:  ELMT
+- Order:     8
+- Line:      16
+- Cursor:    225
+- Column:    20
 - ---
-- Content: [
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this should be a comment]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 5
+- Previous:  [a]
+- Word:      [comment] <---
+- Next:      [#%>]
+- ---
+- State:     ELMT
+- Content:   [this should be a]
+- Prefix:    [#]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (48):
+- Order:     8
+- Line:      16
+- Cursor:    233
+- Column:    28
+- ---
+- WordCount: 6
+- Previous:  [comment]
+- Word:      [#%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [this should be a comment]
+- Prefix:    [#]
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = '
- A test template
- 
- this should output the start marker <%%
- 
- this should output the end marker %>
- 
- this should be a comment'
+    Type = 'elmt'
+    Order = 8
+    LineNumber = 16
+    Start = 205
     RemainingWhiteSpace = ''
-    Prefix = ''
     Indent = '0'
+    Prefix = '#'
     Suffix = '#'
-    Number = 4
-    Start = 103
-    Type = 'Expression'
-    LineNumber = 0
+    Content = 'this should be a comment'
 }
 
 -- End New-TemplateToken
@@ -1028,419 +1314,561 @@ Received : @{
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
-----------------------------------------
-Index - (48):
-- Line:   17
-- Cursor: 238
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+================================================================================
+=================================== Line 017 ====================================
+
 ----------------------------------------
 Index - (49):
-- Line:   18
-- Cursor: 239
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  CLOSE
+- Order:     9
+- Line:      17
+- Cursor:    237
+- Column:    0
 - ---
-- Content: [
+- WordCount: 0
+- Previous:  [#%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 018 ====================================
+           <%- BLOCK friendly-greeting %>
+----------------------------------------
+Index - (50):
+- Order:     9
+- Line:      18
+- Cursor:    238
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - space after newline (add to indent)
 ----------------------------------------
-Index - (50):
-- Line:   18
-- Cursor: 240
-- Column: 1
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (51):
+- Order:     9
+- Line:      18
+- Cursor:    239
+- Column:    1
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
  ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 2
 ----------------------------------------
-Index - (51):
-- Line:   18
-- Cursor: 241
-- Column: 2
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (52):
+- Order:     9
+- Line:      18
+- Cursor:    240
+- Column:    2
 - ---
-- Content: [
+- WordCount: 2
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
   ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 3
 ----------------------------------------
-Index - (52):
-- Line:   18
-- Cursor: 242
-- Column: 3
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (53):
+- Order:     9
+- Line:      18
+- Cursor:    241
+- Column:    3
 - ---
-- Content: [
+- WordCount: 3
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
    ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 4
 ----------------------------------------
-Index - (53):
-- Line:   18
-- Cursor: 243
-- Column: 4
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (54):
+- Order:     9
+- Line:      18
+- Cursor:    242
+- Column:    4
 - ---
-- Content: [
+- WordCount: 4
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
     ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 5
 ----------------------------------------
-Index - (54):
-- Line:   18
-- Cursor: 244
-- Column: 5
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (55):
+- Order:     9
+- Line:      18
+- Cursor:    243
+- Column:    5
 - ---
-- Content: [
+- WordCount: 5
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
      ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 6
 ----------------------------------------
-Index - (55):
-- Line:   18
-- Cursor: 245
-- Column: 6
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (56):
+- Order:     9
+- Line:      18
+- Cursor:    244
+- Column:    6
 - ---
-- Content: [
+- WordCount: 6
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
       ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 7
 ----------------------------------------
-Index - (56):
-- Line:   18
-- Cursor: 246
-- Column: 7
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (57):
+- Order:     9
+- Line:      18
+- Cursor:    245
+- Column:    7
 - ---
-- Content: [
+- WordCount: 7
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
        ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 8
 ----------------------------------------
-Index - (57):
-- Line:   18
-- Cursor: 247
-- Column: 8
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (58):
+- Order:     9
+- Line:      18
+- Cursor:    246
+- Column:    8
 - ---
-- Content: [
+- WordCount: 8
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
         ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 9
 ----------------------------------------
-Index - (58):
-- Line:   18
-- Cursor: 248
-- Column: 9
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (59):
+- Order:     9
+- Line:      18
+- Cursor:    247
+- Column:    9
 - ---
-- Content: [
+- WordCount: 9
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
  
          ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 10
 ----------------------------------------
-Index - (59):
-- Line:   18
-- Cursor: 249
-- Column: 10
-- Word:   []
-- Next:   []
-- State:  CLOSE
+Index - (60):
+- Order:     9
+- Line:      18
+- Cursor:    248
+- Column:    10
 - ---
-- Content: [
+- WordCount: 10
+- Previous:  []
+- Word:      [] <---
+- Next:      [<%-]
+- ---
+- State:     CLOSE
+- Content:   [
  
           ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 11
 ----------------------------------------
-Index - (60):
-- Line:   18
-- Cursor: 250
-- Column: 11
-- Word:   [<%-]
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
- 
-           ]
-- Prefix:  []
-- Suffix:  []
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
-----------------------------------------
 Index - (61):
-- Line:   18
-- Cursor: 254
-- Column: 15
-- Word:   [BLOCK]
-- Next:   []
-- State:  CLOSE
+- Order:     9
+- Line:      18
+- Cursor:    249
+- Column:    11
 - ---
-- Content: [
+- WordCount: 11
+- Previous:  []
+- Word:      [<%-] <---
+- Next:      [BLOCK]
+- ---
+- State:     CLOSE
+- Content:   [
  
            ]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
+- Prefix:    []
+- Suffix:    []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'text'
+    Order = 9
+    LineNumber = 18
+    Start = 233
+    RemainingWhiteSpace = ''
+    Indent = '11'
+    Prefix = ''
+    Suffix = ''
+    Content = '
+ 
+           '
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: OPEN
 ----------------------------------------
 Index - (62):
-- Line:   18
-- Cursor: 260
-- Column: 21
-- Word:   [friendly-greeting]
-- Next:   []
-- State:  TEXT
+- Order:     10
+- Line:      18
+- Cursor:    253
+- Column:    15
 - ---
-- Content: [
- 
-            BLOCK]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 12
+- Previous:  [<%-]
+- Word:      [BLOCK] <---
+- Next:      [friendly-greeting]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [-]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (63):
-- Line:   18
-- Cursor: 278
-- Column: 39
-- Word:   [%>]
-- Next:   []
-- State:  TEXT
+- Order:     10
+- Line:      18
+- Cursor:    258
+- Column:    20
 - ---
-- Content: [
- 
-            BLOCK friendly-greeting]
-- Prefix:  []
-- Suffix:  []
-MATCH: End Tag
-----------------------------------------
-Index - (64):
-- Line:   19
-- Cursor: 281
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
+- WordCount: 13
+- Previous:  [BLOCK]
+- Word:      [friendly-greeting] <---
+- Next:      [%>]
 - ---
-- Content: [
- 
-            BLOCK friendly-greeting
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
-----------------------------------------
-Index - (65):
-- Line:   20
-- Cursor: 282
-- Column: 0
-- Word:   [This]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
-            BLOCK friendly-greeting
- 
-]
-- Prefix:  []
-- Suffix:  []
+- State:     ELMT
+- Content:   [BLOCK]
+- Prefix:    [-]
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (66):
-- Line:   20
-- Cursor: 287
-- Column: 5
-- Word:   [should]
-- Next:   []
-- State:  TEXT
+Index - (64):
+- Order:     10
+- Line:      18
+- Cursor:    276
+- Column:    38
 - ---
-- Content: [
+- WordCount: 14
+- Previous:  [friendly-greeting]
+- Word:      [%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [BLOCK friendly-greeting]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'elmt'
+    Order = 10
+    LineNumber = 18
+    Start = 249
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = '-'
+    Suffix = ''
+    Content = 'BLOCK friendly-greeting'
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 019 ====================================
+
+----------------------------------------
+Index - (65):
+- Order:     11
+- Line:      19
+- Cursor:    279
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 020 ====================================
+This should say 'Hello World!' : <%= $Greeting %> World!
+----------------------------------------
+Index - (66):
+- Order:     11
+- Line:      20
+- Cursor:    280
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [This] <---
+- Next:      [should]
+- ---
+- State:     CLOSE
+- Content:   [
  
-            BLOCK friendly-greeting
- 
- This]
-- Prefix:  []
-- Suffix:  []
+]
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: TEXT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (67):
-- Line:   20
-- Cursor: 294
-- Column: 12
-- Word:   [say]
-- Next:   []
-- State:  TEXT
+- Order:     11
+- Line:      20
+- Cursor:    285
+- Column:    5
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  [This]
+- Word:      [should] <---
+- Next:      [say]
+- ---
+- State:     TEXT
+- Content:   [
  
-            BLOCK friendly-greeting
- 
- This should]
-- Prefix:  []
-- Suffix:  []
+ This]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (68):
-- Line:   20
-- Cursor: 298
-- Column: 16
-- Word:   ['Hello]
-- Next:   []
-- State:  TEXT
+- Order:     11
+- Line:      20
+- Cursor:    292
+- Column:    12
 - ---
-- Content: [
+- WordCount: 2
+- Previous:  [should]
+- Word:      [say] <---
+- Next:      ['Hello]
+- ---
+- State:     TEXT
+- Content:   [
  
-            BLOCK friendly-greeting
- 
- This should say]
-- Prefix:  []
-- Suffix:  []
+ This should]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (69):
-- Line:   20
-- Cursor: 305
-- Column: 23
-- Word:   [World!']
-- Next:   []
-- State:  TEXT
+- Order:     11
+- Line:      20
+- Cursor:    296
+- Column:    16
 - ---
-- Content: [
+- WordCount: 3
+- Previous:  [say]
+- Word:      ['Hello] <---
+- Next:      [World!']
+- ---
+- State:     TEXT
+- Content:   [
  
-            BLOCK friendly-greeting
- 
- This should say 'Hello]
-- Prefix:  []
-- Suffix:  []
+ This should say]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (70):
-- Line:   20
-- Cursor: 313
-- Column: 31
-- Word:   [:]
-- Next:   []
-- State:  TEXT
+- Order:     11
+- Line:      20
+- Cursor:    303
+- Column:    23
 - ---
-- Content: [
+- WordCount: 4
+- Previous:  ['Hello]
+- Word:      [World!'] <---
+- Next:      [:]
+- ---
+- State:     TEXT
+- Content:   [
  
-            BLOCK friendly-greeting
- 
- This should say 'Hello World!']
-- Prefix:  []
-- Suffix:  []
+ This should say 'Hello]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (71):
-- Line:   20
-- Cursor: 315
-- Column: 33
-- Word:   [<%=]
-- Next:   []
-- State:  TEXT
+- Order:     11
+- Line:      20
+- Cursor:    311
+- Column:    31
 - ---
-- Content: [
+- WordCount: 5
+- Previous:  [World!']
+- Word:      [:] <---
+- Next:      [<%=]
+- ---
+- State:     TEXT
+- Content:   [
  
-            BLOCK friendly-greeting
+ This should say 'Hello World!']
+- Prefix:    []
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (72):
+- Order:     11
+- Line:      20
+- Cursor:    313
+- Column:    33
+- ---
+- WordCount: 6
+- Previous:  [:]
+- Word:      [<%=] <---
+- Next:      [$Greeting]
+- ---
+- State:     TEXT
+- Content:   [
  
  This should say 'Hello World!' :]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 11
+    LineNumber = 20
+    Start = 276
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = ''
+    Suffix = ''
     Content = '
  
-            BLOCK friendly-greeting
- 
  This should say ''Hello World!'' :'
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '0'
-    Suffix = ''
-    Number = 5
-    Start = 234
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -1455,46 +1883,55 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: OPEN
 ----------------------------------------
-Index - (72):
-- Line:   20
-- Cursor: 319
-- Column: 37
-- Word:   [$Greeting]
-- Next:   []
-- State:  OPEN
+Index - (73):
+- Order:     12
+- Line:      20
+- Cursor:    317
+- Column:    37
 - ---
-- Content: []
-- Prefix:  [=]
-- Suffix:  []
+- WordCount: 7
+- Previous:  [<%=]
+- Word:      [$Greeting] <---
+- Next:      [%>]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [=]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (73):
-- Line:   20
-- Cursor: 328
-- Column: 46
-- Word:   [%>]
-- Next:   []
-- State:  ELMT
+Index - (74):
+- Order:     12
+- Line:      20
+- Cursor:    326
+- Column:    46
 - ---
-- Content: [$Greeting]
-- Prefix:  [=]
-- Suffix:  []
+- WordCount: 8
+- Previous:  [$Greeting]
+- Word:      [%>] <---
+- Next:      [World!]
+- ---
+- State:     ELMT
+- Content:   [$Greeting]
+- Prefix:    [=]
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = '$Greeting'
+    Type = 'elmt'
+    Order = 12
+    LineNumber = 20
+    Start = 313
     RemainingWhiteSpace = ''
-    Prefix = '='
     Indent = '0'
+    Prefix = '='
     Suffix = ''
-    Number = 6
-    Start = 315
-    Type = 'Expression'
-    LineNumber = 0
+    Content = '$Greeting'
 }
 
 -- End New-TemplateToken
@@ -1509,65 +1946,84 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
 ----------------------------------------
-Index - (74):
-- Line:   20
-- Cursor: 331
-- Column: 49
-- Word:   [World!]
-- Next:   []
-- State:  CLOSE
+Index - (75):
+- Order:     13
+- Line:      20
+- Cursor:    329
+- Column:    49
 - ---
-- Content: []
-- Prefix:  []
-- Suffix:  []
+- WordCount: 9
+- Previous:  [%>]
+- Word:      [World!] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: TEXT
 MATCH: default
 Adding to content
-----------------------------------------
-Index - (75):
-- Line:   21
-- Cursor: 337
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [World!
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+================================================================================
+=================================== Line 021 ====================================
+
 ----------------------------------------
 Index - (76):
-- Line:   22
-- Cursor: 338
-- Column: 0
-- Word:   [<%]
-- Next:   []
-- State:  TEXT
+- Order:     13
+- Line:      21
+- Cursor:    335
+- Column:    0
 - ---
-- Content: [World!
+- WordCount: 0
+- Previous:  [World!]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [World!
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 022 ====================================
+<% END %>
+----------------------------------------
+Index - (77):
+- Order:     13
+- Line:      22
+- Cursor:    336
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [<%] <---
+- Next:      [END]
+- ---
+- State:     TEXT
+- Content:   [World!
  
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 13
+    LineNumber = 22
+    Start = 326
+    RemainingWhiteSpace = ''
+    Indent = '1'
+    Prefix = ''
+    Suffix = ''
     Content = 'World!
  
 '
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '1'
-    Suffix = ''
-    Number = 7
-    Start = 328
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -1582,46 +2038,55 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: OPEN
 ----------------------------------------
-Index - (77):
-- Line:   22
-- Cursor: 341
-- Column: 3
-- Word:   [END]
-- Next:   []
-- State:  OPEN
+Index - (78):
+- Order:     14
+- Line:      22
+- Cursor:    339
+- Column:    3
 - ---
-- Content: []
-- Prefix:  []
-- Suffix:  []
+- WordCount: 1
+- Previous:  [<%]
+- Word:      [END] <---
+- Next:      [%>]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (78):
-- Line:   22
-- Cursor: 344
-- Column: 6
-- Word:   [%>]
-- Next:   []
-- State:  ELMT
+Index - (79):
+- Order:     14
+- Line:      22
+- Cursor:    342
+- Column:    6
 - ---
-- Content: [END]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 2
+- Previous:  [END]
+- Word:      [%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [END]
+- Prefix:    []
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = 'END'
+    Type = 'elmt'
+    Order = 14
+    LineNumber = 22
+    Start = 336
     RemainingWhiteSpace = ''
-    Prefix = ''
     Indent = '0'
+    Prefix = ''
     Suffix = ''
-    Number = 8
-    Start = 338
-    Type = 'Expression'
-    LineNumber = 0
+    Content = 'END'
 }
 
 -- End New-TemplateToken
@@ -1635,99 +2100,126 @@ Received : @{
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
-----------------------------------------
-Index - (79):
-- Line:   23
-- Cursor: 347
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+================================================================================
+=================================== Line 023 ====================================
+
 ----------------------------------------
 Index - (80):
-- Line:   24
-- Cursor: 348
-- Column: 0
-- Word:   [Hope]
-- Next:   []
-- State:  CLOSE
+- Order:     15
+- Line:      23
+- Cursor:    345
+- Column:    0
 - ---
-- Content: [
- 
+- WordCount: 0
+- Previous:  [%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
 ]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 024 ====================================
+Hope  you <%= (echo "all") %> have a nice day
 ----------------------------------------
 Index - (81):
-- Line:   24
-- Cursor: 353
-- Column: 5
-- Word:   []
-- Next:   []
-- State:  TEXT
+- Order:     15
+- Line:      24
+- Cursor:    346
+- Column:    0
 - ---
-- Content: [
- 
- Hope]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-----------------------------------------
-Index - (82):
-- Line:   24
-- Cursor: 354
-- Column: 6
-- Word:   [you]
-- Next:   []
-- State:  TEXT
+- WordCount: 0
+- Previous:  []
+- Word:      [Hope] <---
+- Next:      []
 - ---
-- Content: [
+- State:     CLOSE
+- Content:   [
  
- Hope ]
-- Prefix:  []
-- Suffix:  []
+]
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: TEXT
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (83):
-- Line:   24
-- Cursor: 358
-- Column: 10
-- Word:   [<%=]
-- Next:   []
-- State:  TEXT
+Index - (82):
+- Order:     15
+- Line:      24
+- Cursor:    351
+- Column:    5
 - ---
-- Content: [
+- WordCount: 1
+- Previous:  [Hope]
+- Word:      [] <---
+- Next:      [you]
+- ---
+- State:     TEXT
+- Content:   [
+ 
+ Hope]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+----------------------------------------
+Index - (83):
+- Order:     15
+- Line:      24
+- Cursor:    352
+- Column:    6
+- ---
+- WordCount: 2
+- Previous:  []
+- Word:      [you] <---
+- Next:      [<%=]
+- ---
+- State:     TEXT
+- Content:   [
+ 
+ Hope ]
+- Prefix:    []
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (84):
+- Order:     15
+- Line:      24
+- Cursor:    356
+- Column:    10
+- ---
+- WordCount: 3
+- Previous:  [you]
+- Word:      [<%=] <---
+- Next:      [(echo]
+- ---
+- State:     TEXT
+- Content:   [
  
  Hope  you]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 15
+    LineNumber = 24
+    Start = 342
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = ''
+    Suffix = ''
     Content = '
  
  Hope  you'
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '0'
-    Suffix = ''
-    Number = 9
-    Start = 344
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -1742,60 +2234,73 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: OPEN
 ----------------------------------------
-Index - (84):
-- Line:   24
-- Cursor: 362
-- Column: 14
-- Word:   [(echo]
-- Next:   []
-- State:  OPEN
-- ---
-- Content: []
-- Prefix:  [=]
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
 Index - (85):
-- Line:   24
-- Cursor: 367
-- Column: 19
-- Word:   ["all")]
-- Next:   []
-- State:  ELMT
+- Order:     16
+- Line:      24
+- Cursor:    360
+- Column:    14
 - ---
-- Content: [(echo]
-- Prefix:  [=]
-- Suffix:  []
+- WordCount: 4
+- Previous:  [<%=]
+- Word:      [(echo] <---
+- Next:      ["all")]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [=]
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (86):
-- Line:   24
-- Cursor: 374
-- Column: 26
-- Word:   [%>]
-- Next:   []
-- State:  ELMT
+- Order:     16
+- Line:      24
+- Cursor:    365
+- Column:    19
 - ---
-- Content: [(echo "all")]
-- Prefix:  [=]
-- Suffix:  []
+- WordCount: 5
+- Previous:  [(echo]
+- Word:      ["all")] <---
+- Next:      [%>]
+- ---
+- State:     ELMT
+- Content:   [(echo]
+- Prefix:    [=]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (87):
+- Order:     16
+- Line:      24
+- Cursor:    372
+- Column:    26
+- ---
+- WordCount: 6
+- Previous:  ["all")]
+- Word:      [%>] <---
+- Next:      [have]
+- ---
+- State:     ELMT
+- Content:   [(echo "all")]
+- Prefix:    [=]
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
-    Content = '(echo "all")'
+    Type = 'elmt'
+    Order = 16
+    LineNumber = 24
+    Start = 356
     RemainingWhiteSpace = ''
-    Prefix = '='
     Indent = '0'
+    Prefix = '='
     Suffix = ''
-    Number = 10
-    Start = 358
-    Type = 'Expression'
-    LineNumber = 0
+    Content = '(echo "all")'
 }
 
 -- End New-TemplateToken
@@ -1810,107 +2315,138 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
 ----------------------------------------
-Index - (87):
-- Line:   24
-- Cursor: 377
-- Column: 29
-- Word:   [have]
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: []
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
 Index - (88):
-- Line:   24
-- Cursor: 381
-- Column: 33
-- Word:   [a]
-- Next:   []
-- State:  TEXT
+- Order:     17
+- Line:      24
+- Cursor:    375
+- Column:    29
 - ---
-- Content: [have]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 7
+- Previous:  [%>]
+- Word:      [have] <---
+- Next:      [a]
+- ---
+- State:     CLOSE
+- Content:   []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: TEXT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (89):
-- Line:   24
-- Cursor: 383
-- Column: 35
-- Word:   [nice]
-- Next:   []
-- State:  TEXT
+- Order:     17
+- Line:      24
+- Cursor:    379
+- Column:    33
 - ---
-- Content: [have a]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 8
+- Previous:  [have]
+- Word:      [a] <---
+- Next:      [nice]
+- ---
+- State:     TEXT
+- Content:   [have]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (90):
-- Line:   24
-- Cursor: 388
-- Column: 40
-- Word:   [day]
-- Next:   []
-- State:  TEXT
+- Order:     17
+- Line:      24
+- Cursor:    381
+- Column:    35
 - ---
-- Content: [have a nice]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 9
+- Previous:  [a]
+- Word:      [nice] <---
+- Next:      [day]
+- ---
+- State:     TEXT
+- Content:   [have a]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (91):
-- Line:   25
-- Cursor: 392
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
+- Order:     17
+- Line:      24
+- Cursor:    386
+- Column:    40
 - ---
-- Content: [have a nice day
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+- WordCount: 10
+- Previous:  [nice]
+- Word:      [day] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [have a nice]
+- Prefix:    []
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 025 ====================================
+
 ----------------------------------------
 Index - (92):
-- Line:   26
-- Cursor: 393
-- Column: 0
-- Word:   [<%]
-- Next:   []
-- State:  TEXT
+- Order:     17
+- Line:      25
+- Cursor:    390
+- Column:    0
 - ---
-- Content: [have a nice day
+- WordCount: 0
+- Previous:  [day]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     TEXT
+- Content:   [have a nice day
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+=================================== Line 026 ====================================
+<% foreach ($item in $items) {
+----------------------------------------
+Index - (93):
+- Order:     17
+- Line:      26
+- Cursor:    391
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [<%] <---
+- Next:      [foreach]
+- ---
+- State:     TEXT
+- Content:   [have a nice day
  
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 17
+    LineNumber = 26
+    Start = 372
+    RemainingWhiteSpace = ''
+    Indent = '1'
+    Prefix = ''
+    Suffix = ''
     Content = 'have a nice day
  
 '
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '1'
-    Suffix = ''
-    Number = 11
-    Start = 374
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -1925,212 +2461,271 @@ Received : @{
 --------------------------------------------------------------------------------
 STATE CHANGE: OPEN
 ----------------------------------------
-Index - (93):
-- Line:   26
-- Cursor: 396
-- Column: 3
-- Word:   [foreach]
-- Next:   []
-- State:  OPEN
-- ---
-- Content: []
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
 Index - (94):
-- Line:   26
-- Cursor: 403
-- Column: 10
-- Word:   [($item]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      26
+- Cursor:    394
+- Column:    3
 - ---
-- Content: [foreach]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 1
+- Previous:  [<%]
+- Word:      [foreach] <---
+- Next:      [($item]
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    []
+- Suffix:    []
+STATE CHANGE: ELMT
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (95):
-- Line:   26
-- Cursor: 410
-- Column: 17
-- Word:   [in]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      26
+- Cursor:    401
+- Column:    10
 - ---
-- Content: [foreach ($item]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 2
+- Previous:  [foreach]
+- Word:      [($item] <---
+- Next:      [in]
+- ---
+- State:     ELMT
+- Content:   [foreach]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (96):
-- Line:   26
-- Cursor: 413
-- Column: 20
-- Word:   [$items)]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      26
+- Cursor:    408
+- Column:    17
 - ---
-- Content: [foreach ($item in]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 3
+- Previous:  [($item]
+- Word:      [in] <---
+- Next:      [$items)]
+- ---
+- State:     ELMT
+- Content:   [foreach ($item]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (97):
-- Line:   26
-- Cursor: 421
-- Column: 28
-- Word:   [{]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      26
+- Cursor:    411
+- Column:    20
 - ---
-- Content: [foreach ($item in $items)]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 4
+- Previous:  [in]
+- Word:      [$items)] <---
+- Next:      [{]
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (98):
-- Line:   27
-- Cursor: 423
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      26
+- Cursor:    419
+- Column:    28
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 5
+- Previous:  [$items)]
+- Word:      [{] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items)]
+- Prefix:    []
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 027 ====================================
+    Write-Output $item
+----------------------------------------
+Index - (99):
+- Order:     18
+- Line:      27
+- Cursor:    421
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [{]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - space after newline (add to indent)
 ----------------------------------------
-Index - (99):
-- Line:   27
-- Cursor: 424
-- Column: 1
-- Word:   []
-- Next:   []
-- State:  ELMT
+Index - (100):
+- Order:     18
+- Line:      27
+- Cursor:    422
+- Column:    1
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 1
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
  ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 2
 ----------------------------------------
-Index - (100):
-- Line:   27
-- Cursor: 425
-- Column: 2
-- Word:   []
-- Next:   []
-- State:  ELMT
+Index - (101):
+- Order:     18
+- Line:      27
+- Cursor:    423
+- Column:    2
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 2
+- Previous:  []
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
   ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 3
 ----------------------------------------
-Index - (101):
-- Line:   27
-- Cursor: 426
-- Column: 3
-- Word:   []
-- Next:   []
-- State:  ELMT
+Index - (102):
+- Order:     18
+- Line:      27
+- Cursor:    424
+- Column:    3
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 3
+- Previous:  []
+- Word:      [] <---
+- Next:      [Write-Output]
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
    ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - Adding to indent. Now 4
 ----------------------------------------
-Index - (102):
-- Line:   27
-- Cursor: 427
-- Column: 4
-- Word:   [Write-Output]
-- Next:   []
-- State:  ELMT
-- ---
-- Content: [foreach ($item in $items) {
-    ]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
 Index - (103):
-- Line:   27
-- Cursor: 440
-- Column: 17
-- Word:   [$item]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      27
+- Cursor:    425
+- Column:    4
 - ---
-- Content: [foreach ($item in $items) {
-     Write-Output]
-- Prefix:  []
-- Suffix:  []
+- WordCount: 4
+- Previous:  []
+- Word:      [Write-Output] <---
+- Next:      [$item]
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
+    ]
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
 Index - (104):
-- Line:   28
-- Cursor: 446
-- Column: 0
-- Word:   [}]
-- Next:   []
-- State:  ELMT
+- Order:     18
+- Line:      27
+- Cursor:    438
+- Column:    17
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 5
+- Previous:  [Write-Output]
+- Word:      [$item] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
+     Write-Output]
+- Prefix:    []
+- Suffix:    []
+MATCH: default
+Adding to content
+================================================================================
+=================================== Line 028 ====================================
+} %>
+----------------------------------------
+Index - (105):
+- Order:     18
+- Line:      28
+- Cursor:    444
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [$item]
+- Word:      [}] <---
+- Next:      [%>]
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
      Write-Output $item
 ]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: default
 Adding to content
 ----------------------------------------
-Index - (105):
-- Line:   28
-- Cursor: 448
-- Column: 2
-- Word:   [%>]
-- Next:   []
-- State:  ELMT
+Index - (106):
+- Order:     18
+- Line:      28
+- Cursor:    446
+- Column:    2
 - ---
-- Content: [foreach ($item in $items) {
+- WordCount: 1
+- Previous:  [}]
+- Word:      [%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [foreach ($item in $items) {
      Write-Output $item
  }]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: End Tag
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'elmt'
+    Order = 18
+    LineNumber = 28
+    Start = 391
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = ''
+    Suffix = ''
     Content = 'foreach ($item in $items) {
      Write-Output $item
  }'
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '0'
-    Suffix = ''
-    Number = 12
-    Start = 393
-    Type = 'Expression'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -2144,168 +2739,66 @@ Received : @{
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
 STATE CHANGE: CLOSE
-----------------------------------------
-Index - (106):
-- Line:   29
-- Cursor: 451
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: Null - add a space to content
-- space after newline (add to indent)
+================================================================================
+=================================== Line 029 ====================================
+
 ----------------------------------------
 Index - (107):
-- Line:   30
-- Cursor: 452
-- Column: 0
-- Word:   [<%-]
-- Next:   []
-- State:  CLOSE
+- Order:     19
+- Line:      29
+- Cursor:    449
+- Column:    0
 - ---
-- Content: [
- 
+- WordCount: 0
+- Previous:  [%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
 ]
-- Prefix:  []
-- Suffix:  []
-MATCH: Start tag (^<%(?<rightOf>\S+)?)
-----------------------------------------
-Index - (108):
-- Line:   30
-- Cursor: 456
-- Column: 4
-- Word:   [INCLUDE]
-- Next:   []
-- State:  CLOSE
-- ---
-- Content: [
- 
-]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (109):
-- Line:   30
-- Cursor: 464
-- Column: 12
-- Word:   ['section-footer.pst1']
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (110):
-- Line:   30
-- Cursor: 486
-- Column: 34
-- Word:   [-Test1]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE 'section-footer.pst1']
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (111):
-- Line:   30
-- Cursor: 493
-- Column: 41
-- Word:   [-Encoding]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE 'section-footer.pst1' -Test1]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (112):
-- Line:   30
-- Cursor: 503
-- Column: 51
-- Word:   [UTF8]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE 'section-footer.pst1' -Test1 -Encoding]
-- Prefix:  []
-- Suffix:  []
-MATCH: default
-Adding to content
-----------------------------------------
-Index - (113):
-- Line:   30
-- Cursor: 508
-- Column: 56
-- Word:   [%>]
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8]
-- Prefix:  []
-- Suffix:  []
-MATCH: End Tag
-----------------------------------------
-Index - (114):
-- Line:   31
-- Cursor: 511
-- Column: 0
-- Word:   []
-- Next:   []
-- State:  TEXT
-- ---
-- Content: [
- 
- INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8
-]
-- Prefix:  []
-- Suffix:  []
+- Prefix:    []
+- Suffix:    []
 MATCH: Null - add a space to content
 - space after newline (add to indent)
-Reached End of input
-
+================================================================================
+=================================== Line 030 ====================================
+<%- INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8 %>
+----------------------------------------
+Index - (108):
+- Order:     19
+- Line:      30
+- Cursor:    450
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  []
+- Word:      [<%-] <---
+- Next:      [INCLUDE]
+- ---
+- State:     CLOSE
+- Content:   [
+ 
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Start tag (^<%(?<rightOf>\S+)?)
 ** Create Token **
 
 --------------------------------------------------------------------------------
 -- Begin New-TemplateToken
 Received : @{
+    Type = 'text'
+    Order = 19
+    LineNumber = 30
+    Start = 446
+    RemainingWhiteSpace = ''
+    Indent = '1'
+    Prefix = ''
+    Suffix = ''
     Content = '
  
- INCLUDE ''section-footer.pst1'' -Test1 -Encoding UTF8
- 
 '
-    RemainingWhiteSpace = ''
-    Prefix = ''
-    Indent = '1'
-    Suffix = ''
-    Number = 13
-    Start = 448
-    Type = 'text'
-    LineNumber = 0
 }
 
 -- End New-TemplateToken
@@ -2318,6 +2811,167 @@ Received : @{
 --------------------------------------------------------------------------------
 -- End Reset-TokenOption
 --------------------------------------------------------------------------------
+STATE CHANGE: OPEN
+----------------------------------------
+Index - (109):
+- Order:     20
+- Line:      30
+- Cursor:    454
+- Column:    4
+- ---
+- WordCount: 1
+- Previous:  [<%-]
+- Word:      [INCLUDE] <---
+- Next:      ['section-footer.pst1']
+- ---
+- State:     OPEN
+- Content:   []
+- Prefix:    [-]
+- Suffix:    []
+STATE CHANGE: ELMT
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (110):
+- Order:     20
+- Line:      30
+- Cursor:    461
+- Column:    11
+- ---
+- WordCount: 2
+- Previous:  [INCLUDE]
+- Word:      ['section-footer.pst1'] <---
+- Next:      [-Test1]
+- ---
+- State:     ELMT
+- Content:   [INCLUDE]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (111):
+- Order:     20
+- Line:      30
+- Cursor:    483
+- Column:    33
+- ---
+- WordCount: 3
+- Previous:  ['section-footer.pst1']
+- Word:      [-Test1] <---
+- Next:      [-Encoding]
+- ---
+- State:     ELMT
+- Content:   [INCLUDE 'section-footer.pst1']
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (112):
+- Order:     20
+- Line:      30
+- Cursor:    490
+- Column:    40
+- ---
+- WordCount: 4
+- Previous:  [-Test1]
+- Word:      [-Encoding] <---
+- Next:      [UTF8]
+- ---
+- State:     ELMT
+- Content:   [INCLUDE 'section-footer.pst1' -Test1]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (113):
+- Order:     20
+- Line:      30
+- Cursor:    500
+- Column:    50
+- ---
+- WordCount: 5
+- Previous:  [-Encoding]
+- Word:      [UTF8] <---
+- Next:      [%>]
+- ---
+- State:     ELMT
+- Content:   [INCLUDE 'section-footer.pst1' -Test1 -Encoding]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: default
+Adding to content
+----------------------------------------
+Index - (114):
+- Order:     20
+- Line:      30
+- Cursor:    505
+- Column:    55
+- ---
+- WordCount: 6
+- Previous:  [UTF8]
+- Word:      [%>] <---
+- Next:      []
+- ---
+- State:     ELMT
+- Content:   [INCLUDE 'section-footer.pst1' -Test1 -Encoding UTF8]
+- Prefix:    [-]
+- Suffix:    []
+MATCH: End Tag
+** Create Token **
+
+--------------------------------------------------------------------------------
+-- Begin New-TemplateToken
+Received : @{
+    Type = 'elmt'
+    Order = 20
+    LineNumber = 30
+    Start = 450
+    RemainingWhiteSpace = ''
+    Indent = '0'
+    Prefix = '-'
+    Suffix = ''
+    Content = 'INCLUDE ''section-footer.pst1'' -Test1 -Encoding UTF8'
+}
+
+-- End New-TemplateToken
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- Begin Reset-TokenOption
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+-- End Reset-TokenOption
+--------------------------------------------------------------------------------
+STATE CHANGE: CLOSE
+================================================================================
+=================================== Line 031 ====================================
+
+----------------------------------------
+Index - (115):
+- Order:     21
+- Line:      31
+- Cursor:    508
+- Column:    0
+- ---
+- WordCount: 0
+- Previous:  [%>]
+- Word:      [] <---
+- Next:      []
+- ---
+- State:     CLOSE
+- Content:   [
+]
+- Prefix:    []
+- Suffix:    []
+MATCH: Null - add a space to content
+- space after newline (add to indent)
+================================================================================
+Reached End of input
+Processing remaining content
 
 --------------------------------------------------------------------------------
 -- End Convert-StringToToken

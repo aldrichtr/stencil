@@ -4,12 +4,17 @@
 param()
 
 BeforeAll {
+    $dependencies = 'Reset-TokenOption'
     $sourceFile = (Get-SourceFilePath $PSCommandPath)
     if (Test-Path $sourceFile) {
         . $sourceFile
     } else {
         throw "Could not find $sourceFile from $PSCommandPath"
     }
+
+    $dependencies
+    | Resolve-Dependency
+    | ForEach-Object { . $_ }
 
     $dataDirectory = (Get-TestDataPath $PSCommandPath)
 }
@@ -39,7 +44,7 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             $command.Parameters['Template'].Attributes.Mandatory | Should -BeTrue
         }
     }
-    Context "When given the string '<Template>' to tokenize" -Foreach @(
+    Context "When given the string '<Template>' to tokenize" -ForEach @(
         @{
             Template = 'This is a basic test'
             Count    = 1
@@ -58,18 +63,18 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             Count    = 2
             Tokens   = @(
                 @{
-                    Type    = 'Text'
-                    Content = 'This is a basic test'
-                    Start   = 0
-                    Number  = 0
-                    LineNumber    = 0
+                    Type       = 'Text'
+                    Content    = 'This is a basic test'
+                    Start      = 0
+                    Number     = 0
+                    LineNumber = 0
                 }
                 @{
-                    Type    = 'Expression'
-                    Content = 'This is an element'
-                    Start   = 21
-                    Number  = 1
-                    LineNumber    = 0
+                    Type       = 'Expression'
+                    Content    = 'This is an element'
+                    Start      = 21
+                    Number     = 1
+                    LineNumber = 0
                 }
             )
         }
@@ -80,17 +85,17 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             Count    = 2
             Tokens   = @(
                 @{
-                    Type    = 'Expression'
-                    Content = 'This is an element'
-                    Start   = 0
-                    Number  = 1
+                    Type       = 'Expression'
+                    Content    = 'This is an element'
+                    Start      = 0
+                    Number     = 1
                     LineNumber = 0
                 }
                 @{
-                    Type    = 'Text'
-                    Content = 'This is a basic test'
-                    Start   = 24
-                    Number  = 0
+                    Type       = 'Text'
+                    Content    = 'This is a basic test'
+                    Start      = 24
+                    Number     = 0
                     LineNumber = 0
                 }
             )

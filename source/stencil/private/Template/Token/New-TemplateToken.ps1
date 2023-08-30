@@ -17,7 +17,7 @@ function New-TemplateToken {
         # The index number of the token
         [Parameter(
         )]
-        [int]$Number,
+        [int]$Order,
 
         # The line number of the token
         [Parameter(
@@ -103,7 +103,7 @@ function New-TemplateToken {
             $tokenInfo = @{
                 PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
                 Type                = (Format-UpperCase $Type)
-                Number              = $Number ?? 0
+                Order               = $Order ?? 0
                 LineNumber          = $LineNumber ?? 0
                 Start               = $Start ?? 0
                 Length              = ($Content.Length) ?? 0
@@ -124,8 +124,8 @@ function New-TemplateToken {
                     # No processing of a Text chunk at this time
                     continue
                 }
-                #TODO: Find a better name for expr.  Node, Block, Statement, Element
-                'EXPR' {
+
+                'ELMT' {
                     switch ($tokenInfo.Prefix) {
                         '#' {
                             if ($tokenInfo.Suffix -eq '#') {

@@ -30,29 +30,6 @@ function Convert-StringToToken {
         #endregion regex patterns
         #-------------------------------------------------------------------------------
 
-
-        # Options for creating a new Token
-        $options = @{
-            Type                = 'Text'
-            # The counter number of the token (first token => 0)
-            Number              = 0
-            # The lineNumber in the file
-            # TODO: How do I get the column number?
-            LineNumber          = 0
-            # the spaces or tabs prior to the start tag
-            Indent              = ''
-            # The content is the "body" of the token
-            Content             = [System.Text.StringBuilder]::new()
-            # Zero-based index that the token starts at
-            Start               = 0
-            # The prefix just after the start marker
-            Prefix              = ''
-            # The prefix just before the end marker
-            Suffix              = ''
-            # Any whitespace after the token
-            RemainingWhiteSpace = ''
-        }
-
         enum TokenState  {
             TEXT # Inside a Text block
             OPEN # Start tag found
@@ -76,21 +53,39 @@ function Convert-StringToToken {
         #-------------------------------------------------------------------------------
         #region initialize tokenizer
 
-        #keep track of the word in the buffer
-        $index = 0
         # keep track of our position in the input
         $cursor = 0
-        # record the location that the element started
-        $contentStartCursor = 0
 
-        # keep track of the line number of the cursor
-        $lineNumber = 0
-
+        # TODO: Add the level to the options
         # keep track of open and close tags
         $level = 0
 
+        # keep track of "words" across the entire Template
+        $totalWordCount = 0
+
         # The current state of the cursor
         [TokenState]$state = [TokenState]::TEXT
+
+        # Options for creating a new Token
+        $options = @{
+            Type                = 'Text'
+            # The counter Index of the token (first token => 0)
+            Order               = 0
+            # The options.LineNumber in the file
+            LineNumber          = 0
+            # the spaces or tabs prior to the start tag
+            Indent              = ''
+            # The content is the "body" of the token
+            Content             = [System.Text.StringBuilder]::new()
+            # Zero-based position that the token starts at
+            Start               = 0
+            # The prefix just after the start marker
+            Prefix              = ''
+            # The prefix just before the end marker
+            Suffix              = ''
+            # Any whitespace after the token
+            RemainingWhiteSpace = ''
+        }
 
         #endregion initialize tokenizer
         #-------------------------------------------------------------------------------
@@ -98,18 +93,27 @@ function Convert-StringToToken {
     process {
         Write-Verbose '- Tokenizing template'
 
-        #-------------------------------------------------------------------------------
-        #region foreach Line
 
         :line foreach ($line in $lines) {
-            $column = 0
-            $buffer = $line.Split($separator)
-
             #-------------------------------------------------------------------------------
-            #region foreach Word
-            :word foreach ($word in $buffer) {
-                if ($index -lt $buffer.Length) {
-                    $nextWord = $buffer[($index + 1)]
+            #region foreach Line
+            Write-Debug ("$('=' * 35) Line {0:d3} $('=' * 36)" -f $options.LineNumber)
+            Write-Debug $line
+            #-------------------------------------------------------------------------------
+            #region Initialize line
+
+            # counter for words in the current line
+            $wordCount = 0
+            $column = 0
+            $words = $line.Split($separator)
+
+            #endregion Initialize line
+            #-------------------------------------------------------------------------------
+            :word foreach ($word in $words) {
+                #-------------------------------------------------------------------------------
+                #region foreach Word
+                if ($wordCount -lt $words.Length) {
+                    $nextWord = $words[($wordCount + 1)]
                 }
                 #TODO: Add the space to the front of the word only if it is not the first word in the token
                 if ($options.Content.Length -eq 0) {
@@ -119,23 +123,30 @@ function Convert-StringToToken {
                 }
                 $debugHeader = (@(
                         "$('-' * 40)",
-                        "Index - (${index}):",
-                        "- Line:   $lineNumber",
-                        "- Cursor: $cursor",
-                        "- Column: $column",
-                        "- Word:   [$word]",
-                        "- Next:   [$nextWord]",
-                        "- State:  $state",
+                        "Index - ($totalWordCount):",
+                        "- Order:     $($options.Order)",
+                        "- Line:      $($options.LineNumber)",
+                        "- Cursor:    $cursor",
+                        "- Column:    $column",
                         '- ---',
-                        "- Content: [$($options.Content.ToString())]",
-                        "- Prefix:  [$($options.Prefix)]",
-                        "- Suffix:  [$($options.Suffix)]"
+                        "- WordCount: $wordCount"
+                        "- Previous:  [$prevWord]",
+                        "- Word:      [$word] <---",
+                        "- Next:      [$nextWord]",
+                        '- ---',
+                        "- State:     $state",
+                        "- Content:   [$($options.Content.ToString())]",
+                        "- Prefix:    [$($options.Prefix)]",
+                        "- Suffix:    [$($options.Suffix)]"
 
                     ) -join "`n")
                 Write-Debug $debugHeader
 
                 :scan switch -Regex -CaseSensitive ($word) {
+
                     '^$' {
+                        #-------------------------------------------------------------------------------
+                        #region word is null
                         #TODO: What about tabs?
                         #TODO: Record any space after CLOSE for RemainingWhiteSpace
                         Write-Debug 'MATCH: Null - add a space to content'
@@ -144,11 +155,17 @@ function Convert-StringToToken {
                             Write-Debug '- space after newline (add to indent)'
                             $options.Indent = 1
                         } elseif ($options.Indent -gt 0) {
-                            ($options.Indent)++
+                            $options.Indent++
                             Write-Debug "- Adding to indent. Now $($options.Indent)"
                         }
+
+                        #endregion word is null
+                        #-------------------------------------------------------------------------------
                     }
                     $startTagPattern {
+                        #-------------------------------------------------------------------------------
+                        #region word matches start tag
+
                         Write-Debug "MATCH: Start tag ($startTagPattern)"
                         #-------------------------------------------------------------------------------
                         #region Process prefix
@@ -188,13 +205,21 @@ function Convert-StringToToken {
                         #-------------------------------------------------------------------------------
 
                         :startState switch ($state) {
-                            ([TokenState]::TEXT) {
+
+                            ([TokenState]::OPEN) {
+                                Write-Debug '** Error Found start tag after start tag **'
+                            }
+
+                            ([TokenState]::ELMT) {
+                                Write-Debug '** Error Found start tag in element'
+                            }
+
+                            default {
 
                                 #-------------------------------------------------------------------------------
                                 #region Create text token
                                 if ($options.Content.Length -gt 0) {
                                     $options.Type = 'text'
-                                    $options.Start = $startingCursor
 
                                     Write-Debug '** Create Token **'
                                     New-TemplateToken @options
@@ -204,7 +229,7 @@ function Convert-StringToToken {
                                 #-------------------------------------------------------------------------------
                                 #region Reset
                                 [ref]$options | Reset-TokenOption -IncludeContent
-                                $startingCursor = $cursor
+                                $options.Start = $cursor
                                 #endregion Reset
                                 #-------------------------------------------------------------------------------
                                 Write-Debug 'STATE CHANGE: OPEN'
@@ -216,17 +241,15 @@ function Convert-StringToToken {
                                 continue scan
                             }
 
-                            ([TokenState]::OPEN) {
-                                Write-Debug '** Error Found start tag after start tag **'
-                            }
-
-                            ([TokenState]::ELMT) {
-                                Write-Debug '** Error Found start tag in element'
-                            }
-
                         } # end startState
+
+                        #endregion word matches start tag
+                        #-------------------------------------------------------------------------------
                     } # end start tag
                     $endTagPattern {
+                        #-------------------------------------------------------------------------------
+                        #region word matches end tag
+
                         Write-Debug 'MATCH: End Tag'
                         #-------------------------------------------------------------------------------
                         #region Process suffix
@@ -247,10 +270,11 @@ function Convert-StringToToken {
                                         ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
                                     ))
                                 [void]$options.Content.Append( $lexeme )
-                                $cursor = $cursor + $lexeme.Length
-                                $column = $column + $lexeme.Length
+                                #TODO: Consider Update-Position internal function for this
+                                #$cursor = $cursor + $lexeme.Length
+                                #$column = $column + $lexeme.Length
                                 #! Move onto the next word
-                                continue word
+                                #continue word
                             } else {
                                 # The match is the prefix. Signal for inclusion
                                 $hasSuffix = $true
@@ -261,16 +285,10 @@ function Convert-StringToToken {
                         :endState switch ($state) {
                             ([TokenState]::ELMT) {
                                 #TODO: Process the Prefix, Suffix and keywords
-
-
-
-
                                 #-------------------------------------------------------------------------------
                                 #region Create Expression
 
-
-                                $options.Type = 'Expression'
-                                $options.Start = $startingCursor
+                                $options.Type = 'elmt'
                                 if ($hasSuffix) {
                                     $options.Suffix = $leftOfEndTag
                                 }
@@ -284,12 +302,12 @@ function Convert-StringToToken {
                                 #region Reset
                                 [ref]$options | Reset-TokenOption -IncludeContent
                                 #TODO: Ensure we set the cursor to the proper location
-                                $startingCursor = $cursor
+                                $options.Start = $cursor
 
                                 Write-Debug 'STATE CHANGE: CLOSE'
                                 $state = [TokenState]::CLOSE
 
-                                continue scan
+                                #continue scan
                                 #endregion Reset
                                 #-------------------------------------------------------------------------------
                             }
@@ -299,14 +317,21 @@ function Convert-StringToToken {
 
                         } # end endState
 
+                        #endregion word matches end tag
+                        #-------------------------------------------------------------------------------
                     }
                     default {
+                        #-------------------------------------------------------------------------------
+                        #region word did not match
+
                         switch ($state) {
                             ([TokenState]::OPEN) {
                                 #TODO: This is the first word after an open tag. Check for keyword
+                                Write-Debug 'STATE CHANGE: ELMT'
                                 $state = [TokenState]::ELMT
                             }
                             ([TokenState]::CLOSE) {
+                                Write-Debug 'STATE CHANGE: TEXT'
                                 $state = [TokenState]::TEXT
                             }
                         }
@@ -319,27 +344,41 @@ function Convert-StringToToken {
                         $options.Indent = 0
                         #endregion Reset
                         #-------------------------------------------------------------------------------
+
+                        #endregion word did not match
+                        #-------------------------------------------------------------------------------
                     }
                 } # end scan
+
+                $prevWord = $word
+                #-------------------------------------------------------------------------------
+                #region Increment counters
+
                 $cursor = $cursor + $lexeme.Length
                 $column = $column + $lexeme.Length
-                $index++
+                $wordCount++
+                $totalWordCount++
+
+                #endregion Increment counters
+                #-------------------------------------------------------------------------------
+                #endregion foreach Word
+                #-------------------------------------------------------------------------------
             }
-            #endregion foreach Word
-            #-------------------------------------------------------------------------------
             [void]$options.Content.AppendLine()
-            $lineNumber++
+            Write-Debug "== End Line ('=' * 69)"
+            $options.LineNumber++
+            #endregion foreach Line
+            #-------------------------------------------------------------------------------
         }
 
-        #endregion foreach Line
         #-------------------------------------------------------------------------------
+        #region remaining content
 
-        # if there is still content
         Write-Debug 'Reached End of input'
         if ($options.Content.Length -gt 0) {
-            Write-Debug ''
+            Write-Debug 'Processing remaining content'
             switch ($state) {
-                ([TokenState]::OPEN) {
+                    ([TokenState]::OPEN) {
                     $message = 'Error in template. No closing tag found before end of input'
                     $exceptionText = $message
                     $thisException = [Exception]::new($exceptionText)
@@ -353,9 +392,8 @@ function Convert-StringToToken {
 
 
                 }
-                ([TokenState]::TEXT) {
+                    ([TokenState]::TEXT) {
                     $options.Type = 'text'
-                    $options.Start = $startingCursor
 
                     Write-Debug '** Create Token **'
                     New-TemplateToken @options
@@ -364,6 +402,8 @@ function Convert-StringToToken {
             }
         }
 
+        #endregion remaining content
+        #-------------------------------------------------------------------------------
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

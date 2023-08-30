@@ -30,7 +30,7 @@ function Reset-TokenOption {
             $Options.Value.Prefix = ''
             $Options.Value.Suffix = ''
             $Options.Value.Indent = ''
-            $Options.Value.Number = ($Options.Value.Number + 1)
+            $Options.Value.Order = ($Options.Value.Order + 1)
             $Options.Value.Start = 0
             if ($IncludeContent) {
                 [void]$Options.Value.Content.Clear()
