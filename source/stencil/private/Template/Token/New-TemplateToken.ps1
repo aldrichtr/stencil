@@ -17,12 +17,17 @@ function New-TemplateToken {
         # The index number of the token
         [Parameter(
         )]
-        [int]$Order,
+        [int]$Index,
 
         # The line number of the token
         [Parameter(
         )]
         [int]$LineNumber,
+
+        # The column where the content starts
+        [Parameter(
+        )]
+        [int]$Column,
 
         # The spaces or tabs prior to the start tag
         [Parameter(
@@ -103,7 +108,7 @@ function New-TemplateToken {
             $tokenInfo = @{
                 PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
                 Type                = (Format-UpperCase $Type)
-                Order               = $Order ?? 0
+                Index               = $Index ?? 0
                 LineNumber          = $LineNumber ?? 0
                 Start               = $Start ?? 0
                 Length              = ($Content.Length) ?? 0

@@ -1,31 +1,28 @@
+#Requires -Modules @{ ModuleName = 'stitch'; ModuleVersion = '0.1' }
 function Get-SourceFilePath {
     [CmdletBinding()]
-    param(
-        # The test file to get the source file for
-        [Parameter(
-        )]
-        [string]$TestFile
-    )
+    param()
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        <#
-        we want to go from
-        'tests/Unit/module1/public/Get-TheThing.Tests.ps1' to
-        'source/module1/public/Get-TheThing.ps1'
-        #>
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        $sourceFile = $TestFile -replace '\.Tests\.ps1', '.ps1'
-        Write-Debug "Now `$sourceFile is $sourceFile"
-        $sourceFile = $sourceFile -replace '[uU]nit[\\\/]', ''
-        Write-Debug "Now `$sourceFile is $sourceFile"
-        $sourceFile = $sourceFile -replace 'tests' , 'source'
-        Write-Debug "Now `$sourceFile is $sourceFile"
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
+        $callStack = Get-PSCallStack
+        $caller = $callStack[1]
+        $testFileName = Split-Path $caller.ScriptName -LeafBase
+        if (-not ([string]::IsNullorEmpty($testFileName))) {
+            $sourceName = $testFileName -replace '\.Tests', ''
+            $sourceItem = Get-SourceItem
+            | Where-Object Name -Like $sourceName -ErrorAction SilentlyContinue
+        } else {
+            $PSCmdlet.ThrowTerminatingError($_)
+        }
+        if ($null -ne $sourceItem) {
+            $sourceItem.Path | Write-Output
+        } else {
+            throw "Could not find source item for $sourceName"
+        }
     }
     end {
-        $sourceFile
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }
@@ -36,23 +33,25 @@ function Get-TestDataPath {
         Return the data directory associated with the test
     #>
     [CmdletBinding()]
-    param(
-        # The test file to get the data directory for
-        [Parameter(
-        )]
-        [string]$TestFile
-    )
+    param( )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        $testFileItem = Get-Item $TestFile
-        $currentDirectory = $testFileItem.Directory
-        $commandName = $testFileItem.BaseName -replace '\.Tests', ''
-        $dataDirectory = (Join-Path $currentDirectory "$commandName.Data")
+        $callStack = Get-PSCallStack
+        $caller = $callStack[1]
+        if ($caller.ScriptName -like $callStack[0].ScriptName) {
+            $caller = $callStack[2]
+        }
+
+        $dataDirectory = ($caller.ScriptName -replace '\.Tests\.ps1', '.Data')
+        if (-not ([string]::IsNullorEmpty($dataDirectory))) {
+            $dataDirectory | Write-Output
+        } else {
+            throw "Could not determine the data directory"
+        }
     }
     end {
-        $dataDirectory
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
 }
@@ -95,10 +94,10 @@ function Resolve-Dependency {
 function Get-TestData {
     [CmdletBinding()]
     param(
-        # The test file to get the data for
+        # The filter to apply (as a script block)
         [Parameter(
         )]
-        [string]$TestFile
+        [scriptblock]$Filter
     )
 
     begin {
@@ -107,7 +106,14 @@ function Get-TestData {
     process {
         $dataDir = Get-TestDataPath
         if (-not ([string]::IsNullorEmpty($dataDir))) {
-            Get-ChildItem -Path $dataDir
+            if (-not ([string]::IsNullorEmpty($Filter))) {
+                Get-ChildItem -Path $dataDir
+                | Where-Object $Filter
+            } else {
+                Get-ChildItem -Path $dataDir
+            }
+        } else {
+            throw "Could not find data Directory for $((Get-PSCallStack)[1].ScriptName) "
         }
     }
     end {

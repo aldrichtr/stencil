@@ -9,7 +9,7 @@ BeforeAll {
         throw "Could not find $sourceFile from $PSCommandPath"
     }
 
-    $dataDirectory = (Get-TestDataPath $PSCommandPath)
+    $dataDirectory = Get-TestDataPath
 }
 Describe 'Testing the private function Test-StencilJob' -Tag @('unit', 'private') {
     Context 'The command is available from the module' {

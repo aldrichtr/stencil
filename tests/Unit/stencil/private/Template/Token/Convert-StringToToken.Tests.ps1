@@ -4,19 +4,54 @@
 param()
 
 BeforeAll {
-    $dependencies = 'Reset-TokenOption'
-    $sourceFile = (Get-SourceFilePath $PSCommandPath)
-    if (Test-Path $sourceFile) {
-        . $sourceFile
+    #! I know that each test should isolate the function to be tested, but in this case
+    #! The functions are very tightly coupled and help reduce complexity in `Convert-StringToToken`
+    $dependencies = 'Reset-TokenOption', 'New-TemplateToken'
+
+    $sourceFile = Get-SourceFilePath
+    if (-not ([string]::IsNullorEmpty($sourceFile))) {
+        if (Test-Path $sourceFile) {
+            . $sourceFile
+        } else {
+            throw "Could not find $sourceFile from $PSCommandPath"
+        }
     } else {
-        throw "Could not find $sourceFile from $PSCommandPath"
+        throw "$PSCommandPath did not find a source file"
     }
 
     $dependencies
     | Resolve-Dependency
     | ForEach-Object { . $_ }
 
-    $dataDirectory = (Get-TestDataPath $PSCommandPath)
+    $dataDirectory = Get-TestDataPath
+}
+
+
+BeforeDiscovery {
+    $templateTestData = [System.Collections.ArrayList]@()
+
+    Get-TestData -Filter { $_.Extension -like '.pst1' }
+    | ForEach-Object {
+        $testDataFile = ($_.FullName -replace '\.template\.pst1$', '.data.psd1')
+        $testData = Import-Psd $testDataFile
+        if ($null -ne $testData) {
+            if ($testData.Enabled) {
+                $testData['FileName'] = $_.Name
+                $testData['Template'] = (Get-Content $_ -Raw)
+                [void]$templateTestData.Add($testData)
+            } else {
+                Write-Host "$($_.Name) is disabled"
+            }
+        } else {
+            throw "Could not import $testDataFile"
+        }
+    }
+
+    if ($templateTestData.Count -eq 0) {
+        throw 'Could not Import test data'
+    } else {
+        Write-Host "Template Test Data contains $($templateTestData.Count) tests"
+    }
 }
 
 Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'StringToToken', 'Convert' ) {
@@ -43,64 +78,9 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
         It "It Should have a 'Template' parameter" {
             $command.Parameters['Template'].Attributes.Mandatory | Should -BeTrue
         }
+
     }
-    Context "When given the string '<Template>' to tokenize" -ForEach @(
-        @{
-            Template = 'This is a basic test'
-            Count    = 1
-            Tokens   = @(
-                @{
-                    Type       = 'Text'
-                    Content    = 'This is a basic test'
-                    Start      = 0
-                    Number     = 0
-                    LineNumber = 0
-                }
-            )
-        }
-        @{
-            Template = 'This is a basic test <% this is an element %>'
-            Count    = 2
-            Tokens   = @(
-                @{
-                    Type       = 'Text'
-                    Content    = 'This is a basic test'
-                    Start      = 0
-                    Number     = 0
-                    LineNumber = 0
-                }
-                @{
-                    Type       = 'Expression'
-                    Content    = 'This is an element'
-                    Start      = 21
-                    Number     = 1
-                    LineNumber = 0
-                }
-            )
-        }
-        @{
-            #           0    5    10   15   20   25   30   35   40
-            #           |    |    |    |    |    |    |    |    |
-            Template = '<% this is an element %> This is a basic test'
-            Count    = 2
-            Tokens   = @(
-                @{
-                    Type       = 'Expression'
-                    Content    = 'This is an element'
-                    Start      = 0
-                    Number     = 1
-                    LineNumber = 0
-                }
-                @{
-                    Type       = 'Text'
-                    Content    = 'This is a basic test'
-                    Start      = 24
-                    Number     = 0
-                    LineNumber = 0
-                }
-            )
-        }
-    ) {
+    Context "When given the string '<Template>' to tokenize" -ForEach $templateTestData {
         BeforeAll {
 
             #-------------------------------------------------------------------------------
@@ -125,50 +105,61 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
                 }
             }
 
-            function New-TemplateToken {}
-            Mock New-TemplateToken {
-                $tokenInfo = @{}
-                for ($i = 0; $i -lt $args.Length; $i++ ) {
-                    if ($args[$i].Substring(0, 1) -eq '-') {
-                        $key = ($args[$i] -replace '-', '' -replace ':', '')
-                        $value = $args[++$i]
-                        if (-not ([string]::IsNullorEmpty($value))) {
-                            $tokenInfo[$key] = $value
-                        }
-                    }
-                }
-                $tokenInfo['PSTypeName'] = 'Stencil.MockToken'
-                $token = [PSCustomObject]$tokenInfo
-                return ($token)
-            }
-
             #endregion Mock functions
             #-------------------------------------------------------------------------------
-            $tokens = Convert-StringToToken -Template $Template
+
+            $results = Convert-StringToToken -Template $Template -Debug 5>debug.log
         }
 
         It 'Then it should generate <Count> tokens' {
-            $tokens.Count | Should -Be $Count
+            $results.Count | Should -Be $Count
         }
 
-        Context 'And Then for token number <Number>' -ForEach $Tokens {
+        Context 'And Then for token at index <Index>' -ForEach $Tokens {
 
-            It 'It should be number <Number>' {
-                $_.Number | Should -Be $Number
-            }
-            It 'It should be on line <LineNumber>' {
-                $_.LineNumber | Should -Be $LineNumber
+            It 'It should be index <Index>' {
+                $results[$Index].Index | Should -Be $Index
             }
             It 'It should be of type <Type>' {
-                $_.Type | Should -BeLike $Type
+                $results[$Index].Type | Should -BeLike $Type
+            }
+            It 'It should be on line <LineNumber>' {
+                $results[$Index].LineNumber | Should -Be $LineNumber
+            }
+            It 'It should start at position <Start>' {
+                $results[$Index].Start | Should -Be $Start
+            }
+
+            It 'It should be <Length> characters' {
+                $results[$Index].Length | Should -Be $Length
+            }
+            It 'It should End at position <End>' {
+                $results[$Index].End | Should -Be $End
+            }
+            It 'It should have a Prefix like <Prefix>' {
+                $results[$Index].Prefix | Should -Be $Prefix
+            }
+            It 'It should have an Indent like <Indent>' {
+                $results[$Index].Indent | Should -Be $Indent
             }
 
             It 'It should have content like <Content>' {
-                $_.Content | Should -BeLike $Content
+                $results[$Index].Content | Should -BeLike $Content
             }
 
-            It 'It should start at position <Start>' {
-                $_.Start | Should -Be $Start
+            It 'It should have RemainingWhitespace like <RemainingWhitespace>' {
+                $results[$Index].RemainingWhitespace | Should -Be $RemainingWhitespace
+            }
+
+            It 'It should have a Suffix like <Suffix>' {
+                $results[$Index].Suffix | Should -Be $Suffix
+            }
+
+            It 'It should set RemoveIndent <RemoveIndent>' {
+                $results[$Index].RemoveIndent | Should -Be $RemoveIndent
+            }
+            It 'It should set RemoveNewLine <RemoveNewLine>' {
+                $results[$Index].RemoveNewLine | Should -Be $RemoveNewLine
             }
         }
     }
