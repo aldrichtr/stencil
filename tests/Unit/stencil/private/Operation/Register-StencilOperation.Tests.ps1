@@ -2,14 +2,14 @@
 param()
 
 BeforeAll {
-    $sourceFile = (Get-SourceFilePath $PSCommandPath)
+    $sourceFile = Get-SourceFilePath
     if (Test-Path $sourceFile) {
         . $sourceFile
     } else {
         throw "Could not find $sourceFile from $PSCommandPath"
     }
 
-    $dataDirectory = (Get-TestDataPath $PSCommandPath)
+    $dataDirectory = Get-TestDataPath
 }
 Describe 'Private function Register-StencilOperation' -Tags @('unit', 'Register', 'StencilOperation') {
     BeforeAll {

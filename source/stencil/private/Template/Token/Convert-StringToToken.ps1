@@ -20,7 +20,7 @@ function Convert-StringToToken {
         $config = Import-Configuration | Select-Object -ExpandProperty Template
 
         #-------------------------------------------------------------------------------
-        #region regex patterns
+        #region ! regex patterns
 
         $startTag, $endTag, $escapeChar = Get-TagStyle
         # literal escape tags
@@ -36,9 +36,14 @@ function Convert-StringToToken {
             ELMT # Within an element
             CLOSE # End tag found
         }
+
+        enum LineEndingType {
+            LF # /n only
+            CRLF # /r/n
+        }
         Write-Debug "Template is $($Template.Length) characters"
         #-------------------------------------------------------------------------------
-        #region Split input
+        #region ! Split input
 
         # Split input into lines
         $lines = $Template.Split("`n")
@@ -51,7 +56,7 @@ function Convert-StringToToken {
         #-------------------------------------------------------------------------------
 
         #-------------------------------------------------------------------------------
-        #region initialize tokenizer
+        #region ! initialize tokenizer
 
         # keep track of our position in the input
         $cursor = 0
@@ -63,17 +68,22 @@ function Convert-StringToToken {
         # keep track of "words" across the entire Template
         $totalWordCount = 0
 
+        # Assume the line ending type is Unix
+        $lineEnding = [LineEndingType]::LF
+
         # The current state of the cursor
         [TokenState]$state = [TokenState]::TEXT
 
         # Options for creating a new Token
         $options = @{
             Type                = 'Text'
-            # The counter Index of the token (first token => 0)
-            Order               = 0
-            # The options.LineNumber in the file
-            LineNumber          = 0
-            # the spaces or tabs prior to the start tag
+            # Each time a Token is created the index is incremented
+            Index               = 0
+            # The line number in the file (Start at 1 to match editor)
+            LineNumber          = 1
+            # The position in the line
+            Column              = 0
+            # the whitespace (spaces or tabs) prior to the start tag
             Indent              = ''
             # The content is the "body" of the token
             Content             = [System.Text.StringBuilder]::new()
@@ -85,6 +95,10 @@ function Convert-StringToToken {
             Suffix              = ''
             # Any whitespace after the token
             RemainingWhiteSpace = ''
+            # Remove the Newline after the element
+            RemoveNewLine       = $false
+            # Remove the preceding whitespace
+            RemoveIndent        = $false
         }
 
         #endregion initialize tokenizer
@@ -96,67 +110,128 @@ function Convert-StringToToken {
 
         :line foreach ($line in $lines) {
             #-------------------------------------------------------------------------------
-            #region foreach Line
-            Write-Debug ("$('=' * 35) Line {0:d3} $('=' * 36)" -f $options.LineNumber)
-            Write-Debug $line
+            #region ! foreach Line
             #-------------------------------------------------------------------------------
-            #region Initialize line
+            #region Handle line endings
+
+            $carriageReturn = $line.IndexOf("`r")
+            if ( $carriageReturn -gt 0) {
+                #TODO: Do we care if it at the end or not?
+                $lineEnding = [LineEndingType]::CRLF
+                Write-Debug "Remove Carriage Return mark at index $carriageReturn"
+                $line = $line -replace '\r', ''
+            } else {
+                Write-Debug 'No Carriage Return found'
+                $lineEnding = [LineEndingType]::LF
+            }
+
+            #endregion Handle line endings
+            #-------------------------------------------------------------------------------            Write-Debug ("$('=' * 35) Line {0:d3} $('=' * 36)" -f $options.LineNumber)
+            Write-Debug "Current line: '$([regex]::Escape($line))'"
+
+
+            if ([string]::IsNullOrEmpty($line)) {
+                Write-Debug "- line $($options.LineNumber) is empty"
+                if ($options.LineNumber -eq $lines.Length) {
+                    Write-Debug '- Last line of input'
+                    if ($options.Content.Length -gt 0) {
+                        Write-Debug '- Add a newline to content'
+                        switch ($lineEnding) {
+                            ([LineEndingType]::CRLF) {
+                                Write-Debug '- Add Carriage Return/Line Feed'
+                                [void]$options.Content.Append("`r`n")
+                            }
+                            ([LineEndingType]::LF) {
+                                Write-Debug '- Add Line Feed'
+                                [void]$options.Content.Append("`n")
+                            }
+                        }
+                        New-TemplateToken @options
+                        [ref]$options | Reset-TokenOption -IncludeContent
+                    }
+                    continue line
+                }
+            }
+
+            #-------------------------------------------------------------------------------
+            #region ! Initialize line
 
             # counter for words in the current line
-            $wordCount = 0
-            $column = 0
+            $wordIndex = 0
+            # reset Column to start of line
+            $options.Column = 0
+
+            #track the last word of the line
+            $isLastWord = 0
+
             $words = $line.Split($separator)
+            Write-Debug "Split line into $($words.Count) words"
 
             #endregion Initialize line
             #-------------------------------------------------------------------------------
+
             :word foreach ($word in $words) {
                 #-------------------------------------------------------------------------------
-                #region foreach Word
-                if ($wordCount -lt $words.Length) {
-                    $nextWord = $words[($wordCount + 1)]
+                #region ! foreach Word
+                if ($wordIndex -lt $words.Count) {
+                    $nextWord = $words[($wordIndex + 1)]
+                    $isLastWord = $false
+                } else {
+                    Write-Debug '- Last word in line'
+                    $nextWord = $null
+                    $isLastWord = $true
                 }
-                #TODO: Add the space to the front of the word only if it is not the first word in the token
+
                 if ($options.Content.Length -eq 0) {
+                    Write-Debug '- Content is empty'
                     $lexeme = "$word"
                 } else {
+                    Write-Debug '- There is content'
                     $lexeme = ( -join ($separator, $word))
                 }
-                $debugHeader = (@(
-                        "$('-' * 40)",
-                        "Index - ($totalWordCount):",
-                        "- Order:     $($options.Order)",
-                        "- Line:      $($options.LineNumber)",
-                        "- Cursor:    $cursor",
-                        "- Column:    $column",
-                        '- ---',
-                        "- WordCount: $wordCount"
-                        "- Previous:  [$prevWord]",
-                        "- Word:      [$word] <---",
-                        "- Next:      [$nextWord]",
-                        '- ---',
-                        "- State:     $state",
-                        "- Content:   [$($options.Content.ToString())]",
-                        "- Prefix:    [$($options.Prefix)]",
-                        "- Suffix:    [$($options.Suffix)]"
+                Write-Debug "- Lexeme is [$lexeme]"
 
-                    ) -join "`n")
-                Write-Debug $debugHeader
+                (@(
+                    "-- Scanning current word '$([regex]::Escape($word))' $('-' * 40)",
+                    "| Counter - ($totalWordCount):",
+                    "|- Index:     $($options.Index)",
+                    "|- Line:      $($options.LineNumber)",
+                    "|- Cursor:    $cursor",
+                    "|- Column:    $($options.Column)",
+                    '|- ---',
+                    "|- Word index in this line: $wordIndex of $($word.Count)"
+                    "|- Previous word:  [$prevWord]",
+                    "|- Current word:   [$word] <---",
+                    "|- Next word:      [$nextWord]",
+                    '|- ---',
+                    "|- State:     $state",
+                    "|- Content:   [$($options.Content.ToString())]",
+                    "|- Prefix:    [$($options.Prefix)]",
+                    "|- Suffix:    [$($options.Suffix)]",
+                    "$('-' * 49)"
+
+                ) -join "`n") | Write-Debug
 
                 :scan switch -Regex -CaseSensitive ($word) {
 
                     '^$' {
                         #-------------------------------------------------------------------------------
-                        #region word is null
+                        #region ! word is null
                         #TODO: What about tabs?
                         #TODO: Record any space after CLOSE for RemainingWhiteSpace
-                        Write-Debug 'MATCH: Null - add a space to content'
-                        [void]$options.Content.Append($separator)
-                        if ($column -eq 0) {
-                            Write-Debug '- space after newline (add to indent)'
-                            $options.Indent = 1
-                        } elseif ($options.Indent -gt 0) {
-                            $options.Indent++
-                            Write-Debug "- Adding to indent. Now $($options.Indent)"
+                        if ($isLastWord) {
+                            Write-Debug 'This is the last word in the line'
+                            #TODO: Do I add the newline here or at the end of the loop?
+                        } else {
+                            Write-Debug '| MATCH: Null - add a space to content'
+                            [void]$options.Content.Append($separator)
+                            if ($options.Column -eq 0) {
+                                Write-Debug '- space after newline (start indent)'
+                                $options.Indent = 1
+                            } elseif ($options.Indent -gt 0) {
+                                $options.Indent++
+                                Write-Debug "- Adding to indent. total indent: $($options.Indent)"
+                            }
                         }
 
                         #endregion word is null
@@ -164,20 +239,21 @@ function Convert-StringToToken {
                     }
                     $startTagPattern {
                         #-------------------------------------------------------------------------------
-                        #region word matches start tag
+                        #region ! word matches start tag
 
-                        Write-Debug "MATCH: Start tag ($startTagPattern)"
+                        Write-Debug "| MATCH: Start tag ($startTag) regex ($startTagPattern)"
                         #-------------------------------------------------------------------------------
-                        #region Process prefix
+                        #region ! Process prefix
                         $hasPrefix = $false
                         if ($null -ne $Matches.rightOf) {
+                            Write-Debug '- Characters found after start tag'
                             $rightOfStartTag = $Matches.rightOf
 
                             if ($rightOfStartTag.Substring(0, 1) -eq $escapeChar) {
                                 #-------------------------------------------------------------------------------
-                                #region Escaped Start
+                                #region ! Escaped Start
 
-                                Write-Debug 'ESCAPED START - Add start tag to content'
+                                Write-Debug '** ESCAPED START - Add start tag to content'
                                 # The first character is an escape character
                                 # add the start tag and the other characters from the prefix
                                 # so '<%%want_to_keep' becomes '<%want_to_keep'
@@ -186,9 +262,9 @@ function Convert-StringToToken {
                                         $separator,
                                         ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
                                     ))
-
-                                $state = [TokenState]::OPEN
+                                Write-Debug "  - Adding $lexeme to content"
                                 [void]$options.Content.Append( $lexeme )
+                                #TODO: What other counters need to be incremented if the start tag is escaped?
                                 $cursor = $cursor + $lexeme.Length
                                 #! Move onto the next word
                                 continue word
@@ -196,14 +272,18 @@ function Convert-StringToToken {
                                 #endregion Escaped Start
                                 #-------------------------------------------------------------------------------
                             } else {
+                                Write-Debug 'Characters found are a Prefix'
                                 # The match is the prefix. Signal for inclusion
-                                $level++
                                 $hasPrefix = $true
+                                # increase the nest level
+                                $level++
                             }
+                        } else {
+                            Write-Debug '-- No characters found after start tag'
                         }
                         #endregion Process prefix
                         #-------------------------------------------------------------------------------
-
+                        Write-Debug "Check condition when state is $state"
                         :startState switch ($state) {
 
                             ([TokenState]::OPEN) {
@@ -215,32 +295,33 @@ function Convert-StringToToken {
                             }
 
                             default {
-
+                                Write-Debug '- default'
                                 #-------------------------------------------------------------------------------
-                                #region Create text token
+                                #region ! Create text token
                                 if ($options.Content.Length -gt 0) {
+                                    Write-Debug 'Content is not empty'
                                     $options.Type = 'text'
 
-                                    Write-Debug '** Create Token **'
+                                    Write-Debug '**** Create Token ****'
                                     New-TemplateToken @options
                                 }
                                 #endregion Create text token
                                 #-------------------------------------------------------------------------------
                                 #-------------------------------------------------------------------------------
-                                #region Reset
+                                #region ! Reset
                                 [ref]$options | Reset-TokenOption -IncludeContent
                                 $options.Start = $cursor
                                 #endregion Reset
                                 #-------------------------------------------------------------------------------
-                                Write-Debug 'STATE CHANGE: OPEN'
+                                Write-Debug "STATE CHANGE: $state -> OPEN"
                                 $state = [TokenState]::OPEN
-                                #TODO: Here we would process prefix and next word to determine the type
                                 if ($hasPrefix) {
+                                    #TODO: Here we would process prefix and next word to determine the type
                                     $options.Prefix = $rightOfStartTag
                                 }
+                                #! do not process any more scan conditions
                                 continue scan
                             }
-
                         } # end startState
 
                         #endregion word matches start tag
@@ -248,14 +329,15 @@ function Convert-StringToToken {
                     } # end start tag
                     $endTagPattern {
                         #-------------------------------------------------------------------------------
-                        #region word matches end tag
+                        #region ! word matches end tag
 
-                        Write-Debug 'MATCH: End Tag'
+                        Write-Debug '| MATCH: End Tag'
                         #-------------------------------------------------------------------------------
-                        #region Process suffix
+                        #region ! Process suffix
 
                         $hasSuffix = $false
                         if ($null -ne $Matches.leftOf) {
+                            Write-Debug '- Characters found before end tag'
                             $leftOfEndTag = $Matches.leftOf
 
                             if ($leftOfEndTag.Substring(($leftOfEndTag.length - 1), 1) -eq $escapeChar) {
@@ -269,52 +351,61 @@ function Convert-StringToToken {
                                         $separator,
                                         ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
                                     ))
+                                Write-Debug "Adding $lexeme to content"
                                 [void]$options.Content.Append( $lexeme )
-                                #TODO: Consider Update-Position internal function for this
-                                #$cursor = $cursor + $lexeme.Length
-                                #$column = $column + $lexeme.Length
-                                #! Move onto the next word
-                                #continue word
                             } else {
+                                Write-Debug 'Characters found are a Suffix'
                                 # The match is the prefix. Signal for inclusion
                                 $hasSuffix = $true
+                                # decrement the nest level
+                                $level--
                             }
+                        } else {
+                            Write-Debug '-- No characters found before end tag'
                         }
                         #endregion Process suffix
                         #-------------------------------------------------------------------------------
+                        Write-Debug "Check condition when state is $state"
                         :endState switch ($state) {
-                            ([TokenState]::ELMT) {
+                            ([TokenState]::CLOSE) {
+                                Write-Debug '** Error Found end tag after end tag **'
+                            }
+                            ([TokenState]::TEXT) {
+                                Write-Debug '** Error Found end tag without start tag'
+                                #TODO: Unless we are closing multiple levels?
+                            }
+                            default {
                                 #TODO: Process the Prefix, Suffix and keywords
+
+                                #TODO: Here we want to "peek" at the rest of the line
+                                #  to see if it is only whitespace
+                                Write-Debug '- default'
                                 #-------------------------------------------------------------------------------
-                                #region Create Expression
+                                #region ! Create Expression
 
                                 $options.Type = 'elmt'
                                 if ($hasSuffix) {
                                     $options.Suffix = $leftOfEndTag
                                 }
-                                Write-Debug '** Create Token **'
+                                Write-Debug '**** Create Token ****'
 
                                 New-TemplateToken @options
 
                                 #endregion Create Expression
                                 #-------------------------------------------------------------------------------
                                 #-------------------------------------------------------------------------------
-                                #region Reset
+                                #region ! Reset
                                 [ref]$options | Reset-TokenOption -IncludeContent
                                 #TODO: Ensure we set the cursor to the proper location
                                 $options.Start = $cursor
 
-                                Write-Debug 'STATE CHANGE: CLOSE'
+                                Write-Debug "STATE CHANGE: $state -> CLOSE"
                                 $state = [TokenState]::CLOSE
 
                                 #continue scan
                                 #endregion Reset
                                 #-------------------------------------------------------------------------------
                             }
-                            ([TokenState]::OPEN) {
-                                #! element has no content
-                            }
-
                         } # end endState
 
                         #endregion word matches end tag
@@ -322,25 +413,26 @@ function Convert-StringToToken {
                     }
                     default {
                         #-------------------------------------------------------------------------------
-                        #region word did not match
-
+                        #region ! word did not match
+                        Write-Debug 'MATCH: default'
+                        Write-Debug "Check condition when state is $state"
                         switch ($state) {
                             ([TokenState]::OPEN) {
                                 #TODO: This is the first word after an open tag. Check for keyword
-                                Write-Debug 'STATE CHANGE: ELMT'
+                                Write-Debug "STATE CHANGE: $state -> ELMT"
                                 $state = [TokenState]::ELMT
                             }
                             ([TokenState]::CLOSE) {
-                                Write-Debug 'STATE CHANGE: TEXT'
+                                Write-Debug "STATE CHANGE: $state -> TEXT"
                                 $state = [TokenState]::TEXT
                             }
                         }
-                        Write-Debug 'MATCH: default'
-                        Write-Debug 'Adding to content'
+                        Write-Debug '- Adding to content'
                         [void]$options.Content.Append($lexeme)
 
                         #-------------------------------------------------------------------------------
-                        #region Reset
+                        #region ! Reset
+                        Write-Debug '- Reset Indent'
                         $options.Indent = 0
                         #endregion Reset
                         #-------------------------------------------------------------------------------
@@ -349,53 +441,85 @@ function Convert-StringToToken {
                         #-------------------------------------------------------------------------------
                     }
                 } # end scan
-
+                Write-Debug '- Store current word as prevWord'
                 $prevWord = $word
                 #-------------------------------------------------------------------------------
-                #region Increment counters
+                #region ! Increment counters
 
+                Write-Debug "- Advance the cursor and column by $($lexeme.Length)"
                 $cursor = $cursor + $lexeme.Length
-                $column = $column + $lexeme.Length
-                $wordCount++
+                $options.Column = $options.Column + $lexeme.Length
+                Write-Debug '- Increment word count'
+                $wordIndex++
                 $totalWordCount++
 
                 #endregion Increment counters
                 #-------------------------------------------------------------------------------
+                (@(
+                    "Finished scanning word [$word]"
+                    "Word index in input - ($totalWordCount):",
+                    "- Index:     $($options.Index)",
+                    "- Line:      $($options.LineNumber)",
+                    "- Cursor:    $cursor",
+                    "- Column:    $($options.Column)",
+                    '- ---',
+                    "- Word index in this line: $wordIndex"
+                    "- Previous:  [$prevWord]",
+                    "- Word:      [$word] <---",
+                    "- Next:      [$nextWord]",
+                    '- ---',
+                    "- State:     $state",
+                    "- Content:   [$($options.Content.ToString())]",
+                    "- Prefix:    [$($options.Prefix)]",
+                    "- Suffix:    [$($options.Suffix)]",
+                    "$('-' * 40) End ---",
+                    ''
+
+                ) -join "`n") | Write-Debug
+
                 #endregion foreach Word
                 #-------------------------------------------------------------------------------
             }
-            [void]$options.Content.AppendLine()
-            Write-Debug "== End Line ('=' * 69)"
-            $options.LineNumber++
+            Write-Debug '- Add a newline to content'
+            switch ($lineEnding) {
+                ([LineEndingType]::CRLF) {
+                    Write-Debug '- Add Carriage Return/Line Feed'
+                    [void]$options.Content.Append("`r`n")
+                }
+                ([LineEndingType]::LF) {
+                    Write-Debug '- Add Line Feed'
+                    [void]$options.Content.Append("`n")
+                }
+            }
+            Write-Debug "== End Line $('=' * 69)"
+            if ($options.lineNumber -le $lines.Length) {
+                Write-Debug 'increment linenumber'
+                $options.LineNumber++
+            }
             #endregion foreach Line
             #-------------------------------------------------------------------------------
         }
 
         #-------------------------------------------------------------------------------
-        #region remaining content
+        #region ! remaining content
 
         Write-Debug 'Reached End of input'
         if ($options.Content.Length -gt 0) {
             Write-Debug 'Processing remaining content'
+            Write-Debug "Check condition when state is $state"
             switch ($state) {
-                    ([TokenState]::OPEN) {
-                    $message = 'Error in template. No closing tag found before end of input'
-                    $exceptionText = $message
-                    $thisException = [Exception]::new($exceptionText)
-                    $eRecord = New-Object System.Management.Automation.ErrorRecord -ArgumentList (
-                        $thisException,
-                        $null, # errorId
-                        0, # errorCategory
-                        $null  # targetObject
-                    )
-                    $PSCmdlet.ThrowTerminatingError( $eRecord )
-
-
+                ([TokenState]::OPEN) {
+                    Write-Debug 'Error No closing tag found before end of input'
                 }
-                    ([TokenState]::TEXT) {
+                ([TokenState]::ELMT) {
+                    Write-Debug 'Error end of input while in Element'
+                }
+
+                default {
+                    Write-Debug '- default'
                     $options.Type = 'text'
 
-                    Write-Debug '** Create Token **'
+                    Write-Debug '**** Create Token ****'
                     New-TemplateToken @options
                     [ref]$options | Reset-TokenOption -IncludeContent
                 }
