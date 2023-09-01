@@ -10,12 +10,6 @@ function Reset-TokenOption {
         SupportsShouldProcess
     )]
     param(
-        # The options hashtable. Passed by reference
-        [Parameter(
-            ValueFromPipeline
-        )]
-        [ref]$Options,
-
         # Optionally reset the content too
         [Parameter(
         )]
@@ -26,15 +20,17 @@ function Reset-TokenOption {
     }
     process {
         if ($PSCmdlet.ShouldProcess("Options", "Reset options to their defaults")) {
-            $Options.Value.Type = 'text'
-            $Options.Value.Prefix = ''
-            $Options.Value.Suffix = ''
-            $Options.Value.Indent = ''
-            $Options.Value.Index = ($Options.Value.Index + 1)
-            $Options.Value.Start = 0
+            $theOptions = $PSCmdlet.SessionState.PSVariable.Get('options')
+
+            $theOptions.Value.Type = 'text'
+            $theOptions.Value.Prefix = ''
+            $theOptions.Value.Suffix = ''
+            $theOptions.Value.Indent = ''
+            $theOptions.Value.Index = ($Options.Value.Index + 1)
             if ($IncludeContent) {
-                [void]$Options.Value.Content.Clear()
+                [void]$theOptions.Value.Content.Clear()
             }
+            $PSCmdlet.SessionState.PSVariable.Set($theOptions)
         }
     }
     end {
