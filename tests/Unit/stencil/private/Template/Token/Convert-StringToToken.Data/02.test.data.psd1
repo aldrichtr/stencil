@@ -1,24 +1,40 @@
 @{
     Count  = 2
-    Enabled = $false
+    Enabled = $true
     Tokens = @(
         @{
-            Index     = 0
-            Type       = 'TEXT'
-            Content    = @'
-This is a basic test
-'@
-            Start      = 0
-            LineNumber = 0
+            Index               = 0
+            Type                = 'ELMT'
+            LineNumber          = 1
+            Start               = 0
+            Length              = 23
+            End                 = 23
+            #
+            Prefix              = ''
+            Indent              = 0
+            Content             = "This is a basic test`r`n`n"
+            RemainingWhiteSpace = ''
+            Suffix              = ''
+            #
+            RemoveIndent        = $false
+            RemoveNewLine       = $false
         }
         @{
-            Index       = 1
-            Type       = 'ELMT'
-            Content    = @'
-This is an element
-'@
-            Start      = 24
-            LineNumber = 0
+            Index               = 0
+            Type                = 'TEXT'
+            LineNumber          = 1
+            Start               = 0
+            Length              = 23
+            End                 = 23
+            #
+            Prefix              = ''
+            Indent              = 0
+            Content             = "This is a basic test`r`n`n"
+            RemainingWhiteSpace = ''
+            Suffix              = ''
+            #
+            RemoveIndent        = $false
+            RemoveNewLine       = $false
         }
     )
 }

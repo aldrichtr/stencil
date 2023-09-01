@@ -19,16 +19,6 @@ function New-TemplateToken {
         )]
         [int]$Index,
 
-        # The line number of the token
-        [Parameter(
-        )]
-        [int]$LineNumber,
-
-        # The column where the content starts
-        [Parameter(
-        )]
-        [int]$Column,
-
         # The spaces or tabs prior to the start tag
         [Parameter(
         )]
@@ -44,7 +34,12 @@ function New-TemplateToken {
         # The starting position of the template token in the original content
         [Parameter(
         )]
-        [int]$Start,
+        [hashtable]$Start,
+
+        # The ending position of the template token in the original content
+        [Parameter(
+        )]
+        [hashtable]$End,
 
         # The instruction just after the start marker
         [Parameter(
@@ -109,8 +104,16 @@ function New-TemplateToken {
                 PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
                 Type                = (Format-UpperCase $Type)
                 Index               = $Index ?? 0
-                LineNumber          = $LineNumber ?? 0
-                Start               = $Start ?? 0
+                Start               = $Start ?? @{
+                    Index  = 0
+                    Line   = 0
+                    Column = 0
+                }
+                End                 = $End ?? @{
+                    Index  = 0
+                    Line   = 0
+                    Column = 0
+                }
                 Length              = ($Content.Length) ?? 0
                 Indent              = $Indent ?? ''
                 Content             = $Content ?? ''
@@ -122,6 +125,7 @@ function New-TemplateToken {
                 RemoveIndent        = $RemoveIndent
             }
 
+            Write-Debug "TokenInfo : $($tokenInfo | ConvertTo-Psd | Out-String)"
             #-------------------------------------------------------------------------------
             #region Parse content
             switch ($tokenInfo.Type) {
@@ -167,22 +171,7 @@ function New-TemplateToken {
 
 
             $token = [PSCustomObject]$tokenInfo
-            #-------------------------------------------------------------------------------
-            #region Calculate 'End'
 
-            $scriptBody = {
-                return ($this.Start + $this.Length)
-            }
-            $memberOptions = @{
-                MemberType = 'ScriptProperty'
-                Name       = 'End'
-                Value      = $scriptBody
-            }
-
-            $token | Add-Member @memberOptions
-
-            #endregion Calculate 'End'
-            #-------------------------------------------------------------------------------
             $token
         }
     }
