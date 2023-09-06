@@ -135,6 +135,7 @@ function New-TemplateToken {
                 $TokenInfo.End.Column = $End.Column
             }
 
+
             #-------------------------------------------------------------------------------
             #region Parse content
             switch ($tokenInfo.Type) {
