@@ -6,7 +6,14 @@ param()
 BeforeAll {
     #! I know that each test should isolate the function to be tested, but in this case
     #! The functions are very tightly coupled and help reduce complexity in `Convert-StringToToken`
-    $dependencies = 'Reset-TokenOption', 'New-TemplateToken'
+    $dependencies = @(
+        'Reset-TokenOption',
+        'New-TemplateToken',
+        'Update-Cursor',
+        'Update-Column',
+        'Set-StartPosition',
+        'Set-EndPosition'
+    )
 
     $sourceFile = Get-SourceFilePath
     if (-not ([string]::IsNullorEmpty($sourceFile))) {
@@ -123,19 +130,18 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             It 'It should be of type <Type>' {
                 $results[$Index].Type | Should -BeLike $Type
             }
-            It 'It should be on line <LineNumber>' {
-                $results[$Index].LineNumber | Should -Be $LineNumber
+
+            It 'It should start at Position <Start.Index> - <Start.Line>:<Start.Column>' {
+                $results[$Index].Start.Index | Should -Be $Start.Index
+                $results[$Index].Start.Line | Should -Be $Start.Line
+                $results[$Index].Start.Column | Should -Be $Start.Column
             }
-            It 'It should start at position <Start>' {
-                $results[$Index].Start | Should -Be $Start
+            It 'It should end at Position <End.Index> - <End.Line>:<End.Column>' {
+                $results[$Index].End.Index | Should -Be $End.Index
+                $results[$Index].End.Line | Should -Be $End.Line
+                $results[$Index].End.Column | Should -Be $End.Column
             }
 
-            It 'It should be <Length> characters' {
-                $results[$Index].Length | Should -Be $Length
-            }
-            It 'It should End at position <End>' {
-                $results[$Index].End | Should -Be $End
-            }
             It 'It should have a Prefix like <Prefix>' {
                 $results[$Index].Prefix | Should -Be $Prefix
             }

@@ -1,3 +1,4 @@
+
 function Update-Column {
     <#
     .SYNOPSIS
@@ -7,20 +8,24 @@ function Update-Column {
         adds the `lexeme` length and then sets the `column` value to the new value.  This is done through the
         SessionState
     #>
-    [CmdletBinding()]
+    [CmdletBinding(
+        SupportsShouldProcess
+    )]
     param(
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        $theColumn = $PSCmdlet.SessionState.PSVariable.Get('column')
-        $currentLexeme = ($PSCmdlet.SessionState.PSVariable.Get('lexeme').Value)
-        Write-Debug "Current column is : $($theColumn.Value)"
-        $theColumn.Value = ($theColumn.Value + $currentLexeme.Length)
-        Write-Debug "After adding lexeme length : $($theColumn.Value)"
+        if ($PSCmdlet.ShouldProcess("column", "Update the column position")) {
+            $theColumn = $PSCmdlet.SessionState.PSVariable.Get('column')
+            $currentLexeme = ($PSCmdlet.SessionState.PSVariable.Get('lexeme').Value)
+            Write-Debug "Current column is : $($theColumn.Value)"
+            $theColumn.Value = ($theColumn.Value + $currentLexeme.Length)
+            Write-Debug "After adding lexeme length : $($theColumn.Value)"
 
-        $PSCmdlet.SessionState.PSVariable.Set($theColumn)
+            $PSCmdlet.SessionState.PSVariable.Set($theColumn)
+        }
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

@@ -5,14 +5,20 @@
         @{
             Index               = 0
             Type                = 'ELMT'
-            LineNumber          = 1
-            Start               = 0
-            Length              = 23
-            End                 = 23
+            Start               = @{
+                Index = 0
+                Line = 0
+                Column = 0
+            }
+            End                 = @{
+                Index = 23
+                Line = 0
+                Column = 23
+            }
             #
             Prefix              = ''
-            Indent              = 0
-            Content             = "This is a basic test`r`n`n"
+            Indent              = ''
+            Content             = "This is an element"
             RemainingWhiteSpace = ''
             Suffix              = ''
             #
@@ -20,15 +26,21 @@
             RemoveNewLine       = $false
         }
         @{
-            Index               = 0
+            Index               = 1
             Type                = 'TEXT'
-            LineNumber          = 1
-            Start               = 0
-            Length              = 23
-            End                 = 23
+            Start               = @{
+                Index  = 24
+                Line   = 0
+                Column = 24
+            }
+            End                 = @{
+                Index  = 44
+                Line   = 0
+                Column = 44
+            }
             #
             Prefix              = ''
-            Indent              = 0
+            Indent              = ''
             Content             = "This is a basic test`r`n`n"
             RemainingWhiteSpace = ''
             Suffix              = ''

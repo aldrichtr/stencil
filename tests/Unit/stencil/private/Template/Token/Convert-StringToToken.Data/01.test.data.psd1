@@ -11,7 +11,7 @@
             End                 = 23
             #
             Prefix              = ''
-            Indent              = 0
+            Indent              = ''
             Content             = "This is a basic test`r`n`n"
             RemainingWhiteSpace = ''
             Suffix              = ''
