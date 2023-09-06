@@ -11,14 +11,14 @@
                 Column = 0
             }
             End                 = @{
-                Index = 23
+                Index = 24
                 Line = 0
-                Column = 23
+                Column = 24
             }
             #
             Prefix              = ''
             Indent              = ''
-            Content             = "This is an element"
+            Content             = " This is an element "
             RemainingWhiteSpace = ''
             Suffix              = ''
             #
@@ -29,19 +29,19 @@
             Index               = 1
             Type                = 'TEXT'
             Start               = @{
-                Index  = 24
+                Index  = 25
                 Line   = 0
-                Column = 24
+                Column = 25
             }
             End                 = @{
-                Index  = 44
+                Index  = 46
                 Line   = 0
-                Column = 44
+                Column = 46
             }
             #
             Prefix              = ''
             Indent              = ''
-            Content             = "This is a basic test`r`n`n"
+            Content             = " This is a basic test`r`n"
             RemainingWhiteSpace = ''
             Suffix              = ''
             #

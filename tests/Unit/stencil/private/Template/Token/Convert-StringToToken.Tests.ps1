@@ -131,14 +131,22 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
                 $results[$Index].Type | Should -BeLike $Type
             }
 
-            It 'It should start at Position <Start.Index> - <Start.Line>:<Start.Column>' {
+            It 'It should start at Index <Start.Index>' {
                 $results[$Index].Start.Index | Should -Be $Start.Index
+            }
+            It 'It should start at Line <Start.Line>' {
                 $results[$Index].Start.Line | Should -Be $Start.Line
+            }
+            It 'It should start at Column <Start.Column>' {
                 $results[$Index].Start.Column | Should -Be $Start.Column
             }
-            It 'It should end at Position <End.Index> - <End.Line>:<End.Column>' {
+            It 'It should end at Index <End.Index>' {
                 $results[$Index].End.Index | Should -Be $End.Index
+            }
+            It 'It should end at Line <End.Line>' {
                 $results[$Index].End.Line | Should -Be $End.Line
+            }
+            It 'It should end at Column <End.Column>' {
                 $results[$Index].End.Column | Should -Be $End.Column
             }
 
@@ -149,8 +157,12 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
                 $results[$Index].Indent | Should -Be $Indent
             }
 
-            It 'It should have content like <Content>' {
-                $results[$Index].Content | Should -BeLike $Content
+            It "It should have content like [$([regex]::Escape($Content))]" {
+                $results[$Index].Content | Should -BeLike $Content -Because @"
+
+Results:  $([regex]::escape($results[$Index].Content))
+Expected: $([regex]::escape($Content))
+"@
             }
 
             It 'It should have RemainingWhitespace like <RemainingWhitespace>' {

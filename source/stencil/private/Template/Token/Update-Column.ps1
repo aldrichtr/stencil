@@ -12,17 +12,28 @@ function Update-Column {
         SupportsShouldProcess
     )]
     param(
+        # A number of characters to advance.  Defaultes to lexeme length
+        [Parameter(
+        )]
+        [int]$Count
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        if ($PSCmdlet.ShouldProcess("column", "Update the column position")) {
+        if ($PSCmdlet.ShouldProcess('column', 'Advance the column position')) {
             $theColumn = $PSCmdlet.SessionState.PSVariable.Get('column')
-            $currentLexeme = ($PSCmdlet.SessionState.PSVariable.Get('lexeme').Value)
+            if ($PSBoundParameters.ContainsKey('Count')) {
+                Write-Debug '- Using Count parameter'
+                $advance = $Count
+            } else {
+                $currentLexeme = ($PSCmdlet.SessionState.PSVariable.Get('lexeme').Value)
+                $advance = $currentLexeme.Length
+                Write-Debug '- Using lexeme length'
+            }
             Write-Debug "Current column is : $($theColumn.Value)"
-            $theColumn.Value = ($theColumn.Value + $currentLexeme.Length)
-            Write-Debug "After adding lexeme length : $($theColumn.Value)"
+            $theColumn.Value = ($theColumn.Value + $advance)
+            Write-Debug "After advancing : $($theColumn.Value)"
 
             $PSCmdlet.SessionState.PSVariable.Set($theColumn)
         }

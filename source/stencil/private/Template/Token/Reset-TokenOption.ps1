@@ -26,6 +26,9 @@ function Reset-TokenOption {
             $theOptions.Value.Prefix = ''
             $theOptions.Value.Suffix = ''
             $theOptions.Value.Indent = ''
+            $theOptions.Value.RemainingWhiteSpace = ''
+            $theOptions.Value.RemoveIndent = $false
+            $theOptions.Value.RemoveNewLine = $false
             $theOptions.Value.Index = ($theOptions.Value.Index + 1)
             if ($IncludeContent) {
                 [void]$theOptions.Value.Content.Clear()
