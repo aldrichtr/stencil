@@ -104,12 +104,12 @@ function New-TemplateToken {
                 PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
                 Type                = (Format-UpperCase $Type)
                 Index               = $Index ?? 0
-                Start               = $Start ?? @{
+                Start               = @{
                     Index  = 0
                     Line   = 0
                     Column = 0
                 }
-                End                 = $End ?? @{
+                End                 = @{
                     Index  = 0
                     Line   = 0
                     Column = 0
@@ -124,8 +124,17 @@ function New-TemplateToken {
                 RemoveNewLine       = $RemoveNewLine
                 RemoveIndent        = $RemoveIndent
             }
+            if ($PSBoundParameters.ContainsKey('Start')) {
+                $TokenInfo.Start.Index = $Start.Index
+                $TokenInfo.Start.Line = $Start.Line
+                $TokenInfo.Start.Column = $Start.Column
+            }
+            if ($PSBoundParameters.ContainsKey('End')) {
+                $TokenInfo.End.Index = $End.Index
+                $TokenInfo.End.Line = $End.Line
+                $TokenInfo.End.Column = $End.Column
+            }
 
-            Write-Debug "TokenInfo : $($tokenInfo | ConvertTo-Psd | Out-String)"
             #-------------------------------------------------------------------------------
             #region Parse content
             switch ($tokenInfo.Type) {
@@ -169,10 +178,17 @@ function New-TemplateToken {
 
 
 
-
+            Write-Debug "Creating Token $($tokenInfo.Index): TokenInfo :`n $($tokenInfo | ConvertTo-Psd | Out-String)"
+            Write-Verbose "Creating Token $($tokenInfo.Index) -> $($tokenInfo.PSTypeName)"
             $token = [PSCustomObject]$tokenInfo
 
-            $token
+            <#
+            $token | Add-Member -MemberType ScriptMethod -Force -Name ToString -Value {
+                return ([regex]::Escape($this.Content))
+            }
+            #>
+
+            $token | Write-Output
         }
     }
     end {
