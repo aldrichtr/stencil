@@ -21,5 +21,6 @@
         }
 
         Whitespace = '~'
+        AddFinalNewLine = $false
     }
 }
