@@ -48,7 +48,7 @@ BeforeDiscovery {
                 $testData['Display'] = [regex]::Escape($content)
                 [void]$templateTestData.Add($testData)
             } else {
-                Write-Host "$($_.Name) is disabled"
+                Write-Information "$($_.Name) is disabled"
             }
         } else {
             throw "Could not import $testDataFile"
@@ -58,7 +58,7 @@ BeforeDiscovery {
     if ($templateTestData.Count -eq 0) {
         throw 'Could not Import test data'
     } else {
-        Write-Host "Template Test Data contains $($templateTestData.Count) tests"
+        Write-Information "Template Test Data contains $($templateTestData.Count) tests"
     }
 }
 
@@ -116,7 +116,7 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             #endregion Mock functions
             #-------------------------------------------------------------------------------
 
-            $results = Convert-StringToToken -Template $Template -Debug 5>debug.log
+            $results = Convert-StringToToken -Template $Template #-Debug 5> "$FileName-debug.log"
         }
 
         It 'Then it should generate <Count> tokens' {

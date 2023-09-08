@@ -9,13 +9,13 @@
             Type                = 'TEXT'
             Start = @{
                 Index = 0
-                Line = 0
-                Column = 0
+                Line = 1
+                Column = 1
             }
             End = @{
-                Index = 22
-                Line = 0
-                Column = 22
+                Index = 21
+                Line = 1
+                Column = 21
             }
             #
             Prefix              = ''
