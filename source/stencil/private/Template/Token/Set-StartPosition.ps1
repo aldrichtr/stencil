@@ -6,25 +6,45 @@ function Set-StartPosition {
     #>
     [CmdletBinding()]
     param(
+        # A reference to the options table
+        [Parameter(
+            Mandatory,
+            ValueFromPipeline
+        )]
+        [ref]$Options,
+
+        # The Cursor position (index of the cursor)
+        [Parameter(
+        )]
+        [int]$Index,
+
+        # The Line Number
+        [Parameter(
+        )]
+        [int]$Line,
+
+        # The column number
+        [Parameter(
+        )]
+        [int]$Column
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        $theOptions = $PSCmdlet.SessionState.PSVariable.Get('options')
-        $currentCursor = $PSCmdlet.SessionState.PSVariable.Get('cursor').Value
-        $currentColumn = $PSCmdlet.SessionState.PSVariable.Get('column').Value
-        $currentLine = $PSCmdlet.SessionState.PSVariable.Get('lineNumber').Value
 
-        $theOptions.Value.Start.Index = $currentCursor
-        $theOptions.Value.Start.Column = $currentColumn
-        $theOptions.Value.Start.Line = $currentLine
-
-        Write-Debug "Setting Start Index => $currentCursor"
-        Write-Debug "Setting Start Column => $currentColumn"
-        Write-Debug "Setting Start Line => $currentLine"
-        $PSCmdlet.SessionState.PSVariable.Set($theOptions)
-
+        if ($PSBoundParameters.ContainsKey('Index')) {
+            $Options.Value['Start'].Index = $Index
+            Write-Debug "Set Index to $Index"
+        }
+        if ($PSBoundParameters.ContainsKey('Line')) {
+            $Options.Value['Start'].Line = $Line
+            Write-Debug "Set Line to $Line"
+        }
+        if ($PSBoundParameters.ContainsKey('Column')) {
+            $Options.Value['Start'].Column = $Column
+            Write-Debug "Set Column to $Column"
+        }
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

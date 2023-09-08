@@ -6,6 +6,8 @@ function Convert-StringToToken {
     .DESCRIPTION
     .EXAMPLE
         Convert-StringToToken $template
+    .LINK
+        New-TemplateToken
     #>
     [Alias('Tokenize-Template')]
     [CmdletBinding()]
@@ -23,18 +25,28 @@ function Convert-StringToToken {
         $config = Import-Configuration | Select-Object -ExpandProperty Template
 
         function Write-Position {
+            <#
+            .SYNOPSIS
+                Pretty-print the line with position information
+            #>
             Write-Debug "+-- {{{ -Column ($column)--------------------------------------"
             Write-Debug '|- 0    5   10    15   20   25   30   35   40   45   50   55'
             Write-Debug '|- |....|....|....|....|....|....|....|....|....|....|....|'
             Write-Debug "|  $line"
             if ($column -gt 0) {
-                Write-Debug "|  $('-' * ($column - 1))^"
+                # if the column is 4, then print a '-' in 0,1,2,3 (4 * '-'), then a ^
+                Write-Debug "|  $('-' * $column)^"
             } else {
                 Write-Debug '|  ^'
             }
             Write-Debug '+------------------------------------------------------ }}} --'
 
         }
+
+        $newline = [char]"`n"
+        $return  = [char]"`r"
+        $tab     = [char]"`t"
+        $space   = [char]' '
 
         $startTag, $endTag, $escapeChar = Get-TagStyle
         #-------------------------------------------------------------------------------
@@ -63,6 +75,7 @@ function Convert-StringToToken {
         #endregion regex patterns
         #-------------------------------------------------------------------------------
 
+
         enum TokenState  {
             TEXT # Inside a Text block
             OPEN # Start tag found
@@ -79,18 +92,19 @@ function Convert-StringToToken {
         #region ! Split input
 
         # Split input into lines
-        $newline = [char]"`n"
-        $return = [char]"`r"
-        $separator = [char]' '
         $lines = [System.Collections.ArrayList]::new($Template.Split($newline))
-        $lastLine = $lines[($lines.Count - 1)]
-        if ($null -eq $lastLine) {
-            Write-Debug "Removing extra line at file end"
-            [void]$lines.RemoveAt( ($lines.Count - 1) )
-        }
         Write-Debug "Template contains $($lines.Count) lines"
 
-        # each line is split into "words"
+        $lastLine = $lines[($lines.Count - 1)]
+        Write-Debug "- Last line is '$([regex]::Escape($lastLine))'"
+        if ($lastLine -match '^$') {
+            Write-Debug '- Removing extra line at file end'
+            [void]$lines.RemoveAt( ($lines.Count - 1) )
+            Write-Debug "- Now Template contains $($lines.Count) lines"
+            $insertFinalNewLine = $true
+        } else {
+            $insertFinalNewLine = $false
+        }
 
         #endregion Split input
         #-------------------------------------------------------------------------------
@@ -99,9 +113,8 @@ function Convert-StringToToken {
         #region ! initialize tokenizer
 
         # keep track of our position in the input
-        $cursor = 0
-        $column = 0
-
+        $cursor     = 0
+        $column     = 0
         $lineNumber = -1
 
 
@@ -118,6 +131,8 @@ function Convert-StringToToken {
         # The current state of the cursor
         [TokenState]$state = [TokenState]::TEXT
 
+
+        #TODO: Consider creating a table of all the pointers that could be passed to other functions to maintain position information
         # Options for creating a new Token
         $options = @{
             Type                = 'Text'
@@ -157,15 +172,25 @@ function Convert-StringToToken {
     process {
         Write-Verbose '- Tokenizing template'
 
-        Set-StartPosition
+        [ref]$options | Set-StartPosition -Index 0 -Line 0 -Column 0
         :line foreach ($line in $lines) {
-            Write-Debug '-- {{{ -Line------------------------------------------------------------------------------'
             #-------------------------------------------------------------------------------
             #region ! foreach Line
-            #-------------------------------------------------------------------------------
-            $lineNumber++
 
-            #region Handle line endings
+            $lineNumber++
+            Write-Debug "-- {{{ - Line $lineNumber --"
+
+            $isFirstLine = ($lineNumber -eq 0)
+            $isLastLine = ($lineNumber -eq ($lines.Count - 1))
+
+            if ($isLastLine) {
+                Write-Debug '- Last line in content'
+            }
+
+            if ($isFirstLine) {
+                Write-Debug "- First line in content"
+            }
+            #region ! Handle line endings
 
             $carriageReturn = $line.IndexOf($return)
             if ( $carriageReturn -gt 0) {
@@ -180,10 +205,9 @@ function Convert-StringToToken {
 
             #endregion Handle line endings
             #-------------------------------------------------------------------------------
-            Write-Debug ("$('=' * 35) Line {0:d3} $('=' * 36)" -f $lineNumber)
             Write-Debug "Current line: '$([regex]::Escape($line))'"
             #-------------------------------------------------------------------------------
-            #region Handle whitespace
+            #region ! Handle whitespace
 
             if ($line -match $indentPattern) {
                 switch ($state) {
@@ -205,7 +229,7 @@ function Convert-StringToToken {
                     }
                 }
             } else {
-                $remain = $null
+                $remainingWSPattern = $null
             }
 
             #endregion Handle whitespace
@@ -228,20 +252,24 @@ function Convert-StringToToken {
 
 
             if ($null -ne $indent) {
-                Write-Debug 'Removing indent from line'
-                $line = ( -join ( $line[($indent.Length - 1)..($line.Length - 1)]))
-                Write-Debug "line is now [[regex]::Escape($line)]"
-                $column = ($indent.Length - 1)
-                $cursor = ($cursor + ($indent.Length - 1))
+                Write-Debug 'Removing indent from line:'
+                Write-Debug "- line is '$([regex]::Escape($line))'"
+                Write-Debug "- indent is '$([regex]::Escape($indent))'"
+                Write-Debug "- Line length: $($line.Length)"
+                Write-Debug "- indent length: $($indent.Length)"
+                $line = $line.Substring($indent.Length)
+                Write-Debug "line is now '$([regex]::Escape($line))'"
+                [ref]$column | Move-Position $indent.Length
+                [ref]$cursor | Move-Position $indent.Length
             }
 
             if ($null -ne $remainingWhiteSpace) {
                 Write-Debug 'Removing remaining whitespace from line'
-                $line = ( -join ( $line[0..($line.Length - $remainingWhiteSpace.Length)]))
-                Write-Debug "line is now [[regex]::Escape($line)]"
+                $line = $line.SubString(0,($line.Length - $remainingWhiteSpace.Length))
+                Write-Debug "line is now '$([regex]::Escape($line))'"
             }
 
-            $words = $line.Split($separator)
+            $words = $line.Split($space)
             Write-Debug "Split line into $($words.Count) words"
 
             #endregion Initialize line
@@ -258,9 +286,6 @@ function Convert-StringToToken {
                 $wordIndex++
                 $totalWordCount++
 
-                $wordStartIndex = $cursor
-                $wordEndIndex = ($cursor + $word.Length)
-
                 $isFirstWord = ($wordIndex -eq 0)
                 $isLastWord = ($wordIndex -eq ($words.Count - 1))
 
@@ -271,10 +296,8 @@ function Convert-StringToToken {
                     Write-Debug '- Last word in line'
                     #TODO: The next word should be the first word of the next line here?
                     $nextWord = "`n"
-                    $isLastWord = $false
                 } else {
                     $nextWord = $words[($wordIndex + 1)]
-                    $isLastWord = $true
                 }
 
 
@@ -301,54 +324,41 @@ function Convert-StringToToken {
                     "|- Prefix:    [$($options.Prefix)]",
                     "|- Suffix:    [$($options.Suffix)]",
                     '-- }}} --'
-                    "$('-' * 49)"
-
                 ) -join "`n") | Write-Debug
 
-                #TODO: Record any space after CLOSE for RemainingWhiteSpace
                 :scan switch -Regex -CaseSensitive ($word) {
-                    '(^$|\t)' {
+                    '^$' {
                         #-------------------------------------------------------------------------------
                         #region ! word is null
-                        Write-Debug '-- {{{ SCAN: whitespace --'
+                        Write-Debug '-- {{{ SCAN: space --'
                         <#
                         The only significant whitespace is in the indent or the remainingWhitespace, so just add it
                         in here
                         #>
-                        [void]$options.Content.Append($separator)
+                        [void]$options.Content.Append($space)
+                        [ref]$cursor | Move-Position 1
+                        [ref]$column | Move-Position 1
                         Write-Debug '-- }}} --'
                         #endregion word is null
                         #-------------------------------------------------------------------------------
                     }
-                    $startTagPattern {
+                    '\t' {
+                        #-------------------------------------------------------------------------------
+                        #region ! word is tab
+                        Write-Debug '-- {{{ SCAN: tab --'
                         <#
-                        this is the start of an element
-                        The cursor should be on the last character before the starttag
-                        -- Resolve Prefix
-                        Get the prefix if there is one
-                        Test if this is an escaped start tag
-                        - if it is:
-                        Add the "un-escaped" start tag to content and continue on to the next word
-                        - if it is not
-                        Add the contents of the right-side of the tag to $options.Prefix
-                        --
-                        If the state is not 'OPEN' or 'ELMT', then
-                        -- Test "existing content"
-                        - if there is content
-                        Set the Ending position should be the character before the start tag
-                        Create the Token
-                        Reset the option fields
-                        The Starting position should be the first character of the start tag
-                        Set the state to OPEN
-                        Advance the cursor and column to the last character of the start tag + Prefix
-                        - if there is no content
-                        The Starting position should be the first character of the start tag
-                        Set the state to OPEN
-                        Advance the cursor and column to the last character of the start tag + Prefix
-
-                        Issue 1: because we reset the content after the start tag was found, the next word
-                        thinks it does not need to add a space (so it should do that if state is OPEN)
+                        The only significant whitespace is in the indent or the remainingWhitespace, so just add it
+                        in here
                         #>
+                        [void]$options.Content.Append($tab)
+                        [ref]$cursor | Move-Position 1
+                        [ref]$column | Move-Position 1
+                        Write-Debug '-- }}} --'
+                        #endregion word is tab
+                        #-------------------------------------------------------------------------------
+                    }
+                    $startTagPattern {
+
                         #-------------------------------------------------------------------------------
                         #region ! word matches start tag
                         Write-Debug '-- {{{ SCAN: Start tag --'
@@ -370,16 +380,17 @@ function Convert-StringToToken {
                                 # so '<%%want_to_keep' becomes '<%want_to_keep'
                                 #! Advance the cursor because we are going onto the next word
                                 $lexeme = ( -join (
-                                        $separator,
+                                        $space,
                                         ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
                                     ))
                                 Write-Debug "  - Adding $lexeme to content"
                                 [void]$options.Content.Append( $lexeme )
                                 #TODO: What other counters need to be incremented if the start tag is escaped?
-                                Update-Cursor
-                                Update-Column
+                                [ref]$cursor | Move-Position $lexeme.Length
+                                [ref]$column | Move-Position $lexeme.Length
                                 #! Move onto the next word
-                                continue word
+                                Write-Debug '-- }}} --'
+                                continue scan
 
                                 #endregion Escaped Start
                                 #-------------------------------------------------------------------------------
@@ -418,28 +429,33 @@ function Convert-StringToToken {
                                     $options.Type = 'text'
                                     Write-Debug '- Set End position for the previous content before advancing'
                                     Write-Position
-                                    Set-EndPosition
+                                    [ref]$options | Set-EndPosition -Index $cursor -Line $lineNumber -Column $column
                                     New-TemplateToken @options
 
-                                    Update-Cursor
-                                    Update-Column
+                                    [ref]$cursor | Move-Position $lexeme.Length
+                                    [ref]$column | Move-Position $lexeme.Length
                                     Reset-TokenOption -IncludeContent
                                     Write-Position
-                                    Set-StartPosition
+                                    [ref]$options | Set-StartPosition -Index $cursor -Line $lineNumber -Column $column
 
                                 } else {
                                     Write-Debug 'Content is empty'
                                     # If the first word in the input is a start tag, there
                                     # wont be any input.  Set the Start position here and then update the position
-                                    Set-StartPosition
+                                    [ref]$options | Set-StartPosition -Index $cursor -Line $lineNumber -Column $column
                                     if ($isFirstWord) {
                                         $lexeme = $word
+                                        #! if this tag is the first word in the line then the cursor is already
+                                        #! at the start of the tag which is one off
+                                        #TODO: It may only be the first line so use $isFirstLine
+                                        [ref]$cursor | Move-Position ($lexeme.Length - 1)
+                                        [ref]$column | Move-Position ($lexeme.Length - 1)
                                     } else {
-                                        $lexeme = ( -join ($separator, $word))
+                                        $lexeme = ( -join ($space, $word))
+                                        [ref]$cursor | Move-Position $lexeme.Length
+                                        [ref]$column | Move-Position $lexeme.Length
                                     }
                                     Write-Position
-                                    Update-Cursor
-                                    Update-Column
                                 }
 
                                 Write-Debug "STATE CHANGE: $state -> OPEN"
@@ -449,9 +465,10 @@ function Convert-StringToToken {
                                     $options.Prefix = $rightOfStartTag
                                 }
                                 #! do not process any more scan conditions
+                                Write-Debug '-- }}} --'
+                                Write-Debug '-- }}} --'
                                 continue scan
 
-                                Write-Debug '-- }}} --'
                             }
                         } # end startState
 
@@ -480,13 +497,16 @@ function Convert-StringToToken {
 
                                 #! Advance the cursor because we are going onto the next word
                                 $lexeme = ( -join (
-                                        $separator,
+                                        $space,
                                         ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
                                     ))
                                 Write-Debug "- Adding $lexeme to content"
                                 [void]$options.Content.Append( $lexeme )
-                                Update-Cursor
-                                Update-Column
+                                [ref]$cursor | Move-Position $lexeme.Length
+                                [ref]$column | Move-Position $lexeme.Length
+                                Write-Debug '-- }}} --'
+                                Write-Debug '-- }}} --'
+                                continue word
                             } else {
                                 Write-Debug '- Characters found is a Suffix'
                                 # The match is the prefix. Signal for inclusion
@@ -515,24 +535,34 @@ function Convert-StringToToken {
                                 #-------------------------------------------------------------------------------
                                 #region ! Create Expression
 
-                                $options.Type = 'elmt'
-
                                 if ($hasSuffix) {
                                     $options.Suffix = $leftOfEndTag
                                 }
+
+                                $options.Type = 'elmt'
                                 $options.Indent = $indent
                                 $options.RemainingWhiteSpace = $remainingWhiteSpace
                                 if ($isFirstWord) {
                                     $lexeme = $word
+                                } elseif ($isLastWord) {
+                                    $lexeme = ( -join ($space, $word))
+                                    if ($lineEnding -eq ([LineEndingType]::CRLF)) {
+                                        Write-Debug '- Add Carriage Return'
+                                        $options.RemainingWhiteSpace += $return
+                                    }
+                                    Write-Debug '- Add Line Feed'
+                                    $options.RemainingWhiteSpace += $newline
                                 } else {
-                                    $lexeme = ( -join ($separator, $word))
+                                    $lexeme = ( -join ($space, $word))
                                 }
+                                [void]$options.Content.Append($space)
                                 Write-Debug "lexeme is [$lexeme]"
                                 Write-Debug "- Advance the cursor and column by $($lexeme.Length) to the end of the end tag"
-                                Update-Cursor
-                                Update-Column
+                                Write-Debug "  - And remaining whitespace $($options.RemainingWhiteSpace.Length)"
+                                [ref]$cursor | Move-Position ($lexeme.Length + $options.RemainingWhiteSpace.Length)
+                                [ref]$column | Move-Position ($lexeme.Length + $options.RemainingWhiteSpace.Length)
                                 Write-Position
-                                Set-EndPosition
+                                [ref]$options | Set-EndPosition -Index $cursor -Line $lineNumber -Column $column
 
                                 Write-Debug '**** Create Token ****'
                                 New-TemplateToken @options
@@ -543,26 +573,27 @@ function Convert-StringToToken {
                                 #-------------------------------------------------------------------------------
                                 #region ! Update
                                 Reset-TokenOption -IncludeContent
-                                Update-Cursor 1
-                                Update-Column 1
-                                Set-StartPosition
+
+                                [ref]$options | Set-StartPosition -Index ($cursor + 1) -Line $lineNumber -Column ($column + 1)
+
+
                                 Write-Debug "STATE CHANGE: $state -> CLOSE"
                                 $state = [TokenState]::CLOSE
 
 
-                                Write-Debug '-------------------------------------------------------------------------}}} --'
+                                Write-Debug '--}}} --'
                                 #endregion Update
                                 #-------------------------------------------------------------------------------
                             }
                         } # end endState
-                        Write-Debug '----------------------------------------------------------------------- }}} --'
+                        Write-Debug '-- }}} --'
 
                         #endregion word matches end tag
                         #-------------------------------------------------------------------------------
                     }
                     default {
                         #-------------------------------------------------------------------------------
-                        #region ! word did not match
+                        #region ! word match default
                         Write-Debug '-- {{{ SCAN: default ---------------------------------------------------------'
                         Write-Debug "Check condition when state is $state"
                         switch ($state) {
@@ -576,7 +607,6 @@ function Convert-StringToToken {
                                 Write-Debug '- state condition: CLOSE'
                                 Write-Debug "STATE CHANGE: $state -> TEXT"
                                 $state = [TokenState]::TEXT
-                                Set-StartPosition
                             }
                             default {
                                 Write-Debug '- state condition: default'
@@ -585,21 +615,22 @@ function Convert-StringToToken {
                         Write-Debug '- Adding to content'
                         if ($isFirstWord) {
                             $lexeme = $word
+                        } elseif ($isLastWord) {
+                            if ($lineEnding -eq ([LineEndingType]::CRLF)) {
+                                Write-Debug '- Add Carriage Return and Line Feed'
+                                $lexeme = ( -join ($space, $word, $return, $newline))
+                            } elseif ($lineEnding -eq ([LineEndingType]::LF)) {
+                                Write-Debug '- Add Line Feed'
+                                $lexeme = ( -join ($space, $word, $newline))
+                            }
                         } else {
-                            $lexeme = ( -join ($separator, $word))
+                            $lexeme = ( -join ($space, $word))
                         }
-                        Update-Cursor
-                        Update-Column
+                        [ref]$cursor | Move-Position $lexeme.Length
+                        [ref]$column | Move-Position $lexeme.Length
                         [void]$options.Content.Append($lexeme)
 
-                        #-------------------------------------------------------------------------------
-                        #region ! Reset
-                        Write-Debug '- Reset Indent'
-                        $options.Indent = ''
-                        #endregion Reset
-                        #-------------------------------------------------------------------------------
-
-                        #endregion word did not match
+                        #endregion word match default
                         #-------------------------------------------------------------------------------
                         Write-Debug '----------------------------------------------------------------------- }}} --'
                     }
@@ -616,26 +647,8 @@ function Convert-StringToToken {
                 #endregion foreach Word
                 #-------------------------------------------------------------------------------
             }
-            Write-Debug '- Add a newline to content'
-
-            # Start here tomorrow.  The new line being appended is all wrong
-            #TODO: I need to move this line ending into the Element
-            switch ($lineEnding) {
-                ([LineEndingType]::CRLF) {
-                    Write-Debug '- Add Carriage Return/Line Feed'
-                    [void]$options.Content.Append("`r`n")
-                }
-                ([LineEndingType]::LF) {
-                    Write-Debug '- Add Line Feed'
-                    [void]$options.Content.Append("`n")
-                }
-            }
             Write-Debug 'END OF LINE'
             Write-Debug '-- }}} --'
-            if ($lineNumber -le $lines.Count) {
-                Write-Debug 'increment linenumber'
-                $lineNumber++
-            }
             #endregion foreach Line
             #-------------------------------------------------------------------------------
         }
@@ -658,8 +671,12 @@ function Convert-StringToToken {
                 default {
                     Write-Debug '- default'
                     $options.Type = 'text'
-
-                    Set-EndPosition
+                    if ($config.AddFinalNewLine) {
+                        if ($insertFinalNewLine) {
+                            [void]$options.Content.Append($newline)
+                        }
+                    }
+                    [ref]$options | Set-EndPosition -Index $cursor -Line $lineNumber -Column $column
                     Write-Debug '**** Create Token ****'
                     New-TemplateToken @options
                     Reset-TokenOption -IncludeContent
@@ -668,7 +685,6 @@ function Convert-StringToToken {
         } else {
             Write-Debug '- There is no remaining content'
         }
-
         #endregion remaining content
         #-------------------------------------------------------------------------------
     }

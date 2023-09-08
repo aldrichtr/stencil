@@ -9,8 +9,7 @@ BeforeAll {
     $dependencies = @(
         'Reset-TokenOption',
         'New-TemplateToken',
-        'Update-Cursor',
-        'Update-Column',
+        'Move-Position',
         'Set-StartPosition',
         'Set-EndPosition'
     )
@@ -44,7 +43,9 @@ BeforeDiscovery {
         if ($null -ne $testData) {
             if ($testData.Enabled) {
                 $testData['FileName'] = $_.Name
-                $testData['Template'] = (Get-Content $_ -Raw)
+                $content = (Get-Content $_ -Raw)
+                $testData['Template'] = $content
+                $testData['Display'] = [regex]::Escape($content)
                 [void]$templateTestData.Add($testData)
             } else {
                 Write-Host "$($_.Name) is disabled"
@@ -87,7 +88,7 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
         }
 
     }
-    Context "When given the string '<Template>' to tokenize" -ForEach $templateTestData {
+    Context "When given the string '<Display>' in file <FileName> to tokenize" -ForEach $templateTestData {
         BeforeAll {
 
             #-------------------------------------------------------------------------------
@@ -158,13 +159,15 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             }
 
             It "It should have content like [$([regex]::Escape($Content))]" {
-                $results[$Index].Content | Should -BeLike $Content -Because @"
-
-Results:  $([regex]::escape($results[$Index].Content))
-Expected: $([regex]::escape($Content))
-"@
+                $results[$Index].Content | Should -BeLike $Content -Because ( -join (
+                        "`n-",
+                        "Results:  [$([regex]::escape($results[$Index].Content))]",
+                        "Expected: [$([regex]::escape($Content))]"
+                    ))
             }
 
+            #TODO: Test that the content is the same as it is in the Template
+            # - Get Start.Index and End.Index and then compare $content to $Template[$start..$end]
             It 'It should have RemainingWhitespace like <RemainingWhitespace>' {
                 $results[$Index].RemainingWhitespace | Should -Be $RemainingWhitespace
             }

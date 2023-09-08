@@ -1,5 +1,5 @@
 @{
-    Description = 'An element and some tex on one line'
+    Description = 'Test the indent'
     Enabled = $true
     # -- Data
     Count  = 2
@@ -8,18 +8,18 @@
             Index               = 0
             Type                = 'ELMT'
             Start               = @{
-                Index = 0
+                Index = 4
                 Line = 0
-                Column = 0
+                Column = 4
             }
             End                 = @{
-                Index = 23
+                Index = 28
                 Line = 0
-                Column = 23
+                Column = 28
             }
             #
             Prefix              = ''
-            Indent              = ''
+            Indent              = '    '
             Content             = " This is an element "
             RemainingWhiteSpace = ''
             Suffix              = ''
@@ -31,14 +31,14 @@
             Index               = 1
             Type                = 'TEXT'
             Start               = @{
-                Index  = 24
+                Index  = 29
                 Line   = 0
-                Column = 24
+                Column = 29
             }
             End                 = @{
-                Index  = 46
+                Index  = 51
                 Line   = 0
-                Column = 46
+                Column = 51
             }
             #
             Prefix              = ''
