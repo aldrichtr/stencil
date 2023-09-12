@@ -88,8 +88,6 @@ function New-TemplateToken {
 
         $keywords = @(
             'include'
-            'block'
-            'end'
             'wrapper'
         )
     }
@@ -101,10 +99,10 @@ function New-TemplateToken {
         if ($PSCmdlet.ShouldProcess($Name, 'Create new Stitch.TemplateToken')) {
 
             $tokenInfo = @{
-                PSTypeName          = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
-                Type                = (Format-UpperCase $Type)
-                Index               = $Index ?? 0
-                Start               = @{
+                PSTypeName = "Stencil.TemplateToken.$(Format-TitleCase $Type)"
+                Type       = (Format-UpperCase $Type)
+                Index      = $Index ?? 0
+                Start      = @{
                     Index  = 0
                     Line   = 0
                     Column = 0
@@ -121,26 +119,27 @@ function New-TemplateToken {
                 Prefix              = $Prefix ?? ''
                 Suffix              = $Suffix ?? ''
                 # These may be set below after evaluating the Prefix and Suffix
-                RemoveNewLine       = $RemoveNewLine
-                RemoveIndent        = $RemoveIndent
+                RemoveNewLine = $RemoveNewLine
+                RemoveIndent  = $RemoveIndent
             }
             if ($PSBoundParameters.ContainsKey('Start')) {
-                $TokenInfo.Start.Index = $Start.Index
-                $TokenInfo.Start.Line = $Start.Line
+                $TokenInfo.Start.Index  = $Start.Index
+                $TokenInfo.Start.Line   = $Start.Line
                 $TokenInfo.Start.Column = $Start.Column
             }
             if ($PSBoundParameters.ContainsKey('End')) {
-                $TokenInfo.End.Index = $End.Index
-                $TokenInfo.End.Line = $End.Line
+                $TokenInfo.End.Index  = $End.Index
+                $TokenInfo.End.Line   = $End.Line
                 $TokenInfo.End.Column = $End.Column
             }
 
 
             #-------------------------------------------------------------------------------
-            #region Parse content
+            #region ! Parse content
             switch ($tokenInfo.Type) {
                 'TEXT' {
                     # No processing of a Text chunk at this time
+                    $tokenInfo = $tokenInfo | New-TextToken
                     continue
                 }
 
@@ -148,28 +147,30 @@ function New-TemplateToken {
                     switch ($tokenInfo.Prefix) {
                         '#' {
                             if ($tokenInfo.Suffix -eq '#') {
-                                $tokenInfo.Type = 'CMNT'
-                                $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Comment'
+                                $tokenInfo = $tokenInfo | New-CommentToken
                             }
                         }
                         '-' {
                             $tokenInfo.RemoveIndent = $true
                         }
-                        # The Statement type is used to *evaluate* some chunk of powershell code,
-                        # capture the output, and put that back into the output
+                        # The Expression type is used to *evaluate* some chunk of powershell code,
+                        # capture the output, and put that back into the output, such as
                         '=' {
-                            $tokenInfo.Type = 'STMT'
-                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.Statement'
+                            $tokenInfo.Type       = 'STMT'
+                            $tokenInfo.PSTypeName = 'Stencil.Template.ExpressionToken'
                         }
                     }
+
                     # Look for "special content"
                     switch -Regex ($tokenInfo.Content) {
                         '(?sm)---(?<fm>.*?)---' {
-                            $tokenInfo.Type = 'FMTR'
-                            $tokenInfo.PSTypeName = 'Stencil.TemplateToken.FrontMatter'
+                            $tokenInfo.Type       = 'FMTR'
+                            $tokenInfo.PSTypeName = 'Stencil.Template.FrontMatterToken'
+                            $tokenInfo['YAML'] = $Matches.fm
                         }
-
                     }
+
+
 
 
                 }
@@ -183,11 +184,8 @@ function New-TemplateToken {
             Write-Verbose "Creating Token $($tokenInfo.Index) -> $($tokenInfo.PSTypeName)"
             $token = [PSCustomObject]$tokenInfo
 
-            <#
-            $token | Add-Member -MemberType ScriptMethod -Force -Name ToString -Value {
-                return ([regex]::Escape($this.Content))
-            }
-            #>
+            # Insert the "Parent Class" name
+            $token.PSObject.TypeNames.Insert(1, 'Stencil.Template.Token')
 
             $token | Write-Output
         }
