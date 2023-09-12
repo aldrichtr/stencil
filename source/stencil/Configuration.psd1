@@ -14,13 +14,19 @@
     }
 
     Template = @{
-        TagStyle = 'default'
+        TagStyle        = 'default'
 
-        TagStyleMap = @{
+        TagStyleMap     = @{
             default = @('<%', '%>', '%')
         }
 
-        Whitespace = '~'
+        Whitespace      = '~'
         AddFinalNewLine = $false
+
+        FrontMatter     = @{
+            Ordered          = $false
+            UseMergingParser = $false
+            AllDocuments     = $false
+        }
     }
 }
