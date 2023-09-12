@@ -9,6 +9,8 @@ BeforeAll {
     $dependencies = @(
         'Reset-TokenOption',
         'New-TemplateToken',
+        'New-TextToken',
+        'New-CommentToken',
         'Move-Position',
         'Set-StartPosition',
         'Set-EndPosition'
@@ -124,44 +126,51 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
         }
 
         Context 'And Then for token at index <Index>' -ForEach $Tokens {
+            BeforeAll {
+                $result = $results[$Index]
+            }
+
+            It 'It should be the base token type Stencil.Template.Token' {
+                $result.PSTypeNames | Should -Contain 'Stencil.Template.Token'
+            }
 
             It 'It should be index <Index>' {
-                $results[$Index].Index | Should -Be $Index
+                $result.Index | Should -Be $Index
             }
             It 'It should be of type <Type>' {
-                $results[$Index].Type | Should -BeLike $Type
+                $result.Type | Should -BeLike $Type
             }
 
             It 'It should start at Index <Start.Index>' {
-                $results[$Index].Start.Index | Should -Be $Start.Index
+                $result.Start.Index | Should -Be $Start.Index
             }
             It 'It should start at Line <Start.Line>' {
-                $results[$Index].Start.Line | Should -Be $Start.Line
+                $result.Start.Line | Should -Be $Start.Line
             }
             It 'It should start at Column <Start.Column>' {
-                $results[$Index].Start.Column | Should -Be $Start.Column
+                $result.Start.Column | Should -Be $Start.Column
             }
             It 'It should end at Index <End.Index>' {
-                $results[$Index].End.Index | Should -Be $End.Index
+                $result.End.Index | Should -Be $End.Index
             }
             It 'It should end at Line <End.Line>' {
-                $results[$Index].End.Line | Should -Be $End.Line
+                $result.End.Line | Should -Be $End.Line
             }
             It 'It should end at Column <End.Column>' {
-                $results[$Index].End.Column | Should -Be $End.Column
+                $result.End.Column | Should -Be $End.Column
             }
 
             It 'It should have a Prefix like <Prefix>' {
-                $results[$Index].Prefix | Should -Be $Prefix
+                $result.Prefix | Should -Be $Prefix
             }
             It 'It should have an Indent like <Indent>' {
-                $results[$Index].Indent | Should -Be $Indent
+                $result.Indent | Should -Be $Indent
             }
 
             It "It should have content like [$([regex]::Escape($Content))]" {
-                $results[$Index].Content | Should -BeLike $Content -Because ( -join (
+                $result.Content | Should -BeLike $Content -Because ( -join (
                         "`n-",
-                        "Results:  [$([regex]::escape($results[$Index].Content))]",
+                        "Results:  [$([regex]::escape($result.Content))]",
                         "Expected: [$([regex]::escape($Content))]"
                     ))
             }
@@ -169,18 +178,18 @@ Describe 'Testing private function Convert-StringToToken' -Tags @('unit', 'Strin
             #TODO: Test that the content is the same as it is in the Template
             # - Get Start.Index and End.Index and then compare $content to $Template[$start..$end]
             It 'It should have RemainingWhitespace like <RemainingWhitespace>' {
-                $results[$Index].RemainingWhitespace | Should -Be $RemainingWhitespace
+                $result.RemainingWhitespace | Should -Be $RemainingWhitespace
             }
 
             It 'It should have a Suffix like <Suffix>' {
-                $results[$Index].Suffix | Should -Be $Suffix
+                $result.Suffix | Should -Be $Suffix
             }
 
             It 'It should set RemoveIndent <RemoveIndent>' {
-                $results[$Index].RemoveIndent | Should -Be $RemoveIndent
+                $result.RemoveIndent | Should -Be $RemoveIndent
             }
             It 'It should set RemoveNewLine <RemoveNewLine>' {
-                $results[$Index].RemoveNewLine | Should -Be $RemoveNewLine
+                $result.RemoveNewLine | Should -Be $RemoveNewLine
             }
         }
     }

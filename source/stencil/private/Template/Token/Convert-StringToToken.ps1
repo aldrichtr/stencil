@@ -327,10 +327,10 @@ function Convert-StringToToken {
                     "|- Cursor:    $cursor",
                     "|- Column:    $column",
                     '|- ---',
-                    "|- Start:    Line: $($options.Start.Line):$($options.Start.Column) - Index $($options.Start.Index)]",
-                    "|- End:      Line: $($options.End.Line):$($options.End.Column) - Index $($options.End.Index)]",
+                    "|- Start:    Line: $($options.Start.Line):$($options.Start.Column) - Index $($options.Start.Index)",
+                    "|- End:      Line: $($options.End.Line):$($options.End.Column) - Index $($options.End.Index)",
                     '|- ---',
-                    "|- This is word $($wordIndex + 1) of $($words.Count) in this line"
+                    "|- This is word $wordIndex of $($words.Count) in this line"
                     "|- Is first word:  $isFirstWord",
                     "|- Is last word:  $isLastWord",
                     "|- Previous word:  [$prevWord]",
@@ -404,7 +404,7 @@ function Convert-StringToToken {
                                 #! Advance the cursor because we are going onto the next word
                                 $lexeme = ( -join (
                                         $space,
-                                        ($word -replace [regex]::Escape("$escapeChar$endTag"), $endTag)
+                                        ($word -replace [regex]::Escape("$startTag$EscapeChar"), $startTag)
                                     ))
                                 Write-Debug "  - Adding $lexeme to content"
                                 [void]$options.Content.Append( $lexeme )
@@ -465,6 +465,7 @@ function Convert-StringToToken {
                                     Write-Debug 'Content is empty'
                                     # If the first word in the input is a start tag, there
                                     # wont be any input.  Set the Start position here and then update the position
+                                    #TODO: Should I reset the EndPosition at the same time as setting the StartPosition?
                                     [ref]$options | Set-StartPosition -Index $cursor -Line $lineNumber -Column $column
                                     if ($isFirstWord) {
                                         $lexeme = $word
