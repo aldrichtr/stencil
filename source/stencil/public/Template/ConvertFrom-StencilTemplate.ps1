@@ -5,7 +5,8 @@ function ConvertFrom-StencilTemplate {
         Converts Stencil Template text into a scriptblock
     #>
     [OutputType([string])]
-    [CmdletBinding()]
+    [CmdletBinding(
+    )]
     param(
         # The template text to execute
         [Parameter(
@@ -24,7 +25,13 @@ function ConvertFrom-StencilTemplate {
         [Parameter(
             DontShow
         )]
-        [switch]$AstOnly
+        [switch]$AstOnly,
+
+        # A reference to a variable to load the tokens to
+        [Parameter(
+            DontShow
+        )]
+        [ref]$Tokens
 
     )
     begin {
@@ -37,15 +44,30 @@ function ConvertFrom-StencilTemplate {
         } else {
             if (-not ([string]::IsNullorEmpty($Data))) {
                 if ($Data -is [hashtable]) {
-                    $Data | Import-DataTable
+                    $Data
+                    | Import-DataTable
                 }
             }
-            Convert-StringToToken -Template $Template | ForEach-Object {
+            Convert-StringToToken -Template $Template
+            | ForEach-Object {
                 $token = $_
-                if ($AstOnly.IsPresent) {
-                    $token | Write-Output
+                if ($null -ne $Tokens) {
+                    $Tokens.Value += $token
+                    | Write-Output
+                }
+                $ast = $token
+                | ConvertTo-TemplateElement
+
+
+                if ($AstOnly) {
+                    $ast
+                    | Write-Output
                 } else {
-                    $token | Convert-TokenToTemplateInfo
+                    #TODO: Probably want to create a top level object that would recursively invoke all below
+                    $ast
+                    | ForEach-Object {
+                        $_.Invoke()
+                    }
                 }
             }
 
