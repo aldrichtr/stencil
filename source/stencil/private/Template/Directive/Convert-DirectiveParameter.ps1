@@ -2,7 +2,13 @@
 function Convert-DirectiveParameter {
     <#
     .SYNOPSIS
-        Extract the parameters in a directive line and return them and the remaining content
+        Extract the parameters in a string and return them as a hashtable
+    .EXAMPLE
+        $parameters = $tokenInfo | Convert-DirectiveParameter
+    .EXAMPLE
+        $tokenInfo | Convert-DirectiveParameter
+
+        Converts the parameters and adds them to the tokenInfo Parameters
     #>
     [CmdletBinding()]
     param(
@@ -11,62 +17,42 @@ function Convert-DirectiveParameter {
             ValueFromPipeline,
             ValueFromPipelineByPropertyName
         )]
-        [string]$Content
+        [ref]$TokenInfo
+
     )
     begin {
         Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     process {
-        Write-Debug "`n$('-' * 80)`n-- Process start $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
-        $splitOptions = [StringSplitOptions]::RemoveEmptyEntries + [StringSplitOptions]::TrimEntries
-        $parts = [ArrayList]::new($Content.Split(' ', $splitOptions))
-        #TODO: Extracting the parameters needs to be pulled up into it's own function
-        # I could do something like send the content to `Format-ContentParameters` and then
-        # return a hash with a 'Parameters' key and a 'Content' key which would be the remaining
-        $parameters = @{}
-        $toBeRemoved = @()
+        if ([string]::IsNullorEmpty($TokenInfo.Value.Content)) {
+            Write-Verbose 'Token has no content to convert parameters from'
+            return $null
+        } else {
+            $originalContent = $TokenInfo.Value.Content.ToString()
 
-        foreach ($part in $parts) {
-            if ($part.StartsWith('-')) {
-                Write-Debug "$part is a parameter"
-                $partIndex = $parts.IndexOf($part)
-                $nextIndex = $partIndex + 1
-                $nextValue = $parts[$nextIndex]
+            $paramIndex = $originalContent.IndexOf(' -')
+            if ($paramIndex -ge 0) {
+                $parameterPart = $originalContent.Substring($paramIndex)
+                $contentPart = $originalContent.Substring(0, $paramIndex)
+                Write-Debug "TokenInfo content may contain parameters (found '-' character)"
+                Write-Debug "Content: '$contentPart' :: Parameters: '$parameterPart'"
+            }
+            $splitOptions = [StringSplitOptions]::RemoveEmptyEntries + [StringSplitOptions]::TrimEntries
+            $parts = $parameterPart.Split('-', $splitOptions)
 
-                $parameterName = $part.Remove(0, 1)
-                if ($nextIndex -le $parts.Count) {
-                    # The next item in the list is not another parameter
-                    if ($nextValue.StartsWith('-')) {
-                        $parameters.Add($parameterName, $true)
-                    } else {
-                        $parameters.Add($parameterName, $nextValue)
-                        $toBeRemoved += $nextValue
-                    }
+            foreach ($part in $parts) {
+                Write-Debug "This part is: $part"
+                $firstSpace = $part.IndexOf(' ')
+                if ($firstSpace -ge 0) {
+                    $parameterName = $part.Substring(0,$firstSpace).Trim()
+                    $parameterValue = $part.Substring($firstSpace).Trim()
                 } else {
-                    $parameters.Add($parameterName, $true)
+                    $parameterName = $part
+                    $parameterValue = $true
                 }
-                $toBeRemoved += $part
+                Write-Debug "Parameter: $parameterName => $parameterValue"
             }
         }
-
-        foreach ($word in $toBeRemoved) { $null = $parts.Remove($word) }
-        Write-Debug "Parameters are : $($parameters | ConvertTo-Json)"
-        if ($parts[0] -like 'include') {
-            Write-Debug "We did receive a $($parts[0]) directive"
-            $null = $parts.RemoveAt(0)
-            Write-Debug "Removed.  The next part is $($parts[0])"
-        } else {
-            Write-Debug "Must have been using the '+' key"
-            Write-Debug "The next part is $($parts[0])"
-        }
-
-        $return = @{
-            Parameters = $parameters
-            Content = ($parts -join ' ')
-        }
-
-        [PSCustomObject]$return | Write-Output
-        Write-Debug "`n$('-' * 80)`n-- Process end $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
