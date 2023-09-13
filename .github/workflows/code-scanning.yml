@@ -36,12 +36,12 @@ jobs:
         with:
           # Check https://github.com/microsoft/action-psscriptanalyzer for more info about the options.
           # The below set up runs PSScriptAnalyzer to your entire repository and runs some basic security rules.
-          path: .\source
-          settings: PsscriptanalyzerRules.psd1
-          output: results.sarif
+          path: ./source
+          settings: ./PSScriptAnalyzerSettings.psd1
+          output: ./out/results.sarif
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: results.sarif
+          sarif_file: ./out/results.sarif
