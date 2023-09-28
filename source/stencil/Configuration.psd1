@@ -1,11 +1,14 @@
 @{
     Registry = @{
-        Path   = "$PSScriptRoot\operations"
+        Path   = @(
+            "$PSScriptRoot\operations",
+            '~/.stencil/operations'
+        )
         Filter = '*.operation.ps1'
     }
     Default  = @{
         StencilFile = 'stencil.yml'
-        Directory   = '~/.stencil'
+        Directory   = '~/.stencil/jobs'
     }
     Parser   = @{
         Ordered          = $false
