@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<coverage version="1.0" date="2023-09-08_18-24-15" tag="">
+  <assembly name="stencil">
+    <class name="stencil/stencil" coveredlines="0" coverablelines="24" totallines="63" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/operations">
+    <class name="stencil/operations/content.operation" coveredlines="0" coverablelines="10" totallines="15" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/copy.operation" coveredlines="0" coverablelines="1" totallines="1" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/expand.operation" coveredlines="0" coverablelines="20" totallines="37" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/new.operation" coveredlines="0" coverablelines="1" totallines="1" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/read.operation" coveredlines="0" coverablelines="6" totallines="11" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/run.operation" coveredlines="0" coverablelines="4" totallines="6" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/operations/tree.operation" coveredlines="0" coverablelines="13" totallines="25" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="2" />
+  </assembly>
+  <assembly name="stencil/private">
+    <class name="stencil/private/Expand-StencilValue" coveredlines="0" coverablelines="48" totallines="129" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/private/Job">
+    <class name="stencil/private/Job/Get-StencilJob" coveredlines="0" coverablelines="3" totallines="27" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Job/Invoke-StencilJob" coveredlines="0" coverablelines="51" totallines="119" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Job/Test-StencilJob" coveredlines="3" coverablelines="3" totallines="23" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/private/Operation">
+    <class name="stencil/private/Operation/Get-StencilOperationCommand" coveredlines="0" coverablelines="6" totallines="28" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Operation/Get-StencilOperationRegistry" coveredlines="6" coverablelines="6" totallines="19" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Operation/Register-StencilOperation" coveredlines="20" coverablelines="21" totallines="91" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Operation/Reset-StencilOperationRegistry" coveredlines="0" coverablelines="3" totallines="15" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Operation/Test-StencilOperation" coveredlines="4" coverablelines="4" totallines="24" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/private/Template">
+    <class name="stencil/private/Template/Convert-TokenToTemplateInfo" coveredlines="0" coverablelines="2" totallines="50" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/ConvertTo-TemplateDirective" coveredlines="0" coverablelines="12" totallines="43" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/Get-TagStyle" coveredlines="0" coverablelines="22" totallines="57" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/Import-DataTable" coveredlines="0" coverablelines="7" totallines="33" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/private/Template/Directive">
+    <class name="stencil/private/Template/Directive/Convert-DirectiveParameter" coveredlines="0" coverablelines="34" totallines="74" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/Directive/New-BlockDirective" coveredlines="0" coverablelines="5" totallines="27" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/Directive/New-IncludeDirective" coveredlines="0" coverablelines="27" totallines="73" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/private/Template/Token">
+    <class name="stencil/private/Template/Token/Convert-StringToToken" coveredlines="225" coverablelines="329" totallines="758" coveredbranches="0" totalbranches="0" coveredcodeelements="2" totalcodeelements="2" />
+    <class name="stencil/private/Template/Token/Move-Position" coveredlines="4" coverablelines="4" totallines="33" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Template/Token/New-TemplateToken" coveredlines="53" coverablelines="62" totallines="198" coveredbranches="0" totalbranches="0" coveredcodeelements="3" totalcodeelements="3" />
+    <class name="stencil/private/Template/Token/Reset-TokenOption" coveredlines="15" coverablelines="15" totallines="42" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Template/Token/Set-EndPosition" coveredlines="11" coverablelines="11" totallines="52" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Template/Token/Set-StartPosition" coveredlines="11" coverablelines="11" totallines="52" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="stencil/private/Template/Token/Update-Column" coveredlines="0" coverablelines="14" totallines="44" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/private/Template/Token/Update-Cursor" coveredlines="0" coverablelines="14" totallines="44" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/public">
+    <class name="stencil/public/Get-Stencil" coveredlines="0" coverablelines="8" totallines="38" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/public/Get-StencilInfo" coveredlines="0" coverablelines="23" totallines="61" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/public/Invoke-Stencil" coveredlines="0" coverablelines="27" totallines="80" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/public/Template">
+    <class name="stencil/public/Template/ConvertFrom-StencilTemplate" coveredlines="0" coverablelines="12" totallines="56" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/public/Template/Invoke-StencilCodeBlock" coveredlines="0" coverablelines="12" totallines="67" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="stencil/public/Template/Invoke-StencilTemplate" coveredlines="0" coverablelines="4" totallines="41" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="stencil/public/Template/Directive">
+    <class name="stencil/public/Template/Directive/Get-TemplateDirective" coveredlines="0" coverablelines="9" totallines="33" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+</coverage>
