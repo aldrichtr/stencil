@@ -30,6 +30,14 @@ function Get-StencilInfo {
             if ($stencil.jobs -isnot [hashtable]) {
                 throw "in '$p' jobs table is not in the correct format"
             }
+
+            if ($null -ne $stencil.env) {
+                $environmentTable = $stencil.env
+            } else {
+                #TODO (job): Are there certain variables we should add by default?
+                $environmentTable = @{}
+            }
+
             foreach ($key in $stencil.jobs.Keys) {
                 if ($jobNames -notcontains $key) {
                     #! not present, add it to the list
@@ -51,6 +59,11 @@ function Get-StencilInfo {
                         # ensure there is an 'env' table to write to
                         $job.env = @{}
                     }
+
+                    #! merge the environment table
+                    $job.env = $job.env | Update-Object $environmentTable
+
+
                     $jobObject = [PSCustomObject]$job
                     $jobObject | Write-Output
 
