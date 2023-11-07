@@ -26,7 +26,7 @@ function Expand-StencilValue {
     )
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
-        $key_not_found = $false
+        $keyNotFound = $false
     }
     process {
         <#------------------------------------------------------------------
@@ -47,8 +47,10 @@ function Expand-StencilValue {
 
         :line foreach ($line in $Value) {
             Write-Debug "  Looking for tokens in '$line'"
+            # recursively look for tokens until none are found
             $result = $line | Select-String -Pattern '\$\{(?<var>.+?)\}' -AllMatches
-            if ($result.Matches.Count -gt 0) {
+
+            while ($result.Matches.Count -gt 0) {
                 Write-Debug "   Found $($result.Matches.Count) tokens"
                 $result.Matches | ForEach-Object {
                     $found = $_.Groups[0].Value
@@ -64,7 +66,7 @@ function Expand-StencilValue {
                     Write-Debug "  '$var' has $($parts.count) levels"
 
                     $descend = $Data
-                    $key_not_found = $false # reset on each token
+                    $keyNotFound = $false # reset on each token
                     $level = 0
                     :key foreach ($part in $parts) {
                         $level++
@@ -84,7 +86,7 @@ function Expand-StencilValue {
                                     $descend = $descend[$part]
                                 } else {
                                     Write-Verbose "Warning: Key '$part' not found"
-                                    $key_not_found = $true
+                                    $keyNotFound = $true
                                     break key
                                 }
                             }
@@ -95,7 +97,7 @@ function Expand-StencilValue {
                                     Write-Debug "     Setting current descent to $($descend.GetType()) $descend"
                                 } else {
                                     Write-Verbose "Warning: Key '$part' not found"
-                                    $key_not_found = $true
+                                    $keyNotFound = $true
                                     break key
                                 }
                             }
@@ -107,17 +109,15 @@ function Expand-StencilValue {
                             }
                         } # switch
                     } # foreach part
-                    if ($key_not_found) {
+                    if ($keyNotFound) {
                         Write-Verbose "  $found not found in input data"
                     } else {
                         $line = $line -replace [regex]::Escape($found) , $descend
                         Write-Debug "   Replacing token '$found'. Level #$level  line is now '$line'"
                     }
-
-            } # foreach match
+                } # end while
+                $result = $line | Select-String -Pattern '\$\{(?<var>.+?)\}' -AllMatches
             Write-Debug "  final text after expansion '$line'"
-        } else {
-            Write-Debug "  No tokens found in '$line'"
         }
         # All tokens found have been replaced, output the line.  It may or may not have been changed
         $line
