@@ -18,7 +18,7 @@ Describe 'Private function Register-StencilOperation' {
         It "Should pass PSScriptAnalyzer Rule '<_.RuleName>'" -Tag @('analyzer') -ForEach @(Get-ScriptAnalyzerRule) {
             $result = Invoke-ScriptAnalyzer -ScriptDefinition $command.Definition -IncludeRule $_.RuleName
             $result | Should -BeNullOrEmpty -Because (
-                ".`n$($PSStyle.Foreground.BrightWhite){0} on line {1} {2}`n`n.$($PSStyle.Reset)" -f $result.Severity, $result.Line, $result.Message )
+                ".`n$($PSStyle.Foreground.BrightWhite){0}: on line {1} {2}`n`n.$($PSStyle.Reset)" -f $result.Severity, $result.Line, $result.Message )
         }
         Context 'The parameters are set correctly' -ForEach @(
             @{

@@ -1,0 +1,20 @@
+name: "Create additional (conventional) directories for a PowerShell module"
+version: 0.0.1
+
+jobs:
+  module_additional_folders:
+   name: Create additional folders used in developing PowerShell modules
+   steps:
+    - tree:
+       root: ${CurrentDir}
+       docs:
+        images:
+       out:
+        modules:
+        tests:
+         Unit:
+         Integration:
+       tests:
+         Unit:
+         Integration:
+         Data:
