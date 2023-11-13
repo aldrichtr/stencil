@@ -11,22 +11,22 @@ Register-StencilOperation 'expand' {
         # HACK: Invoke-EpsTemplate expects a hashtable so we need to convert
         #  the job object, but we still want to reference it as 'Job'
         # in the template so we add all under the 'Job' key
-        $job_hash = @{
+        $jobHash = @{
             Job = @{}
         }
         $Job.PSObject.Properties | ForEach-Object {
-            $job_hash.Job.Add($_.Name, $_.Value)
+            [void]$jobHash.Job.Add($_.Name, $_.Value)
         }
         # Safe tells EPS to use the Binding
         if ($params.Keys -notcontains 'Safe') {
             $params['Safe'] = $true
         }
-        $params.Binding = $job_hash
+        $params.Binding = $jobHash
     }
     if (Test-Path $params.Path) {
         if ($params.Keys -contains 'Destination') {
             $dest = $params.Destination
-            $params.Remove('Destination')
+            [void]$params.Remove('Destination')
             Invoke-EpsTemplate @params | Out-File $dest
         } else {
             Invoke-EpsTemplate @params
