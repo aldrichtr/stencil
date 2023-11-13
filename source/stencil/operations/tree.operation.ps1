@@ -7,7 +7,22 @@ Register-StencilOperation 'tree' {
         )
         foreach ($key in $tree.Keys) {
             Write-Debug "       Creating directory '$key' in '$root'"
-            New-Item -Path $root -ItemType Directory -Name $key
+            try {
+                $item = New-Item -Path $root -ItemType Directory -Name $key
+                Write-Verbose "Created $($item.FullName)"
+            }
+            catch {
+                $message = "Could not create directory $root/$key"
+                $exceptionText = ( @($message, $_.ToString()) -join "`n")
+                $thisException = [Exception]::new($exceptionText)
+                $eRecord = New-Object System.Management.Automation.ErrorRecord -ArgumentList (
+                    $thisException,
+                    $null,  # errorId
+                    $_.CategoryInfo.Category, # errorCategory
+                    $null  # targetObject
+                )
+                $PSCmdlet.ThrowTerminatingError( $eRecord )
+            }
             $sub = $tree[$key]
             if ($sub.Keys.Count -gt 0) {
                 Write-Debug "       '$key' has $($sub.Keys.Count) child directories"
