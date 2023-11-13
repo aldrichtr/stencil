@@ -9,9 +9,15 @@ function Get-Stencil {
     #>
     [CmdletBinding()]
     param(
+        # The id of the jobs to return
+        [Parameter(
+            Position = 0
+        )]
+        [string[]]$Id,
+
         # Specifies a path to one or more locations.
         [Parameter(
-            Position = 0,
+            Position = 1,
             ValueFromPipeline,
             ValueFromPipelineByPropertyName
         )]
@@ -25,18 +31,28 @@ function Get-Stencil {
     )
     begin {
         Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
+
         $config = Import-Configuration
+        $pathConfig = $config.Default.Path
     }
     process {
         if (-not($PSBoundParameters.ContainsKey('Path'))) {
-            $Path = $config.Default.Directory
+            try {
+                $Path = (Resolve-Path (Join-Path $pathConfig.Root $pathConfig.Jobs))
+            } catch {
+                $PSCmdlet.ThrowTerminatingError($_)
+            }
         }
+        #TODO: Create a yaml schema file for stencils
         foreach ($p in $Path) {
             Get-ChildItem $p -Recurse -Filter $config.Default.StencilFile | ForEach-Object {
                 foreach ($stencil in (Get-StencilInfo $_)) {
                     Write-Debug "  Stencil $($stencil.name) has scope $($stencil.scope)"
                     if (($stencil.scope -eq [JobScope]::global) -or $All) {
-                        $stencil | Write-Output
+                        if ((-not ($PSBoundParameters.ContainsKey('Id'))) -or
+                            ($stencil.Id -in $Id)) {
+                            $stencil | Write-Output
+                        }
                     }
                 }
             }
