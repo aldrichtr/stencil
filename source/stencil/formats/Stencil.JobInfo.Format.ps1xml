@@ -36,6 +36,11 @@ https://github.com/jdhitsolutions/PSScriptTools
                         <Alignment>left</Alignment>
                     </TableColumnHeader>
                     <TableColumnHeader>
+                        <Label>tags</Label>
+                        <Width>10</Width>
+                        <Alignment>left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
                         <Label>version</Label>
                         <Width>10</Width>
                         <Alignment>left</Alignment>
@@ -52,6 +57,10 @@ https://github.com/jdhitsolutions/PSScriptTools
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock> $_.Tags -join ', '
+                                </ScriptBlock>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>Version</PropertyName>
