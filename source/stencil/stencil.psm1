@@ -12,6 +12,11 @@ $import_options = @{
     ErrorAction = 'Stop'
 }
 
+$prefixFile = (Join-Path $PSScriptRoot 'prefix.ps1')
+$suffixFile = (Join-Path $PSScriptRoot 'suffix.ps1')
+
+
+if (Test-Path $prefixFile) { . $prefixFile }
 
 if (Test-Path "$PSScriptRoot\LoadOrder.txt") {
     Write-Host 'Using custom load order'
@@ -61,3 +66,10 @@ if (Test-Path "$PSScriptRoot\LoadOrder.txt") {
         throw "An error occured during the dot-sourcing of module .ps1 file '$currentFile':`n$_"
     }
 }
+
+if (Test-Path "$PSScriptRoot\formats") {
+    Get-ChildItem "$PSScriptRoot\formats" -Filter '*.Format.ps1xml'
+    | ForEach-Object { Update-FormatData -AppendPath $_ }
+}
+
+if (Test-Path $suffixFile) { . $suffixFile }
