@@ -1,4 +1,5 @@
-out/
+out/*
+!out/.gitkeep
 stage/
 
 # The wiki repository
