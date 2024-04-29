@@ -44,7 +44,6 @@ function Get-StencilInfo {
                     $jobNames += $key
 
                     $job = $stencil.jobs[$key]
-
                     if ([string]::IsNullorEmpty($job['scope'])) {
                         $job['scope'] = [JobScope]::global.ToString()
                     }
