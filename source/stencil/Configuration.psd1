@@ -8,8 +8,14 @@
     }
     Default  = @{
         StencilFile = 'stencil.yml'
-        Directory   = '~/.stencil/jobs'
+        ValuesFile  = 'defaults.yml'
+        Path        = @{
+            Root       = '~/.stencil'
+            Jobs       = 'jobs'
+            Operations = 'operations'
+        }
     }
+
     Parser   = @{
         Ordered          = $false
         UseMergingParser = $true
