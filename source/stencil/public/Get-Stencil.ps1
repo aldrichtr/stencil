@@ -67,7 +67,11 @@ function Get-Stencil {
                             Write-Verbose "No stencil information found in $stencilFile"
                         }
                     }
+                } else {
+                    Write-Verbose "No stencil files found in Path '$p'"
                 }
+            } else {
+                Write-Verbose "$p is not a valid path"
             }
         }
     }

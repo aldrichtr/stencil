@@ -5,10 +5,16 @@
     }
     Default = @{
         StencilFile = 'stencil.yml'
-        Directory   = '~/.stencil'
+        ValuesFile  = 'defaults.yml'
+        Path        = @{
+            Root       = '~/.stencil'
+            Jobs       = 'jobs'
+            Operations = 'operations'
+        }
     }
-    Parser = @{
-        Ordered = $false
+
+    Parser   = @{
+        Ordered          = $false
         UseMergingParser = $true
         AllDocuments = $true
     }
