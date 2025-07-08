@@ -1,3 +1,5 @@
+using namespace System.Collections
+
 
 function Convert-StringToToken {
     <#
@@ -121,7 +123,9 @@ function Convert-StringToToken {
         [TokenState]$state = [TokenState]::TEXT
 
 
-        #TODO: Consider creating a table of all the pointers that could be passed to other functions to maintain position information
+        <# TODO: Consider creating a table of all the pointers that could be passed
+           to other functions to maintain position information
+        #>
         # Options for creating a new Token
         $options = @{
             Type                = 'Text'
@@ -163,7 +167,7 @@ function Convert-StringToToken {
         Write-Debug 'Beginning tokenization'
         #-------------------------------------------------------------------------------
         #region ! Split input into lines
-        $lines = [System.Collections.ArrayList]::new($Template.Split($newline))
+        $lines = [ArrayList]::new($Template.Split($newline))
         Write-Debug "Template contains $($lines.Count) lines"
 
         $lastLine = $lines[($lines.Count - 1)]
@@ -249,7 +253,7 @@ function Convert-StringToToken {
                     }
                 }
             } else {
-                $remainingWSPattern = $null
+                $remainingWhiteSpace = $null
             }
 
             #endregion Handle whitespace
