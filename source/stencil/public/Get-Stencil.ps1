@@ -56,7 +56,7 @@ function Get-Stencil {
                         Write-Debug "Processing stencil file $($stencilFile.FullName)"
                         $stencilInfo = Get-StencilInfo $stencilFile
                         if ($null -ne $stencilInfo) {
-                            Write-Debug "  Stencil $($stencilInfo.name) has scope $($stencilInfo.scope)"
+                            Write-Debug "  stencilInfo $($stencilInfo.name) has scope $($stencilInfo.scope)"
                             if (($stencilInfo.scope -eq [JobScope]::global) -or $All) {
                                 if ((-not ($PSBoundParameters.ContainsKey('Id'))) -or
                                     ($stencilInfo.Id -in $Id)) {

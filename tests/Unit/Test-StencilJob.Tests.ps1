@@ -1,4 +1,18 @@
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+
+param()
+
+BeforeAll {
+    $sourceFile = Get-SourceFilePath
+    if (Test-Path $sourceFile) {
+        . $sourceFile
+    } else {
+        throw "Could not find $sourceFile from $PSCommandPath"
+    }
+
+    $dataDirectory = Get-TestDataPath
+}
 Describe 'Testing the private function Test-StencilJob' -Tag @('unit', 'private') {
     Context 'The command is available from the module' {
         BeforeAll {

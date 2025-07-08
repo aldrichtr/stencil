@@ -47,6 +47,8 @@ function Invoke-StencilJob {
         ------------------------------------------------------------------#>
         #TODO: What if the user wants the output in a different location?
         $Job.CurrentDir = (Get-Location).Path
+        $Job.cwd = $Job.CurrentDir
+        $Job.src = $Job.SourceDir
         :step foreach ($step in $Job.steps) {
             Write-Debug "`n$('-' * 80)`n-- STEP #$stepCount`n$('-' * 80)"
             <# the way the parser creates the step is like this:
@@ -74,6 +76,8 @@ function Invoke-StencilJob {
             Write-Debug '  The environment is: '
             Write-Debug "    - SourceDir => $($Job.SourceDir)"
             Write-Debug "    - CurrentDir => $($Job.CurrentDir)"
+            Write-Debug "    - {cwd} => $($Job.cwd)"
+            Write-Debug "    - {src} => $($Job.src)"
             foreach ($key in $Job.env.Keys) {
                 '    - env.{0} => {1}' -f $key , $Job.env[$key] | Write-Debug
             }

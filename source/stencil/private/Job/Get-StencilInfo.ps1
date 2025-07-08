@@ -26,7 +26,15 @@ function Get-StencilInfo {
     }
     process {
         foreach ($p in $Path) {
-            $stencil = Get-Content $p | ConvertFrom-Yaml @parserOptions
+            if (-not($p | Test-Path)) {
+                throw "'$p' is not a valid path"
+            }
+            try {
+                $stencil = Get-Content $p | ConvertFrom-Yaml @parserOptions
+            } catch {
+                throw "Error parsing yaml file $p`n$_"
+            }
+
             if ($stencil.jobs -isnot [hashtable]) {
                 throw "in '$p' jobs table is not in the correct format"
             }
@@ -46,14 +54,16 @@ function Get-StencilInfo {
                     $job = $stencil.jobs[$key]
 
                     if ([string]::IsNullorEmpty($job['scope'])) {
-                        $job['scope'] = [JobScope]::global
+                        $job['scope'] = ([JobScope]::global).ToString()
                     }
                     $job['PSTypeName'] = 'Stencil.JobInfo'
                     $job['id'] = $key
                     $job['SourceDir'] = (Get-Item $p).Directory.FullName
+                    $job['src'] = $job.SourceDir
                     $job['Path'] = (Get-Item $p).FullName
                     $job['CurrentDir'] = '' # place holder, set at runtime
-                    $job['Version'] = [semver]($stencil.Version) ?? ''
+                    $job['cwd'] = '' # place holder, set at runtime
+                    $job['Version'] = $stencil.Version ?? ''
 
                     if ($job.Keys -notcontains 'env') {
                         # ensure there is an 'env' table to write to

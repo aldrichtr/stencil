@@ -1,8 +1,15 @@
 
+using namespace System.Text
+
+<#
+write: Write a message to the console.
+params: Message, Foreground, Background, Blink, Bold
+#>
+
 Register-StencilOperation 'write' {
     param($params)
     if (-not ([string]::IsNullOrEmpty($params.Message))) {
-        $message = [System.Text.StringBuilder]::new()
+        $message = [StringBuilder]::new()
         $needsReset = $false
         if ($params.ContainsKey('Foreground')) {
             if ($null -ne $PSStyle.Foreground.($params.Foreground)) {
@@ -31,8 +38,8 @@ Register-StencilOperation 'write' {
         }
 
         $options = @{
-            Tags                  = $params.Tags
-            MessageData           = $message.ToString()
+            Tags              = $params.Tags
+            MessageData       = $message.ToString()
             InformationAction = 'Continue'
         }
         Write-Information @options
