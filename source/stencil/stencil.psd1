@@ -1,123 +1,85 @@
 @{
+  #---------------------------------------------------------------------------
+  #region Module Info
 
-    # Script module or binary module file associated with this manifest.
-    RootModule        = 'stencil.psm1'
+  ModuleVersion     = '0.2.11'
+  Description       = 'PowerShell project generator'
+  GUID              = '9924ccbb-1d32-4ec4-94ea-59252ce86022'
+  # HelpInfoURI = ''
 
-    # Version number of this module.
-    ModuleVersion     = '0.2.11'
+  #endregion Module Info
+  #---------------------------------------------------------------------------
 
-    # Supported PSEditions
-    # CompatiblePSEditions = @()
+  #---------------------------------------------------------------------------
+  #region Module Components
 
-    # ID used to uniquely identify this module
-    GUID              = '9924ccbb-1d32-4ec4-94ea-59252ce86022'
+  RootModule        = 'stencil.psm1'
+  # ScriptsToProcess = @()
+  # TypesToProcess = @()
+  # FormatsToProcess = @()
+  # NestedModules = @()
+  # ModuleList = ''
+  # FileList = @()
 
-    # Author of this module
-    Author            = 'Timothy Aldrich'
+  #endregion Module Components
+  #---------------------------------------------------------------------------
 
-    # Company or vendor of this module
-    CompanyName       = 'aldrichtr'
+  #---------------------------------------------------------------------------
+  #region Public Interface
 
-    # Copyright statement for this module
-    Copyright         = '(c) Timothy Aldrich. All rights reserved.'
+  CmdletsToExport   = @()
+  FunctionsToExport = '*'
+  VariablesToExport = @()
+  AliasesToExport   = @()
+  # DSCResourcesToExport = @()
+  # DefaultCommandPrefix = ''
 
-    # Description of the functionality provided by this module
-    Description       = 'PowerShell project generator'
+  #endregion Public Interface
+  #---------------------------------------------------------------------------
 
-    # Minimum version of the PowerShell engine required by this module
-    # PowerShellVersion = ''
+  #---------------------------------------------------------------------------
+  #region Requirements
 
-    # Name of the PowerShell host required by this module
-    # PowerShellHostName = ''
+  # CompatiblePSEditions = @()
+  # PowerShellVersion = ''
+  # PowershellHostName = ''
+  # PowershellHestVersion = ''
+  # RequiredModules = ''
+  # RequiredAssemblies = ''
+  # ProcessorArchitecture = ''
+  # DotNetFrameworkVersion = ''
+  # CLRVersion = ''
 
-    # Minimum version of the PowerShell host required by this module
-    # PowerShellHostVersion = ''
+  #endregion Requirements
+  #---------------------------------------------------------------------------
 
-    # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # DotNetFrameworkVersion = ''
+  #---------------------------------------------------------------------------
+  #region Author
 
-    # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # ClrVersion = ''
+  Author            = 'Timothy Aldrich'
+  CompanyName       = 'aldrichtr'
+  Copyright         = '(c) Timothy Aldrich. All rights reserved.'
 
-    # Processor architecture (None, X86, Amd64) required by this module
-    # ProcessorArchitecture = ''
+  #endregion Author
+  #---------------------------------------------------------------------------
 
-    # Modules that must be imported into the global environment prior to importing this module
-    # RequiredModules = @()
+  PrivateData       = @{
+    PSData = @{
+      #---------------------------------------------------------------------------
+      #region Project
 
-    # Assemblies that must be loaded prior to importing this module
-    # RequiredAssemblies = @()
+      # Tags = @()
+      # LicenseUri = ''
+      # ProjectUri = ''
+      IconUri    = ''
+      PreRelease = ''
+      # RequireLicenseAcceptance = ''
+      # ExternalModuleDependencies = @()
+      # ReleaseNotes = ''
 
-    # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    # ScriptsToProcess = @()
+      #endregion Project
+      #---------------------------------------------------------------------------
 
-    # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @()
-
-    # Format files (.ps1xml) to be loaded when importing this module
-    # FormatsToProcess = @()
-
-    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    # NestedModules = @()
-
-    # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = '*'
-
-    # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport   = @()
-
-    # Variables to export from this module
-    VariablesToExport = @()
-
-    # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = @()
-
-    # DSC resources to export from this module
-    # DscResourcesToExport = @()
-
-    # List of all modules packaged with this module
-    # ModuleList = @()
-
-    # List of all files packaged with this module
-    # FileList = @()
-
-    # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData       = @{
-
-        PSData = @{
-
-            # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'template'
-
-            # A URL to the license for this module.
-            LicenseUri = 'https://github.com/aldrichtr/stencil/blob/main/LICENSE.md'
-
-            # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/aldrichtr/stencil'
-
-            # A URL to an icon representing this module.
-            # IconUri = ''
-
-            # ReleaseNotes of this module
-            ReleaseNotes = ''
-
-            # Prerelease string of this module
-            # Prerelease = ''
-
-            # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-            RequireLicenseAcceptance = $false
-
-            # External dependent modules of this module
-            ExternalModuleDependencies = @('powershell-yaml')
-
-        } # End of PSData hashtable
-
-    } # End of PrivateData hashtable
-
-    # HelpInfo URI of this module
-    # HelpInfoURI = ''
-
-    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-    # DefaultCommandPrefix = ''
-
-}
+    } # end PSData
+  } # end PrivateData
+} # end hashtable

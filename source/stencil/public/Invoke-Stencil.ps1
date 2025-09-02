@@ -13,6 +13,10 @@ function Invoke-Stencil {
 
         # The stencil.JobInfo to run
         [Parameter(
+            ParameterSetName = 'FromJob',
+            Position = 1,
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName
         )]
         [PSTypeNameAttribute('Stencil.JobInfo')][Object[]]$Job,
 
@@ -82,12 +86,15 @@ function Invoke-Stencil {
     }
     process {
         if (-not ($PSBoundParameters.ContainsKey('Job'))) {
+            Write-Debug "No Job given"
             if (-not ($PSBoundParameters.ContainsKey('Id'))) {
-                throw 'No Job given to process'
+                throw "No Job and no id given.  Can't continue"
             } else {
+                Write-Debug "Looking up id $Id"
                 $possibleJob = $state.Jobs | Where-Object -Property id -Like $Id
                 if ($null -ne $possibleJob) {
                     try {
+                        Write-Debug "Running this job"
                         $possibleJob | Invoke-StencilJob
                     } catch {
                         $PSCmdlet.ThrowTerminatingError($_)
@@ -97,7 +104,9 @@ function Invoke-Stencil {
                 }
             }
         } else {
+            Write-Debug "A Job was given"
             try {
+                Write-Debug "Running this job"
                 $Job | Invoke-StencilJob
             } catch {
                 $PSCmdlet.ThrowTerminatingError($_)

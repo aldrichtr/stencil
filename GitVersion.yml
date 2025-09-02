@@ -1,25 +1,217 @@
-mode: Mainline
-commit-message-incrementing: MergeMessageOnly
+#-------------------------------------------------------------------------------
+#region Global
 
-assembly-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILDCOUNT ?? 0}'
-assembly-informational-format: '{NuGetVersionV2}+Build.{env:BUILDCOUNT ?? 0}.Date.{CommitDate}.Branch.{env:SAFEBRANCHNAME ?? unknown}.Sha.{Sha}'
-commit-date-format: yyyyMMddTHHmmss
+## Hard set the next version.  Used to "override" the computed version
+# next-version 2.0
+
+# Use a pre-configured template
+# workflow # GitFlow/v1 , GitHubFlow/v1, TrunkBased/v1
+
+# Set the increment mode
+# mode ContinuousDeployment, ContinuousDelivery, Mainline
+#endregion Global
+#-------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------
+#region Control version via git objects
+
+# When enabled, gitversion respects ~+semver: <scope>~ entries in commit
+# messages
+commit-message-incrementing: Enabled
+
+# To update the `{Major}` version,
+# add a git trailer style line to your commit message like:
+# +semver: major
+# major(v1.0)
+major-version-bump-message: >
+  (^(breaking|major)
+  (\(.*\))?:)
+  |(\+semver:\s?
+  (breaking|major))
+  |BREAKING CHANGE(:)
+
+# Update the `{Minor}` version
+minor-version-bump-message: >
+  (^(feat(ure)?|minor)
+  (\(.*\))?:)
+  |(\+semver:\s?
+  (feat(ure)?|minor))
+
+
+# Update the `{Patch}` version
+patch-version-bump-message: >
+  (^((bug)?fix|patch|perf|refactor)
+  (\(.*\))?:)
+  |(\+semver:\s?
+  ((bug)?fix|patch))
+no-bump-message: \+semver:\s?(none|skip)
+
+# Regex that identifies merge commits
+merge-message-formats:
+ github: >
+   ^Merge pull request
+   (?<PullRequestNumber>#\d+)
+   from (?<Author>\w+):(?<SourceBranch>.+)
+
+# Branch names
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
+
+# Tag names
+
+tag-prefix: '[vV]?'
+
+#endregion commit message processing
+#--------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+#region Version format
+
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+assembly-informational-format: >
+  {Major}.{Minor}.{Patch}
+  -{PreReleaseTag}+{ShortSha}
+
+semantic-version-format: Strict
+
+# Format of `CommitDate` property
+commit-date-format: yyyy-MM-dd
+
+#endregion Version format
+#-------------------------------------------------------------------------------
+
+
+tag-pre-release-weight: 60000
+update-build-number: true
+strategies:
+- Fallback
+- ConfiguredNextVersion
+- MergeMessage
+- TaggedCommit
+- TrackReleaseBranches
+- VersionInBranchName
+
+
+#-------------------------------------------------------------------------------
+#region Branch specific
+
+
 
 branches:
   main:
+    label: ''
     increment: Patch
-    is-release-branch: true
-  pull-request:
-    tag: rc
-    increment: Patch
-  feature:
-    regex: feature/
-    tag: useBranchName
-    increment: Patch
-    source-branches: ['main', 'feature']
-    track-merge-target: true
+    prevent-increment:
+      of-merged-branch: true
+    track-merge-target: false
+    track-merge-message: true
+    regex: ^master$|^main$
+    source-branches: []
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
   release:
-    tag: ''
-    regex: releases?[/-]\d+\.\d+\.\d+
-    increment: Patch
+    mode: ManualDeployment
+    label: beta
+    increment: Minor
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    track-merge-target: false
+    regex: ^releases?[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - support
+    is-source-branch-for: []
+    tracks-release-branches: false
     is-release-branch: true
+    is-main-branch: false
+    pre-release-weight: 30000
+  feature:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^feat(ure)?[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - support
+    - hotfix
+    is-source-branch-for: []
+    is-main-branch: false
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDelivery
+    label: pr-{Number}
+    increment: Inherit
+    prevent-increment:
+      of-merged-branch: true
+      when-current-commit-tagged: false
+    track-merge-message: true
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
+    source-branches:
+    - main
+    - release
+    - feature
+    - support
+    - hotfix
+    is-source-branch-for: []
+    pre-release-weight: 30000
+  hotfix:
+    mode: ManualDeployment
+    label: beta
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: false
+    regex: ^hotfix(es)?[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    - support
+    is-source-branch-for: []
+    is-release-branch: true
+    is-main-branch: false
+    pre-release-weight: 30000
+  support:
+    label: ''
+    increment: Patch
+    prevent-increment:
+      of-merged-branch: true
+    track-merge-target: false
+    regex: ^support[\/-](?<BranchName>.+)
+    source-branches:
+    - main
+    is-source-branch-for: []
+    tracks-release-branches: false
+    is-release-branch: false
+    is-main-branch: true
+    pre-release-weight: 55000
+  unknown:
+    mode: ManualDeployment
+    label: '{BranchName}'
+    increment: Inherit
+    prevent-increment:
+      when-current-commit-tagged: true
+    regex: (?<BranchName>.+)
+    source-branches:
+    - main
+    - release
+    - feature
+    - pull-request
+    - hotfix
+    - support
+    is-source-branch-for: []
+    is-main-branch: false
+
+#endregion Branch specific
+#-------------------------------------------------------------------------------
+
+# Commit SHA listed here will not be used in version calculation
+ignore:
+  sha: []

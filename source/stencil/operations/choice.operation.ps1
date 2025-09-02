@@ -1,4 +1,5 @@
 
+using namespace System.Collections
 using namespace System.Collections.ObjectModel
 using namespace System.Management.Automation.Host
 
@@ -15,7 +16,7 @@ Register-StencilOperation 'choice' {
     }
     Write-Debug "$($params | ConvertTo-Psd | Out-String)"
     $choiceCollection = [Collection[ChoiceDescription]]::new()
-    $values = [System.Collections.ArrayList]::new()
+    $values = [ArrayList]::new()
     $count = 0
     foreach ($choice in $params.choices) {
         if (-not ([string]::IsNullorEmpty($choice.label))) {
@@ -41,8 +42,8 @@ Register-StencilOperation 'choice' {
     }
 
     $return = @{
-        Values   = [System.Collections.ArrayList]::new()
-        Indicies = [System.Collections.ArrayList]::new()
+        Values   = [ArrayList]::new()
+        Indicies = [ArrayList]::new()
     }
     $title = "Select value for `${output.$($params.Name)}"
     if ($multiChoice) {

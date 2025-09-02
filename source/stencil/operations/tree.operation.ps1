@@ -1,3 +1,9 @@
+
+<#
+tree: Create a directory tree based on the hashtable keys given
+params: root, hashtable
+#>
+
 Register-StencilOperation 'tree' {
     param($params)
     function createTree {
@@ -35,6 +41,6 @@ Register-StencilOperation 'tree' {
 
     $start = $params.root
     Write-Debug "  Creating directory tree starting in $start"
-    $params.Remove('root')
+    [void]$params.Remove('root')
     createTree -root $start -tree $params
-}
+} -Description 'Create a directory tree based on the hashtable keys given'

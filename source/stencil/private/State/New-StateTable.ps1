@@ -29,7 +29,7 @@ function New-StateTable {
         }
 
         try {
-            $stateTable.Defaults = Import-Default
+            $stateTable.Defaults = @{} # Import-Default
             $stateTable.Environment = [System.Environment]::GetEnvironmentVariables()
             $stateTable.Configuration = Import-Configuration
         }
