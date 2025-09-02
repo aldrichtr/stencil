@@ -1,0 +1,27 @@
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>default</Name>
+            <ViewSelectedBy><TypeName>Stencil.JobInfo</TypeName></ViewSelectedBy>
+            <TableControl>
+                <AutoSize/>
+                <TableHeaders>
+                    <TableColumnHeader><Label>id</Label><Width>15</Width><Alignment>Left</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>scope</Label><Width>9</Width><Alignment>Center</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>name</Label><Width>29</Width><Alignment>Left</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>version</Label><Width>10</Width><Alignment>Left</Alignment></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>id</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>scope</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>name</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Version</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
