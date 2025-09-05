@@ -2,26 +2,30 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build using sampler",
+            "label": "Build the module",
             "type": "shell",
-            "command": "${workspaceFolder}/build.ps1 -Task build",
+            "command": "Invoke-Build Build",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        }
-        {
-            "label": "Build the module",
-            "type": "shell",
-            "command": "Invoke-Build Build"
         },
         {
             "label": "Run the unit tests",
             "type":"shell",
-            "command": "Invoke-Build UnitTest",
+            "command": "${workspaceFolder}\\tools\\runTests.ps1",
             "group": {
                 "kind": "test",
                 "isDefault": true
+            },
+            "problemMatcher":"$pester",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
             }
         },
         {

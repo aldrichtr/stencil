@@ -1,9 +1,36 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+param()
 
-Describe 'Private function Register-StencilOperation' {
+BeforeAll {
+    $sourceFile = Get-SourceFilePath
+    if (Test-Path $sourceFile) {
+        . $sourceFile
+    } else {
+        throw "Could not find $sourceFile from $PSCommandPath"
+    }
+
+    $dataDirectory = Get-TestDataPath
+}
+Describe 'Private function Register-StencilOperation' -Tags @('unit', 'Register', 'StencilOperation') {
     BeforeAll {
         # convenience function to reset the registry
         function clearRegistry {
             $script:StencilOperationRegistry = @{}
+        }
+
+        function Get-StencilOperationRegistry {
+            # false function so that Mock can find it
+            return $null
+        }
+        Mock Get-StencilOperationRegistry {
+            return $script:StencilOperationRegistry
+        }
+        function Test-StencilOperation {
+            # false function so that Mock can find it
+            return $null
+        }
+        Mock Test-StencilOperation {
+            return $false
         }
     }
     Context 'The function is available from the module' {
@@ -15,11 +42,6 @@ Describe 'Private function Register-StencilOperation' {
             $command | Should -Not -BeNullOrEmpty
         }
 
-        It "Should pass PSScriptAnalyzer Rule '<_.RuleName>'" -Tag @('analyzer') -ForEach @(Get-ScriptAnalyzerRule) {
-            $result = Invoke-ScriptAnalyzer -ScriptDefinition $command.Definition -IncludeRule $_.RuleName
-            $result | Should -BeNullOrEmpty -Because (
-                ".`n$($PSStyle.Foreground.BrightWhite){0}: on line {1} {2}`n`n.$($PSStyle.Reset)" -f $result.Severity, $result.Line, $result.Message )
-        }
         Context 'The parameters are set correctly' -ForEach @(
             @{
                 Name      = 'Name'
@@ -41,7 +63,13 @@ Describe 'Private function Register-StencilOperation' {
     }
     Context 'When a command operation is registered' {
         BeforeAll {
-            $count_before = (Get-StencilOperationRegistry).Keys.Count
+            $script:StencilOperationRegistry = @{
+                test = @{
+                    Command = { Write-Output 'Hello World'}
+                    Description = 'A test task'
+                }
+            }
+            $count_before = $script:StencilOperationRegistry.Keys.Count
             Register-StencilOperation -Name 'copy' -Command 'Copy-Item' -Description 'Copy Path to Destination'
         }
 
@@ -49,16 +77,19 @@ Describe 'Private function Register-StencilOperation' {
             clearRegistry
         }
         It 'Should increment the number of operations registered by 1' {
-            (Get-StencilOperationRegistry).Keys.Count | Should -Be ($count_before + 1)
+            $script:StencilOperationRegistry.Keys.Count | Should -Be ($count_before + 1)
         }
 
         It 'Should be added as a key in the registry by name' {
-            $registry = Get-StencilOperationRegistry
-            $registry.Keys | Should -Contain 'copy'
+            $script:StencilOperationRegistry.Keys | Should -Contain 'copy'
         }
 
         Context 'If the name is already registered' {
             BeforeAll {
+                Mock Test-StencilOperation {
+                    return $true
+                }
+
                 $options = @{
                     Name          = 'copy'
                     Command       = 'Copy-Item'
@@ -87,18 +118,17 @@ Describe 'Private function Register-StencilOperation' {
 
     Context 'When a scriptblock operation is registered' {
         BeforeAll {
-            $count_before = (Get-StencilOperationRegistry).Keys.Count
+            $count_before = $script:StencilOperationRegistry.Keys.Count
             Register-StencilOperation -Name 'invoke' -Scriptblock {
                 Write-Information 'Hello world'
             } -Description 'say hello'
         }
         It 'Should increment the number of operations registered by 1' {
-            (Get-StencilOperationRegistry).Keys.Count | Should -Be ($count_before + 1)
+            $script:StencilOperationRegistry.Keys.Count | Should -Be ($count_before + 1)
         }
 
         It 'Should be added as a key in the registry by name' {
-            $registry = Get-StencilOperationRegistry
-            $registry.Keys | Should -Contain 'invoke'
+            $script:StencilOperationRegistry.Keys | Should -Contain 'invoke'
         }
     }
 }

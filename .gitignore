@@ -1,5 +1,4 @@
 out/
 stage/
-
-# The wiki repository
+# ignore the wiki repository
 docs/wiki
