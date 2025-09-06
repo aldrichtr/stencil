@@ -1,6 +1,6 @@
 
 function Register-StencilOperation {
-    <#
+  <#
     .SYNOPSIS
         Add a DSL word to the Stencil workflow
     .DESCRIPTION
@@ -12,83 +12,89 @@ function Register-StencilOperation {
            Set-Variable -Name $options.Name -Value (Read-Host $options.Prompt)
         } -Description "Read a value from the user"
     #>
-    [CmdletBinding(
-        DefaultParameterSetName = 'Command'
+  [CmdletBinding(
+    DefaultParameterSetName = 'Command'
+  )]
+  param(
+    # Name of the Operation for use in stencils
+    [Parameter(
+      Position = 0,
+      Mandatory
     )]
-    param(
-        # Name of the Operation for use in stencils
-        [Parameter(
-            Position = 0,
-            Mandatory
-        )]
-        [string]$Name,
+    [string]$Name,
 
-        # The Command that the operation calls
-        [Parameter(
-            Position = 1,
-            ParameterSetName = 'Command'
-        )]
-        [string]$Command,
+    # The Command that the operation calls
+    [Parameter(
+      Position = 1,
+      ParameterSetName = 'Command'
+    )]
+    [string]$Command,
 
-        # The scriptblock the operation calls
-        [Parameter(
-            Position = 1,
-            ParameterSetName = 'ScriptBlock'
-        )]
-        [scriptblock]$ScriptBlock,
+    # The scriptblock the operation calls
+    [Parameter(
+      Position = 1,
+      ParameterSetName = 'ScriptBlock'
+    )]
+    [scriptblock]$ScriptBlock,
 
-        # An optional description
-        [Parameter(
-            Position = 2
-        )]
-        [string]$Description,
+    # An optional description
+    [Parameter(
+      Position = 2
+    )]
+    [string]$Description,
 
-        # Optionally return the registered operation
-        [Parameter(
-        )]
-        [switch]$Passthru,
+    # Optionally return the registered operation
+    [Parameter(
+    )]
+    [switch]$Passthru,
 
-        # Optionally overwrite an existing Operation
-        [Parameter(
-        )]
-        [switch]$Force
+    # Optionally overwrite an existing Operation
+    [Parameter(
+    )]
+    [switch]$Force
 
-    )
-    begin {
-        Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
-        Get-StencilOperationRegistry | Out-Null # Creates the registry if it does not exist
-        if (-not(Test-StencilOperationRegistry)) {
-            throw "There was an error getting the Stencil Operations"
-        }
+  )
+  begin {
+    Write-Debug "-- Begin $($MyInvocation.MyCommand.Name)"
+    Get-StencilOperationRegistry | Out-Null # Creates the registry if it does not exist
+    if (-not(Test-StencilOperationRegistry)) {
+      throw 'There was an error getting the Stencil Operations'
     }
-    process {
-        Write-Debug "  Test that the name '$Name' is not already registered (or -Force)"
-        if ((-not($Name | Test-StencilOperation)) -or $Force) {
-            Write-Verbose "Registering the operation '$Name'"
-            if ($PSBoundParameters.ContainsKey('Command')) {
-                Write-Debug "  operation is a wrapper for '$Command'.  Generating scriptblock"
-                $cmd = "param(`$params) $Command @params"
-                $ScriptBlock = [scriptblock]::create($cmd)
-            } else {
-                Write-Debug '  operation is a scriptblock'
-            }
-            $script:StencilOperationRegistry[$Name] = @{
-                Command     = $ScriptBlock
-                Description = $Description ?? ''
-            }
-        } else {
-            $options = @{
-                Message           = "Could not register '$Name'"
-                Category          = 'ResourceExists'
-                RecommendedAction = "Remove duplicate ids or Use '-Force' to overwrite"
-            }
-            Write-Error @options
-        }
+  }
+  process {
+    Write-Debug "  Test that the name '$Name' is not already registered (or -Force)"
+    if ((-not($Name | Test-StencilOperation)) -or $Force) {
+      Write-Verbose "Registering the operation '$Name'"
+      if ($PSBoundParameters.ContainsKey('Command')) {
+        Write-Debug "  operation is a wrapper for '$Command'.  Generating scriptblock"
+        $cmd = "param(`$params) $Command @params"
+        $ScriptBlock = [scriptblock]::create($cmd)
+      } else {
+        Write-Debug '  operation is a scriptblock'
+      }
+      $operationInfo = @{
+        PSTypeName  = 'Stencil.OperationInfo'
+        Name        = $Name
+        Command     = $ScriptBlock
+        Description = $Description ?? ''
+      }
+
+      $script:StencilOperationRegistry[$Name] = [PSCustomObject]$operationInfo
+
+    } else {
+      $options = @{
+        Message           = "Could not register '$Name'"
+        Category          = 'ResourceExists'
+        RecommendedAction = "Remove duplicate ids or Use '-Force' to overwrite"
+      }
+      Write-Error @options
     }
-    end {
-        if ($Passthru) {
-            $script:StencilOperationRegistry[$Name]
-        }
-        Write-Debug "-- End $($MyInvocation.MyCommand.Name)"
+  }
+  end {
+    if ($Passthru) {
+      <#Script scope is Module scope#>
+      $script:StencilOperationRegistry[$Name]
     }
+    Write-Debug "-- End $($MyInvocation.MyCommand.Name)"
+  }
 }

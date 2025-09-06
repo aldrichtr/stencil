@@ -1,11 +1,11 @@
 ﻿---
 external help file: stencil-help.xml
 Module Name: stencil
-online version: /main/blob/C:\Users\taldrich\projects\github\stencil/docs/stencil/Get-StencilOperationCommand.md
+online version: /main/blob/C:\Users\taldrich\projects\github\stencil/docs/stencil/Get-StencilOperation.md
 schema: 2.0.0
 ---
 
-# Get-StencilOperationCommand
+# Get-StencilOperation
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-StencilOperationCommand [-Name] <String> [<CommonParameters>]
+Get-StencilOperation [-Name] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -7,12 +7,11 @@
         StencilFile = 'stencil.yml'
         ValuesFile  = 'defaults.yml'
         Path        = @{
-            Root       = '~/.stencil'
+            Root       = "$env:APPDATA\DevKit"
             Jobs       = 'jobs'
             Operations = 'operations'
         }
     }
-
     Parser   = @{
         Ordered          = $false
         UseMergingParser = $true

@@ -116,7 +116,7 @@ function Invoke-StencilJob {
             if ($operation | Test-StencilOperation) {
                 Write-Debug "  Operation '$operation' is registered.  Running"
                 try {
-                    [scriptblock]$sb = ($operation | Get-StencilOperationCommand)
+                    [scriptblock]$sb = ($operation | Get-StencilOperation)
                     $sb.InvokeWithContext(
                         $contextFunctions,
                         $contextVariables,

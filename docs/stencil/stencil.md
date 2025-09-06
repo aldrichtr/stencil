@@ -23,7 +23,7 @@ Locale: en-US
 ### [Get-StencilJob](Get-StencilJob.md)
 {{ Fill in the Description }}
 
-### [Get-StencilOperationCommand](Get-StencilOperationCommand.md)
+### [Get-StencilOperation](Get-StencilOperation.md)
 {{ Fill in the Description }}
 
 ### [Get-StencilOperationRegistry](Get-StencilOperationRegistry.md)
@@ -46,4 +46,3 @@ Locale: en-US
 
 ### [Test-StencilOperation](Test-StencilOperation.md)
 {{ Fill in the Description }}
-
