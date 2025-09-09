@@ -14,7 +14,13 @@ function Get-StencilOperation {
     Write-Debug "`n$('-' * 80)`n-- Begin $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
   }
   process {
-    Get-StencilOperationRegistry | Select-Object -ExpandProperty Values
+    (Get-StencilOperationRegistry).GetEnumerator() |
+      ForEach-Object {
+        if ((-not ($PSBoundParameters.ContainsKey('Name'))) -or
+          ($Name -like $_.Key)) {
+          $_.Value
+        }
+      }
   }
   end {
     Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"
