@@ -116,14 +116,24 @@ function Invoke-StencilJob {
             if ($operation | Test-StencilOperation) {
                 Write-Debug "  Operation '$operation' is registered.  Running"
                 try {
-                    [scriptblock]$sb = ($operation | Get-StencilOperation)
+                    [scriptblock]$sb = ($operation | Get-StencilOperation | Select-Object -ExpandProperty Command)
                     $sb.InvokeWithContext(
                         $contextFunctions,
                         $contextVariables,
                         $contextArguments
                     )
                 } catch {
-                    $PSCmdlet.ThrowTerminatingError($_)
+                  $err = $_ # The original error
+                  $message = "Could not execute $($operation.Name)"
+                  $exceptionText = ( @($message, $err.ToString()) -join "`n")
+                  $newException = [Exception]::new($exceptionText)
+                  $eRecord = [System.Management.Automation.ErrorRecord]::new(
+                    $newException,
+                    $err.FullyQualifiedErrorId,
+                    $err.CategoryInfo.Category,
+                    $operation
+                  )
+                  $PSCmdlet.ThrowTerminatingError( $eRecord )
                 }
             } elseif ($operation | Test-StencilJob) {
                 Write-Debug "  Job '$operation' is registered.  Running"
