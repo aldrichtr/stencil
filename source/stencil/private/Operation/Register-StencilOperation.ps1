@@ -65,6 +65,7 @@ function Register-StencilOperation {
     Write-Debug "  Test that the name '$Name' is not already registered (or -Force)"
     if ((-not($Name | Test-StencilOperation)) -or $Force) {
       Write-Verbose "Registering the operation '$Name'"
+
       if ($PSBoundParameters.ContainsKey('Command')) {
         Write-Debug "  operation is a wrapper for '$Command'.  Generating scriptblock"
         $cmd = "param(`$params) $Command @params"
@@ -72,8 +73,15 @@ function Register-StencilOperation {
       } else {
         Write-Debug '  operation is a scriptblock'
       }
+      $callstack = Get-PSCallStack
+      $caller = $callstack[1]
+
+      if ($null -ne $caller) {
+        $callingScript = $caller.ScriptName
+      }
       $operationInfo = @{
         PSTypeName  = 'Stencil.OperationInfo'
+        Path        = $callingScript ?? '[scriptblock]'
         Name        = $Name
         Command     = $ScriptBlock
         Description = $Description ?? ''

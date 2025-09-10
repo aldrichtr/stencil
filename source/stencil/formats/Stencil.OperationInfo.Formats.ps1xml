@@ -1,0 +1,25 @@
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>Stencil.OperationInfo</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <AutoSize />
+        <TableHeaders>
+          <TableColumnHeader> <Label>Name</Label> <Width>9</Width> <Alignment>left</Alignment> </TableColumnHeader>
+          <TableColumnHeader> <Label>Description</Label> <Width>250</Width> <Alignment>left</Alignment> </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem> <PropertyName>Name</PropertyName> </TableColumnItem>
+              <TableColumnItem> <PropertyName>Description</PropertyName> </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

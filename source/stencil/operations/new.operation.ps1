@@ -6,4 +6,10 @@ params: ApplicationName, Authentication, CertificateThumbprint, ConnectionURI, C
         Value, Confirm, WhatIf
 
 #>
-Register-StencilOperation 'new' 'New-Item' -Description 'Create Items in Path'
+$private:options = @{
+  Name        = 'new'
+  Description = 'Create Items in Path'
+  Command     = 'New-Item'
+}
+
+Register-StencilOperation @private:options
