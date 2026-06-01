@@ -1,0 +1,107 @@
+{
+  "folders": [
+    { "name": "-- Stencil Source Module", "path": "." },
+  ],
+  "settings": {
+    "powershell.startAutomatically": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.rulers": [
+      108
+    ],
+    "editor.tabSize": 2,
+    "editor.formatOnPaste": true,
+    "editor.autoIndentOnPaste": true,
+    "editor.definitionLinkOpensInPeek": true
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build the module",
+        "type": "shell",
+        "command": "Invoke-Build Build",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Run the unit tests",
+        "type": "shell",
+        "command": "Invoke-Build UnitTest",
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Clean generated files",
+        "type": "shell",
+        "command": "Invoke-Build Clean"
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        // SECTION Launch Current File
+        "name": "PowerShell Launch Current File",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "args": [ ],
+        "cwd": "${file}"
+      },
+      {
+        "name": "PowerShell Launch Current File in Temporary Console",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "args": [ ],
+        "cwd": "${file}"
+      },
+      {
+        "name": "PowerShell Launch Current File w/Args Prompt",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "args": [
+          "${command:SpecifyScriptArgs}"
+        ],
+        "cwd": "${file}"
+      },
+      // !SECTION
+      {
+        "name": "PowerShell Launch DebugTest.ps1",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${workspaceRoot}/DebugTest.ps1",
+        "args": [
+          "-Count 55 -DelayMilliseconds 250"
+        ],
+        "cwd": "${workspaceRoot}"
+      },
+      {
+        "name": "PowerShell Interactive Session",
+        "type": "PowerShell",
+        "request": "launch",
+        "cwd": "${workspaceRoot}"
+      },
+      {
+        "name": "PowerShell Pester Tests",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "Invoke-Pester",
+        "args": [ ],
+        "cwd": "${workspaceRoot}"
+      },
+      {
+        "name": "PowerShell Attach to Host Process",
+        "type": "PowerShell",
+        "request": "attach",
+        "runspaceId": 1,
+      }
+    ]
+  }
+}
