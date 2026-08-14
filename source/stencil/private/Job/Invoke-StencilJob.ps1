@@ -72,6 +72,8 @@ function Invoke-StencilJob {
             # the step configuration from the file
             $config = $step[$operation]
 
+            # SECTION Debug current step
+
             Write-Debug "  Step #$stepCount is '$operation'"
             Write-Debug '  The environment is: '
             Write-Debug "    - SourceDir => $($Job.SourceDir)"
@@ -86,7 +88,9 @@ function Invoke-StencilJob {
             foreach ($key in $config.Keys) {
                 '    - {0} => {1}' -f $key , $config.$key | Write-Debug
             }
+            # !SECTION
 
+            # SECTION - Expand Tokens
             Write-Debug '  Expanding tokens in configuration params:'
             :key foreach ($key in $config.Keys) {
                 Write-Debug "   - Processing $key"
@@ -110,6 +114,7 @@ function Invoke-StencilJob {
             foreach ($key in $params.Keys) {
                 '    - {0} => {1}' -f $key , $params.$key | Write-Debug
             }
+            # !SECTION - Expand Tokens
 
             $contextArguments = $params
 
@@ -142,7 +147,7 @@ function Invoke-StencilJob {
                 Write-Verbose "  '$operation' is not recognized as an operation or job.  Skipping"
             }
             $stepCount++
-        }
+        } # end foreach step (:step)
     }
     end {
         Write-Debug "`n$('-' * 80)`n-- End $($MyInvocation.MyCommand.Name)`n$('-' * 80)"

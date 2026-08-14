@@ -1,17 +1,17 @@
 @{
   #---------------------------------------------------------------------------
-  #region Module Info
+  # SECTION Module Info
 
   ModuleVersion     = '0.2.11'
   Description       = 'PowerShell project generator'
   GUID              = '9924ccbb-1d32-4ec4-94ea-59252ce86022'
   # HelpInfoURI = ''
 
-  #endregion Module Info
+  # !SECTION Module Info
   #---------------------------------------------------------------------------
 
   #---------------------------------------------------------------------------
-  #region Module Components
+  # SECTION Module Components
 
   RootModule        = 'stencil.psm1'
   # ScriptsToProcess = @()
@@ -21,11 +21,11 @@
   # ModuleList = ''
   # FileList = @()
 
-  #endregion Module Components
+  # !SECTION Module Components
   #---------------------------------------------------------------------------
 
   #---------------------------------------------------------------------------
-  #region Public Interface
+  # SECTION Public Interface
 
   CmdletsToExport   = @()
   FunctionsToExport = '*'
@@ -34,11 +34,11 @@
   # DSCResourcesToExport = @()
   # DefaultCommandPrefix = ''
 
-  #endregion Public Interface
+  # !SECTION Public Interface
   #---------------------------------------------------------------------------
 
   #---------------------------------------------------------------------------
-  #region Requirements
+  # SECTION Requirements
 
   # CompatiblePSEditions = @()
   # PowerShellVersion = ''
@@ -50,23 +50,23 @@
   # DotNetFrameworkVersion = ''
   # CLRVersion = ''
 
-  #endregion Requirements
+  # !SECTION Requirements
   #---------------------------------------------------------------------------
 
   #---------------------------------------------------------------------------
-  #region Author
+  # SECTION Author
 
   Author            = 'Timothy Aldrich'
   CompanyName       = 'aldrichtr'
   Copyright         = '(c) Timothy Aldrich. All rights reserved.'
 
-  #endregion Author
+  # !SECTION Author
   #---------------------------------------------------------------------------
 
   PrivateData       = @{
     PSData = @{
       #---------------------------------------------------------------------------
-      #region Project
+      # SECTION Project
 
       # Tags = @()
       # LicenseUri = ''
@@ -77,7 +77,7 @@
       # ExternalModuleDependencies = @()
       # ReleaseNotes = ''
 
-      #endregion Project
+      # !SECTION Project
       #---------------------------------------------------------------------------
 
     } # end PSData

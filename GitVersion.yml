@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-#region Global
+# SECTION Global
 
 ## Hard set the next version.  Used to "override" the computed version
 # next-version 2.0
@@ -9,12 +9,12 @@
 
 # Set the increment mode
 # mode ContinuousDeployment, ContinuousDelivery, Mainline
-#endregion Global
+# !SECTION Global
 #-------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------
-#region Control version via git objects
+# SECTION Control version via git objects
 
 # When enabled, gitversion respects ~+semver: <scope>~ entries in commit
 # messages
@@ -61,12 +61,12 @@ version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 
 tag-prefix: '[vV]?'
 
-#endregion commit message processing
+# !SECTION commit message processing
 #--------------------------------------------------------------------------------
 
 
 #-------------------------------------------------------------------------------
-#region Version format
+# SECTION Version format
 
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
@@ -79,7 +79,7 @@ semantic-version-format: Strict
 # Format of `CommitDate` property
 commit-date-format: yyyy-MM-dd
 
-#endregion Version format
+# !SECTION Version format
 #-------------------------------------------------------------------------------
 
 
@@ -95,7 +95,7 @@ strategies:
 
 
 #-------------------------------------------------------------------------------
-#region Branch specific
+# SECTION Branch specific
 
 
 
@@ -209,7 +209,7 @@ branches:
     is-source-branch-for: []
     is-main-branch: false
 
-#endregion Branch specific
+# !SECTION Branch specific
 #-------------------------------------------------------------------------------
 
 # Commit SHA listed here will not be used in version calculation

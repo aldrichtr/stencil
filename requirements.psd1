@@ -8,7 +8,7 @@
     }
 
 
-    #region BuildSystem
+    # SECTION BuildSystem
     InvokeBuild = @{
         Version = '5.9.11'
         Tags    = 'dev', 'ci'
@@ -38,9 +38,9 @@
         Version = '1.20.0'
         Tags    = 'dev', 'ci'
     }
-    #endregion BuildSystem
+    # !SECTION BuildSystem
 
-    #region stencil requirements
+    # SECTION stencil requirements
 
     # Module configuration system
     Configuration = @{
@@ -70,6 +70,6 @@
             AllowPrerelease = $true
         }
     }
-    #endregion stencil requirements
+    # !SECTION stencil requirements
 
 }

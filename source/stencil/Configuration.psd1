@@ -10,6 +10,8 @@
             Root       = "$env:APPDATA\DevKit"
             Jobs       = 'jobs'
             Operations = 'operations'
+            Templates  = 'templates'
+            TemplateData = 'templateData'
         }
     }
     Parser   = @{

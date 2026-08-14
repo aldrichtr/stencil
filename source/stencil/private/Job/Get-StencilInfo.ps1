@@ -41,7 +41,7 @@ function Get-StencilInfo {
     :file foreach ($p in $Path) {
 
       # --------------------------------------------------------------------------------
-      # #region Import file
+      # # SECTION Import file
 
       if (-not ($p | Test-Path)) {
         Write-Warning "'$p' is not a valid path"
@@ -65,7 +65,7 @@ function Get-StencilInfo {
         throw "in '$p' jobs table is not in the correct format"
       }
 
-      # #endregion Import file
+      # # !SECTION Import file
       # --------------------------------------------------------------------------------
 
       # If there is an `env` table in the stencil file, we will merge it with the env
@@ -89,7 +89,7 @@ function Get-StencilInfo {
           [void]$jobNames.Add($key)
 
           # --------------------------------------------------------------------------------
-          # #region Update job configuration
+          # # SECTION Update job configuration
 
           $job = $stencilConfig.jobs[$key]
 
@@ -124,7 +124,7 @@ function Get-StencilInfo {
             $job = $job | Update-Object $table
           }
 
-          # #endregion Update job configuration
+          # # !SECTION Update job configuration
           # --------------------------------------------------------------------------------
 
           if ($AsHashtable) { $job }

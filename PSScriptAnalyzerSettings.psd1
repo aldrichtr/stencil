@@ -1,91 +1,139 @@
 @{
-    #region Severity
-    # Severity              = @()
-    #endregion Severity
+  Severity            = @('Information', 'Warning', 'Error')
 
-    #region ExcludeRules
-    # Omits the specified rules from the Script Analyzer test. Wildcard characters are supported.
+  IncludeDefaultRules = $true
 
-    # Enter a comma-separated list of rule names, a variable that contains rule names, or a command that gets rule names. You can also specify a list of excluded rules in a Script Analyzer profile file. You
-    # can exclude standard rules and rules in a custom rule path.
+  ExcludeRules        = @(
+    'PSDSCDscExamplesPresent',
+    'PSDSCDscTestsPresent',
+    'PSDSCReturnCorrectTypesForDSCFunctions',
+    'PSDSCUseIdenticalMandatoryParametersForDSC',
+    'PSDSCUseIdenticalParametersForDSC',
+    'PSDSCStandardDSCFunctionsInResource',
+    'PSDSCUseVerboseMessageInDSCResource'
+  )
 
-    # When you exclude a rule, the rule does not run on any of the files in the path. To exclude a rule on a particular line, parameter, function, script, or class, adjust the Path parameter or suppress the
-    # rule. For information about suppressing a rule, see the examples.
+  # IncludeRules          = @()
+  # CustomRulePath        = @()
+  # RecurseCustomRulePath = $true
 
-    # If a rule is specified in both the ExcludeRule and IncludeRule collections, the rule is excluded.
-    ExcludeRules          = @(
-        "PSDSCDscExamplesPresent",
-        "PSDSCDscTestsPresent",
-        "PSDSCReturnCorrectTypesForDSCFunctions",
-        "PSDSCUseIdenticalMandatoryParametersForDSC",
-        "PSDSCUseIdenticalParametersForDSC",
-        "PSDSCStandardDSCFunctionsInResource",
-        "PSDSCUseVerboseMessageInDSCResource"
-    )
-    #endregion ExcludeRules
-
-    #region IncludeDefaultRules
-    # Invoke default rules along with Custom rules.
-    IncludeDefaultRules   = $true
-    #endregion IncludeDefaultRules
-
-    #region IncludeRules
-    # Runs only the specified rules in the Script Analyzer test. By default, PSScriptAnalyzer runs all
-    # rules.
-
-    # Enter a comma-separated list of rule names, a variable that contains rule names, or a command that
-    # gets rule names. Wildcard characters are supported. You can also specify rule names in a Script
-    # Analyzer profile file.
-
-    # When you use the **CustomizedRulePath** parameter, you can use this parameter to include standard
-    # rules and rules in the custom rule paths.
-
-    # If a rule is specified in both the **ExcludeRule** and **IncludeRule** collections, the rule is
-    # excluded.
-
-    # The **Severity** parameter takes precedence over **IncludeRule**. For example, if **Severity** is
-    # `Error`, you cannot use **IncludeRule** to include a `Warning` rule.
-    # IncludeRules          = @()
-    #endregion IncludeRules
-
-    #region Rules
-    # Some rules have their own settings.  Rules is a hash of Rule names with
-    # the rule settings as a hash, like
-    # ``` powershell
-    # @{
-    #     'Rules' = @{
-    #         'PSAvoidUsingCmdletAliases' = @{
-    #             'allowlist' = @('cd')
-    #         }
-    #     }
-    # }
-    # ```
-    Rules                 = @{
-        PSAvoidUsingCmdletAliases = @{
-            Whitelist = @(
-                'task'
-            )
-        }
+  Rules               = @{
+    # SECTION Braces
+    PSPlaceOpenBrace                 = @{
+      <# OTBS style #>
+      Enable             = $true
+      OnSameLine         = $true
+      NewLineAfter       = $true
+      IgnoreOneLineBlock = $true
     }
-    #endregion Rules
+    PSPlaceCloseBrace                = @{
+      Enable             = $true
+      NoEmptyLineBefore  = $false
+      IgnoreOneLineBlock = $true
+      NewLineAfter       = $true
+    }
+    # !SECTION
 
-    #region CustomRulePath
-    # Uses only the custom rules defined in the specified paths to the analysis. To still use the built-in rules, add the -IncludeDefaultRules switch.
+    # SECTION Whitespace
+    PSUseConsistentIndentation       = @{
+      Enable              = $true
+      Kind                = 'space'
+      IndentationSize     = 2
+      PipelineIndentation = 'IncreaseIndentationForFirstPipeline'
+    }
+    PSUseConsistentWhitespace        = @{
+      Enable                                  = $true
+      CheckInnerBrace                         = $true
+      CheckOpenBrace                          = $true
+      CheckOpenParen                          = $true
+      CheckOperator                           = $true
+      CheckPipe                               = $true
+      CheckPipeForRedundantWhitespace         = $true
+      CheckSeparator                          = $true
+      CheckParameter                          = $true
+      IgnoreAssignmentOperatorInsideHashTable = $true
+    }
+    # !SECTION
 
-    # Enter the path to a file that defines rules or a directory that contains files that define rules. Wildcard characters are supported. To add rules defined in subdirectories of the path, use the
-    # RecurseCustomRulePath parameter.
+    PSAlignAssignmentStatement       = @{
+      Enable                                  = $true
+      CheckHashtable                          = $true
+      AlignHashtableKvpWithInterveningComment = $true
+      CheckEnum                               = $true
+      AlignEnumMemberWithInterveningComment   = $true
+      IncludeValuelessEnumMembers             = $true
+    }
 
-    # By default, Invoke-ScriptAnalyzer uses only rules defined in the Microsoft.Windows.PowerShell.ScriptAnalyzer.BuiltinRules.dll file in the PSScriptAnalyzer module.
+    PSAvoidLongLines                 = @{
+      Enable            = $true
+      MaximumLineLength = 108
+    }
 
-    # If Invoke-ScriptAnalyzer cannot find rules in the CustomRulePath, it runs the standard rules without notice.
+    # SECTION Naming standards
+    PSAvoidUsingCmdletAliases        = @{
+      allowlist = @( 'task')
+    }
+    PSUseCorrectCasing               = @{
+      Enable        = $true
+      CheckCommands = $true
+      CheckKeyword  = $true
+      CheckOperator = $true
+    }
+    PSUseSingularNouns               = @{
+      NounAllowList = @()
+    }
 
-    # CustomRulePath        = @()
-    #endregion CustomRulePath
+    # !SECTION
 
-    #region RecurseCustomRulePath
-    # Adds rules defined in subdirectories of the **CustomRulePath** location. By default,
-    # `Invoke-ScriptAnalyzer` uses only the custom rules defined in the specified file or directory. To
-    # include the built-in rules, use the **IncludeDefaultRules** parameter.
-    # RecurseCustomRulePath = $true
-    #endregion RecurseCustomRulePath
+    PSProvideCommentHelp             = @{
+      Enable                  = $true
+      ExportedOnly            = $false
+      BlockComment            = $true
+      VSCodeSnippetCorrection = $true
+      Placement               = 'begin'
+    }
+
+    PSReviewUnusedParameter          = @{
+      CommandsToTraverse = @()
+    }
+
+    PSUseConstrainedLanguageMode     = @{
+      Enable           = $false
+      IgnoreSignatures = $false  # Enforce full CLM compliance for all scripts
+    }
+
+    # SECTION Compatability Settings
+    PSAvoidOverwritingBuiltInCmdlets = @{
+      PowerShellVersion = @('core-6.1.0-windows')
+    }
+    PSUseCompatibleCmdlets           = @{
+      compatibility = @('core-6.1.0-windows')
+    }
+    PSUseCompatibleCommands          = @{
+      Enable         = $true
+      TargetProfiles = @(
+      )
+      # You can specify commands to not check like this, which also will ignore its parameters:
+      IgnoreCommands = @()
+    }
+    PSUseCompatibleSyntax            = @{
+      Enable         = $true
+      TargetVersions = @( '6.0', '5.1', '4.0')
+    }
+    PSUseCompatibleTypes             = @{
+      Enable         = $true
+      TargetProfiles = @(
+        'ubuntu_x64_18.04_6.1.3_x64_4.0.30319.42000_core'
+        'win-48_x64_10.0.17763.0_5.1.17763.316_x64_4.0.30319.42000_framework'
+        'MyProfile'
+        'another_custom_profile_in_the_profiles_directory.json'
+        'D:\My Profiles\profile1.json'
+      )
+      # You can specify types to not check like this, which will also ignore methods and members on it:
+      IgnoreTypes    = @(
+        'System.IO.Compression.ZipFile'
+      )
+    }
+    # !SECTION
+  }
 }

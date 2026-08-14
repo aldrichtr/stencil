@@ -3,3 +3,5 @@ stage/
 
 # The wiki repository
 docs/wiki
+
+source/stencil/bin
